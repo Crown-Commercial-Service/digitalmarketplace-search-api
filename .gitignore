@@ -1,0 +1,6 @@
+venv
+.elasticbeanstalk/
+*.pyc
+__pycache__
+.idea/
+*.iml
