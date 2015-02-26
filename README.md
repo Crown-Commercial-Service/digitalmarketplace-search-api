@@ -11,6 +11,12 @@ Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
 sudo easy_install virtualenv
 ```
 
+Create a virtual environment
+ 
+ ```
+virtualenv ./venv
+ ```
+ 
 Ensure you have Elasticsearch running locally
 
 
