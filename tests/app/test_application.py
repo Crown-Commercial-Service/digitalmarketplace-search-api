@@ -2,7 +2,7 @@
 Tests for the application infrastructure
 """
 from flask import json
-from helpers import BaseApplicationTest
+from .helpers import BaseApplicationTest
 
 
 class TestApplication(BaseApplicationTest):
