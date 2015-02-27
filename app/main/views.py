@@ -9,7 +9,8 @@ def index():
     return jsonify(links=[
         {
             "rel": "query.gdm.index",
-            "href": url_for('.keyword_query', _external=True)
+            "href": url_for('.keyword_query_with_optional_filters',
+                            _external=True)
         }
     ]), 200
 

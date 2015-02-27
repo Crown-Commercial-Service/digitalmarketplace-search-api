@@ -14,7 +14,3 @@ class TestApplication(BaseApplicationTest):
     def test_404(self):
         response = self.client.get('/not-found')
         assert 404 == response.status_code
-
-    def test_202(self):
-        response = self.client.get('/search?q=email')
-        assert 202 == response.status_code
