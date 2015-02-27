@@ -17,8 +17,12 @@ Create a virtual environment
 virtualenv ./venv
  ```
  
-Ensure you have Elasticsearch running locally
+Ensure you have Elasticsearch running locally and then set the required environment variable
+(in production this will point to the load balancer in front of the Elasticsearch cluster).
 
+```
+export DM_ELASTICSEARCH_URL=http://localhost:9200
+```
 
 ### Activate the virtual environment
 

@@ -1,5 +1,6 @@
-from . import main
-from flask import jsonify, url_for, Response
+from flask import jsonify, url_for, request
+from . import main, search_service
+from .search_result_formatters import SearchResults
 
 
 @main.route('/')
@@ -14,5 +15,7 @@ def index():
 
 
 @main.route('/search', methods=['GET'])
-def keyword_query():
-    return Response("Not yet implemented... come back later!"), 202
+def keyword_query_with_optional_filters():
+    response = search_service.keyword_query_with_filters(request.args)
+    search_results_obj = SearchResults(response)
+    return jsonify(search_results_obj.get_results())
