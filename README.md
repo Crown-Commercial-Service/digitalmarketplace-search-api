@@ -80,10 +80,10 @@ python application.py runserver
 ### Using the Search API locally
 
 The Search API runs on port 5001. Calls to the API require a valid bearer 
-token. Tokens to be accepted can be set using the DM_AUTH_TOKENS environment 
-variable, e.g.:
+token. Tokens to be accepted can be set using the DM_SEARCH_API_AUTH_TOKENS 
+environment variable, e.g.:
 
-```export DM_AUTH_TOKENS=myToken```
+```export DM_SEARCH_API_AUTH_TOKENS=myToken```
 
 and then you can include this token in your request headers, e.g.:
 
