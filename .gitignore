@@ -2,7 +2,6 @@ venv
 .elasticbeanstalk/
 *.pyc
 __pycache__
-*.iml
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
