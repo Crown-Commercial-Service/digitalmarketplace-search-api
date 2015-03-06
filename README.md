@@ -69,7 +69,7 @@ export DM_ELASTICSEARCH_URL=http://localhost:9200
 To run the Search API for local development you can use the convenient run 
 script, which sets the required environment variables for local development: 
 ```
-./run_app.sh
+./scripts/run_app.sh
 ```
 
 More generally, the command to start the server is:
