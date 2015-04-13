@@ -1,0 +1,122 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Digitalmarketplace Search API Explorer{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='jquery-1.11.2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='explorer.js') }}"></script>
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class=""></span>
+                <span class=""></span>
+                <span class=""></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#" id="status-link" data-toggle="collapse" data-target="#status-block">Index Status</a>
+                </li>
+                <li><a href="#" id="update-link" data-toggle="collapse" data-target="#update-block">Index Services</a>
+                </li>
+                <li><a href="#" id="fetch-link" data-toggle="collapse" data-target="#fetch-block">Search</a></li>
+                <li><a href="#" id="create-link" data-toggle="collapse" data-target="#create-block">Create Index</a>
+                </li>
+                <li><a href="#" id="delete-link" data-toggle="collapse" data-target="#delete-block">Delete Index</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Search API Explorer</h1>
+    </div>
+
+    <hr>
+
+    <div class="container collapse" id="status-block">
+        <h3>Index Status</h3>
+
+        <label><h6>Index name</h6></label>
+        <input id="index_name" type="text"/>
+        <button class="btn btn-primary" type="button"
+                onclick='getStatus()'>Status
+        </button>
+    </div>
+
+    <div class="container collapse" id="create-block">
+        <h3>Create index</h3>
+        <label><h6>Index name</h6></label>
+        <input id="create_index_name" type="text"/>
+        <label><h6>Index Type</h6></label>
+        <input id="create_index_type" type="text"/>
+        <button class="btn btn-primary" type="button"
+                onclick='createIndex()'>Create Index
+        </button>
+    </div>
+
+    <div class="container collapse" id="delete-block">
+        <h3>Delete index</h3>
+
+        <label><h6>Index name</h6></label>
+        <input id="delete_index_name" type="text"/>
+        <button class="btn btn-primary" type="button"
+                onclick='deleteIndex()'>Delete Index
+        </button>
+    </div>
+
+    <div class="container collapse" id="update-block">
+        <h3>Index a service</h3>
+
+        <label><h6>Index name</h6></label>
+        <input id="service_index_name" type="text"/>
+        <label><h6>Index Type</h6></label>
+        <input id="service_index_type" type="text"/>
+        <button class="btn btn-primary" type="button"
+                onclick='indexService();'>Index
+        </button>
+
+        <div class="span12">
+            <textarea id="index_json" cols="100" rows="25">Copy JSON here</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="container collapse" id="fetch-block">
+    <h3>Search an index</h3>
+
+    <div class="row">
+        <div class="span12">
+            <label><h6>Index name</h6></label>
+            <input id="search_index_name" type="text"/>
+            <label><h6>Index Type</h6></label>
+            <input id="search_index_type" type="text"/>
+            <label><h6>Search</h6></label>
+            <input id="search" type="text"/>
+
+            <button class="btn btn-primary" type="button"
+                    onclick='search();'>Search
+            </button>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="container" id="response">
+    <hr />
+    <h3>Response</h3>
+    <div id="response-details"></div>
+</div>
+{% endblock %}
