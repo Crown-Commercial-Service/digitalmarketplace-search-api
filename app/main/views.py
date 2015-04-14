@@ -1,7 +1,7 @@
 from flask import jsonify, url_for, request, abort
 from . import main, search_service
 from .search_result_formatters import SearchResults
-
+import re
 
 @main.route('/')
 def index():
@@ -21,13 +21,33 @@ def keyword_query_with_optional_filters():
     search_results_obj = SearchResults(response)
     return jsonify(search_results_obj.get_results())
 
+@main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])
+def search(index_name, doc_type):
+    result = search_service.keyword_search(index_name, doc_type, request.args)
+    response = jsonify({"message": result["message"]})
+    response.status_code = result["status_code"]
+    return response
+
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>', methods=['POST'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
+    json_payload['serviceTypesExact'] = create_exact_service_types(json_payload['serviceTypes'])
     result = search_service.index(index_name, doc_type, json_payload, service_id)
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response
+
+
+def create_exact_service_types(service_types):
+    fixed = []
+    for i in service_types:
+        fixed.append(strip_and_lowercase(i))
+    return fixed
+
+
+def strip_and_lowercase(value):
+    return re.sub(r'\s+', '', value).lower()
+
 
 @main.route('/<string:index_name>', methods=['PUT'])
 def create_index(index_name):
@@ -44,8 +64,15 @@ def delete_index(index_name):
     return response
 
 @main.route('/<string:index_name>/status', methods=['GET'])
-def status(index_name):
-    result = search_service.status(index_name)
+def index_status(index_name):
+    result = search_service.index_status(index_name)
+    response = jsonify({"message": result["message"]})
+    response.status_code = result["status_code"]
+    return response
+
+@main.route('/status', methods=['GET'])
+def status():
+    result = search_service.status()
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response

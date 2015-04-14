@@ -21,6 +21,8 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+                <li><a href="#" id="all-status-link" data-toggle="collapse" data-target="#all-status-block">All Indices Status</a>
+                </li>
                 <li><a href="#" id="status-link" data-toggle="collapse" data-target="#status-block">Index Status</a>
                 </li>
                 <li><a href="#" id="update-link" data-toggle="collapse" data-target="#update-block">Index Services</a>
@@ -54,12 +56,18 @@
         </button>
     </div>
 
+      <div class="container collapse" id="all-status-block">
+        <h3>All Indices Status</h3>
+
+        <button class="btn btn-primary" type="button"
+                onclick='getAllStatus()'>All Status
+        </button>
+    </div>
+
     <div class="container collapse" id="create-block">
         <h3>Create index</h3>
         <label><h6>Index name</h6></label>
         <input id="create_index_name" type="text"/>
-        <label><h6>Index Type</h6></label>
-        <input id="create_index_type" type="text"/>
         <button class="btn btn-primary" type="button"
                 onclick='createIndex()'>Create Index
         </button>
@@ -102,7 +110,9 @@
             <label><h6>Index Type</h6></label>
             <input id="search_index_type" type="text"/>
             <label><h6>Search</h6></label>
-            <input id="search" type="text"/>
+            <input id="keywords" type="text"/>
+            <label><h6>Category</h6></label>
+            <input id="category" type="text"/>
 
             <button class="btn btn-primary" type="button"
                     onclick='search();'>Search
