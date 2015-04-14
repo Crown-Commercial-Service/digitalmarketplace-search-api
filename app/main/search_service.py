@@ -180,7 +180,8 @@ def convert_es_results(results, query_args):
             "supplierName": service["_source"]["supplierName"],
             "serviceName": service["_source"]["serviceName"],
             "serviceSummary": service["_source"]["serviceSummary"],
-            "serviceTypes": service["_source"]["serviceTypes"]
+            "serviceTypes": service["_source"]["serviceTypes"],
+            "highlight": service["highlight"]
         })
 
     return {
