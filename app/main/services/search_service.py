@@ -1,7 +1,9 @@
 import os
-from elasticsearch import Elasticsearch, TransportError
-from ..mapping import SERVICES_MAPPING
 import re
+
+from elasticsearch import Elasticsearch, TransportError
+from app.mapping import SERVICES_MAPPING
+from app.main.services.response_formatters import format_status
 
 es_url = os.getenv('DM_ELASTICSEARCH_URL')
 es = Elasticsearch(es_url)
@@ -29,28 +31,34 @@ def delete_index(index_name):
 
 def index(index_name, doc_type, document, document_id):
     try:
-        es.index(index=index_name, id=document_id, doc_type=doc_type, body=document)
+        es.index(
+            index=index_name,
+            id=document_id,
+            doc_type=doc_type,
+            body=document)
         return response(200, "acknowledged")
     except TransportError as e:
         return response(e.status_code, e.info["error"])
 
 
-def index_status(index_name):
+def status_for_index(index_name):
     try:
         res = es.indices.status(index=index_name, human=True)
-        return response(200, res)
+        return response(200, format_status(res, index_name))
     except TransportError as e:
         return response(e.status_code, e.info["error"])
 
 
-def status():
-    return index_status("_all")
+def status_for_all_indexes():
+    return status_for_index("_all")
 
 
 def keyword_search(index_name, doc_type, query_args):
     try:
-        print query_args
-        res = es.search(index=index_name, doc_type=doc_type, body=query_builder(query_args))
+        res = es.search(
+            index=index_name,
+            doc_type=doc_type,
+            body=query_builder(query_args))
         return response(200, convert_es_results(res, query_args))
     except TransportError as e:
         return response(e.status_code, e.info["error"])
@@ -67,7 +75,8 @@ def query_builder(query_args):
                 "filtered": {
                     "query": multi_match(query_args["q"]),
                     "filter": {
-                        "term": {"serviceTypesExact": strip_and_lowercase(query_args["category"])}
+                        "term": {"serviceTypesExact": strip_and_lowercase(
+                            query_args["category"])}
                     }
                 }
             }
@@ -84,7 +93,8 @@ def query_builder(query_args):
                         "match_all": {}
                     },
                     "filter": {
-                        "term": {"serviceTypesExact": strip_and_lowercase(query_args["category"])}
+                        "term": {"serviceTypesExact": strip_and_lowercase(
+                            query_args["category"])}
                     }
                 }
             }
@@ -109,7 +119,6 @@ def query_builder(query_args):
         }
     }
 
-    print base_query
     return base_query
 
 
@@ -130,41 +139,6 @@ def multi_match(keywords):
             "operator": "and"
         }
     }
-
-
-def keyword_query_with_filters(request_args, start_from=0, size=10):
-    query = request_args["q"]
-    filters = []
-    for k, v in request_args.iteritems():
-        # Do not include the query string as a filter
-        if k == "q":
-            continue
-        filters.append({"term": {k: v.lower()}})
-    res = es.search(index="services",
-                    body={
-                        "from": start_from, "size": size,
-                        "fields": ["id", "serviceName", "lot",
-                                   "serviceSummary"],
-                        "query": {
-                            "filtered": {
-                                "query": {
-                                    "multi_match": {
-                                        "query": query,
-                                        "fields": ["serviceName",
-                                                   "serviceSummary",
-                                                   "serviceFeatures",
-                                                   "serviceBenefits"],
-                                        "operator": "or"
-                                    }
-                                },
-                                "filter": {
-                                    "bool": {"must": filters}
-                                }
-                            }
-                        }
-                    }
-    )
-    return res
 
 
 def convert_es_results(results, query_args):

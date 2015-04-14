@@ -1,7 +1,10 @@
 from flask import jsonify, url_for, request, abort
-from . import main, search_service
-from .search_result_formatters import SearchResults
+from app.main import main
+from app.main.services.search_service import keyword_search, \
+    index, status_for_index, create_index, delete_index, status_for_all_indexes
+
 import re
+
 
 @main.route('/')
 def index():
@@ -9,30 +12,33 @@ def index():
     return jsonify(links=[
         {
             "rel": "query.gdm.index",
-            "href": url_for('.keyword_query_with_optional_filters',
+            "href": url_for('.search',
+                            index_name="index-name",
+                            doc_type="doc-type",
                             _external=True)
         }
     ]), 200
 
 
-@main.route('/search', methods=['GET'])
-def keyword_query_with_optional_filters():
-    response = search_service.keyword_query_with_filters(request.args)
-    search_results_obj = SearchResults(response)
-    return jsonify(search_results_obj.get_results())
-
 @main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])
 def search(index_name, doc_type):
-    result = search_service.keyword_search(index_name, doc_type, request.args)
+    result = keyword_search(index_name, doc_type, request.args)
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response
 
-@main.route('/<string:index_name>/<string:doc_type>/<string:service_id>', methods=['POST'])
+
+@main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
+            methods=['POST'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
-    json_payload['serviceTypesExact'] = create_exact_service_types(json_payload['serviceTypes'])
-    result = search_service.index(index_name, doc_type, json_payload, service_id)
+    json_payload['serviceTypesExact'] = \
+        create_exact_service_types(json_payload['serviceTypes'])
+    result = index(
+        index_name,
+        doc_type,
+        json_payload,
+        service_id)
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response
@@ -50,29 +56,32 @@ def strip_and_lowercase(value):
 
 
 @main.route('/<string:index_name>', methods=['PUT'])
-def create_index(index_name):
-    result = search_service.create_index(index_name)
+def create(index_name):
+    result = create_index(index_name)
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response
+
 
 @main.route('/<string:index_name>', methods=['DELETE'])
-def delete_index(index_name):
-    result = search_service.delete_index(index_name)
+def delete(index_name):
+    result = delete_index(index_name)
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response
+
 
 @main.route('/<string:index_name>/status', methods=['GET'])
-def index_status(index_name):
-    result = search_service.index_status(index_name)
+def status(index_name):
+    result = status_for_index(index_name)
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response
 
+
 @main.route('/status', methods=['GET'])
-def status():
-    result = search_service.status()
+def all_status():
+    result = status_for_all_indexes()
     response = jsonify({"message": result["message"]})
     response.status_code = result["status_code"]
     return response

@@ -2,6 +2,10 @@ function getAllStatus() {
     fetch("/status")
 }
 
+function getRoot() {
+    fetch("/")
+}
+
 function getStatus() {
     fetch("/" + $('#index_name').val() + "/status")
 }

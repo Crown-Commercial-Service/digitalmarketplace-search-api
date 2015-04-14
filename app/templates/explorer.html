@@ -21,7 +21,9 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="#" id="all-status-link" data-toggle="collapse" data-target="#all-status-block">All Indices Status</a>
+                <li><a href="#" id="root-link" data-toggle="collapse" data-target="#root-block">Application Root</a>
+                <li><a href="#" id="all-status-link" data-toggle="collapse" data-target="#all-status-block">All Indices
+                    Status</a>
                 </li>
                 <li><a href="#" id="status-link" data-toggle="collapse" data-target="#status-block">Index Status</a>
                 </li>
@@ -46,6 +48,16 @@
 
     <hr>
 
+    <div class="input-group">
+        <p>
+            <span class="input-group-token" id="token">Bearer Token</span>
+            <input id="bearer-token" type="text" class="form-control" placeholder="enter you're bearer token here"
+                   aria-describedby="bearer token" value="myToken">
+        </p>
+    </div>
+
+    <hr/>
+
     <div class="container collapse" id="status-block">
         <h3>Index Status</h3>
 
@@ -56,7 +68,16 @@
         </button>
     </div>
 
-      <div class="container collapse" id="all-status-block">
+     <div class="container collapse" id="root-block">
+        <h3>Application Root</h3>
+
+        <button class="btn btn-primary" type="button"
+                onclick='getRoot()'>Application Root
+        </button>
+    </div>
+
+
+    <div class="container collapse" id="all-status-block">
         <h3>All Indices Status</h3>
 
         <button class="btn btn-primary" type="button"
@@ -125,8 +146,9 @@
 
 
 <div class="container" id="response">
-    <hr />
+    <hr/>
     <h3>Response</h3>
+
     <div id="response-details"></div>
 </div>
 {% endblock %}
