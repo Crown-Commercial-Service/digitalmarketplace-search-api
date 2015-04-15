@@ -15,11 +15,17 @@ function search() {
     if($.trim($('#keywords').val())) {
         queryString += "q=" + $('#keywords').val()
     }
-    if(queryString) {
-        queryString += "&"
-    }
     if($.trim($('#category').val())) {
+        if(queryString) {
+            queryString += "&"
+        }
         queryString += "category=" + $('#category').val()
+    }
+    if($.trim($('#lot').val())) {
+        if(queryString) {
+            queryString += "&"
+        }
+        queryString += "lot=" + $('#lot').val()
     }
     fetch("/" + $('#search_index_name').val() + "/" + $('#search_index_type').val() + "/search?" + queryString)
 }

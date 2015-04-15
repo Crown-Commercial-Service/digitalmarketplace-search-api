@@ -1,6 +1,5 @@
-from nose.tools import assert_equal
-
-from app.main.services.query_builder import construct_query
+from nose.tools import assert_equal, assert_in
+from app.main.services.query_builder import construct_query, is_filtered
 
 
 def test_should_have_correct_root_element():
@@ -34,8 +33,20 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     )
 
 
+def test_should_identify_filter_search_from_query_params():
+    assert_equal(is_filtered(build_query_params()), False)
+    assert_equal(is_filtered(build_query_params(lot="lot")), True)
+    assert_equal(is_filtered(build_query_params(category="category")), True)
+
+
 def test_should_have_filtered_root_element_if_category_search():
     query = construct_query(build_query_params(category="my category"))
+    assert_equal("query" in query, True)
+    assert_equal("filtered" in query["query"], True)
+
+
+def test_should_have_filtered_root_element_if_lot_search():
+    query = construct_query(build_query_params(lot="SaaS"))
     assert_equal("query" in query, True)
     assert_equal("filtered" in query["query"], True)
 
@@ -65,27 +76,53 @@ def test_should_have_filtered_root_element_and_match_keywords():
     )
 
 
-def test_should_have_filtered_term_clause():
+def test_should_have_filtered_term_category_clause():
     query = construct_query(build_query_params(category="category"))
-    assert_equal("term" in query["query"]["filtered"]["filter"], True)
+    assert_equal("term" in
+                 query["query"]["filtered"]["filter"]["bool"]["must"][0], True)
     assert_equal(
-        query["query"]["filtered"]["filter"]["term"]["serviceTypesExact"],
+        query["query"]["filtered"]["filter"]
+        ["bool"]["must"][0]["term"]["serviceTypesExact"],
         "category")
+
+
+def test_should_have_filtered_term_lot_clause():
+    query = construct_query(build_query_params(lot="SaaS"))
+    assert_equal(
+        "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
+        True)
+    assert_equal(
+        query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["lot"],
+        "SaaS")
+
+
+def test_should_have_filtered_term_for_lot_and_category_clause():
+    query = construct_query(
+        build_query_params(lot="SaaS", category="category"))
+    terms = query["query"]["filtered"]["filter"]["bool"]["must"]
+    assert_in({"term": {'serviceTypesExact': 'category'}}, terms)
+    assert_in({"term": {'lot': 'SaaS'}}, terms)
 
 
 def test_should_use_whitespace_stripped_lowercased_category():
     query = construct_query(build_query_params(category="My Category"))
-    assert_equal("term" in query["query"]["filtered"]["filter"], True)
     assert_equal(
-        query["query"]["filtered"]["filter"]["term"]["serviceTypesExact"],
+        "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
+        True)
+    assert_equal(
+        query["query"]["filtered"]["filter"]
+        ["bool"]["must"][0]["term"]["serviceTypesExact"],
         "mycategory")
 
 
 def test_should_use_no_non_alphanumeric_characters_in_category():
     query = construct_query(build_query_params(category="My's Cate:gory"))
-    assert_equal("term" in query["query"]["filtered"]["filter"], True)
     assert_equal(
-        query["query"]["filtered"]["filter"]["term"]["serviceTypesExact"],
+        "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
+        True)
+    assert_equal(
+        query["query"]["filtered"]["filter"]["bool"]["must"][0]
+        ["term"]["serviceTypesExact"],
         "myscategory")
 
 
@@ -129,11 +166,13 @@ def test_highlight_block_contains_correct_fields():
 
 
 # TODO convert to ImmutableDict
-def build_query_params(keywords=None, category=None):
+def build_query_params(keywords=None, category=None, lot=None):
     query_params = {}
     if keywords:
         query_params["q"] = keywords
     if category:
         query_params["category"] = category
+    if lot:
+        query_params["lot"] = lot
 
     return query_params

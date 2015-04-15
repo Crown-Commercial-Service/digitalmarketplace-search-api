@@ -32,17 +32,19 @@ def construct_query(query_args):
 
 
 def highlight_clause():
-    hightlights = {}
-    hightlights["fields"] = {}
+    highlights = dict()
+    highlights["fields"] = {}
 
     for field in TEXT_FIELDS:
-        hightlights["fields"][field] = {}
+        highlights["fields"][field] = {}
 
-    return hightlights
+    return highlights
 
 
 def is_filtered(query_args):
     if "category" in query_args:
+        return True
+    if "lot" in query_args:
         return True
     return False
 
@@ -72,12 +74,30 @@ def match_all_clause():
 
 def filter_clause(query_args):
     return {
-        "term": {
-            "serviceTypesExact": strip_and_lowercase(
-                query_args["category"])
+        "bool": {
+            "must": build_term_filters(query_args)
         }
     }
 
 
+def build_term_filters(query_args):
+    must = []
+    if "category" in query_args:
+        must.append({
+            "term": {
+                "serviceTypesExact":
+                    strip_and_lowercase(query_args["category"])
+            }
+        })
+    if "lot" in query_args:
+        must.append({
+            "term": {
+                "lot": query_args["lot"]
+            }
+        })
+    return must
+
+
+# TODO test me
 def strip_and_lowercase(value):
     return re.sub(r'[\s+|\W+]', '', value).lower()
