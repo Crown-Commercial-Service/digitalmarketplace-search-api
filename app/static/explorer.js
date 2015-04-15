@@ -27,7 +27,7 @@ function search() {
         }
         queryString += "lot=" + $('#lot').val()
     }
-    fetch("/" + $('#search_index_name').val() + "/" + $('#search_index_type').val() + "/search?" + queryString)
+    fetch("/" + $('#search_index_name').val() + "/" + $('#search_index_type').val() + "/search?" + encodeURI(queryString))
 }
 
 function createIndex(){
