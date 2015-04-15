@@ -42,7 +42,7 @@ def highlight_clause():
 
 
 def is_filtered(query_args):
-    if "category" in query_args:
+    if "serviceTypes" in query_args:
         return True
     if "lot" in query_args:
         return True
@@ -82,13 +82,14 @@ def filter_clause(query_args):
 
 def build_term_filters(query_args):
     must = []
-    if "category" in query_args:
-        must.append({
-            "term": {
-                "serviceTypesExact":
-                    strip_and_lowercase(query_args["category"])
-            }
-        })
+    if "serviceTypes" in query_args:
+        for service_type in extract_service_types(query_args):
+            must.append({
+                "term": {
+                    "serviceTypesExact":
+                        strip_and_lowercase(service_type)
+                }
+            })
     if "lot" in query_args:
         must.append({
             "term": {
@@ -98,6 +99,12 @@ def build_term_filters(query_args):
     return must
 
 
-# TODO test me
+def extract_service_types(query_args):
+    return [
+        service_type.strip()
+        for service_type in query_args["serviceTypes"].split(',')
+    ]
+
+
 def strip_and_lowercase(value):
     return re.sub(r'[\s+|\W+]', '', value).lower()

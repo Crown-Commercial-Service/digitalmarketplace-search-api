@@ -15,11 +15,11 @@ function search() {
     if($.trim($('#keywords').val())) {
         queryString += "q=" + $('#keywords').val()
     }
-    if($.trim($('#category').val())) {
+    if($.trim($('#serviceTypes').val())) {
         if(queryString) {
             queryString += "&"
         }
-        queryString += "category=" + $('#category').val()
+        queryString += "serviceTypes=" + $('#serviceTypes').val()
     }
     if($.trim($('#lot').val())) {
         if(queryString) {
