@@ -1,5 +1,5 @@
 from nose.tools import assert_equal
-import json
+from flask import json
 
 from app.main.services.response_formatters import \
     convert_es_status, convert_es_results
