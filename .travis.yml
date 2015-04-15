@@ -8,7 +8,9 @@ script:
   - ./scripts/run_tests.sh
 notifications:
   email: false
- services:
+
+services:
   - elasticsearch
- before_script:
+
+before_script:
   - sleep 10
