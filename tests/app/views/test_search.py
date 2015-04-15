@@ -1,4 +1,4 @@
-import json
+from flask import json
 import time
 from nose.tools import assert_equal
 
