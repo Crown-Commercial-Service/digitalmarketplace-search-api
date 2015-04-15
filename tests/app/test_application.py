@@ -15,7 +15,6 @@ class TestApplication(BaseApplicationTest):
 
     def test_404(self):
         response = self.client.get('/index/type/search')
-        print response.status_code
         assert 404 == response.status_code
 
     def test_bearer_token_is_required(self):

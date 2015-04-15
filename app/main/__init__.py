@@ -5,5 +5,5 @@ main = Blueprint('main', __name__)
 
 main.before_request(requires_authentication)
 
-from . import errors
+from .errors import *
 from app.main.views import search

@@ -1,4 +1,4 @@
-from query_builder import TEXT_FIELDS
+from .query_builder import TEXT_FIELDS
 
 
 def convert_es_status(es_response, index_name):
