@@ -108,15 +108,18 @@
         <h3>Index a service</h3>
 
         <label><h6>Index name</h6></label>
-        <input id="service_index_name" type="text"/>
+        <input id="index_doc_index_name" type="text"/>
         <label><h6>Index Type</h6></label>
-        <input id="service_index_type" type="text"/>
+        <input id="index_doc_index_type" type="text"/>
+        <label><h6>Document Id</h6></label>
+        <input id="index_doc_id" type="text"/>
         <button class="btn btn-primary" type="button"
                 onclick='indexService();'>Index
         </button>
 
         <div class="span12">
-            <textarea id="index_json" cols="100" rows="25">Copy JSON here</textarea>
+            <textarea id="index_doc_json" cols="100" rows="25">
+            </textarea>
         </div>
     </div>
 </div>

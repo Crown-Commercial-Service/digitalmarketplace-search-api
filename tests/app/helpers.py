@@ -39,15 +39,11 @@ class BaseApplicationTest(object):
         self.app.wsgi_app = self.app.wsgi_app.app
 
     def teardown(self):
-        self.teardown_authorization()
         self.client.delete('/' + self.default_index_name)
+        self.teardown_authorization()
 
     def teardown_authorization(self):
         if self._auth_tokens is None:
             del os.environ['DM_SEARCH_API_AUTH_TOKENS']
         else:
             os.environ['DM_SEARCH_API_AUTH_TOKENS'] = self._auth_tokens
-
-
-def get_json_from_response(response):
-    return json.loads(response.get_data())

@@ -28,6 +28,13 @@ function createIndex(){
     submit("/" + $('#create_index_name').val(), {}, "PUT")
 }
 
+function indexService(){
+    submit(
+        "/" + $('#index_doc_index_name').val() + "/" + $('#index_doc_index_type').val() + "/" + $('#index_doc_id').val(),
+        $('#index_doc_json').val(),
+        "POST")
+}
+
 function deleteIndex(){
     submit("/" + $('#delete_index_name').val(), {}, "DELETE")
 }
@@ -53,7 +60,7 @@ function submit(url, data, method) {
   var request = $.ajax({
            url: url,
            type: method,
-           data : JSON.stringify(data),
+           data : data,
            headers: commonHeaders("application/json")
            });
     request.fail(function (jqXHR, textStatus, errorThrown){
