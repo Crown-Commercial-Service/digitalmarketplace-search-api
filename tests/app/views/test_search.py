@@ -69,7 +69,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        time.sleep(1)  # needs time to propagate???
+        time.sleep(5)  # needs time to propagate???
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
@@ -119,7 +119,7 @@ class TestSearchQueries(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        time.sleep(1)
+        time.sleep(5)
         response = self.client.get(
             '/index-to-create/services/search?q=serviceName')
         assert_equal(response.status_code, 200)
