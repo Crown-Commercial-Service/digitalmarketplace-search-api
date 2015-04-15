@@ -53,8 +53,6 @@ class TestIndexingDocuments(BaseApplicationTest):
         self.client.put('/index-to-create')
 
     def test_should_index_a_document(self):
-        response = self.client.get('/index-to-create/status')
-
         service = default_service()
 
         response = self.client.post(
@@ -64,7 +62,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        time.sleep(1)  # needs time to propagate???
+        time.sleep(5)  # needs time to propagate???
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
