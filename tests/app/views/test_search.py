@@ -55,11 +55,6 @@ class TestIndexingDocuments(BaseApplicationTest):
     def test_should_index_a_document(self):
         response = self.client.get('/index-to-create/status')
 
-        assert_equal(response.status_code, 200)
-        assert_equal(
-            get_json_from_response(response)["status"]["num_docs"],
-            0)
-
         service = default_service()
 
         response = self.client.post(
@@ -69,7 +64,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        time.sleep(5)  # needs time to propagate???
+        time.sleep(1)  # needs time to propagate???
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
