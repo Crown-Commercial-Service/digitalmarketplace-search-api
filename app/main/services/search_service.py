@@ -1,5 +1,4 @@
 import os
-import re
 
 from elasticsearch import Elasticsearch, TransportError
 from app.mapping import SERVICES_MAPPING

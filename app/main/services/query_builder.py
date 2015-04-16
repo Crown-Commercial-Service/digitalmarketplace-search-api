@@ -1,4 +1,4 @@
-import re
+from conversions import strip_and_lowercase
 
 TEXT_FIELDS = [
     "id",
@@ -104,7 +104,3 @@ def extract_service_types(query_args):
         service_type.strip()
         for service_type in query_args["serviceTypes"].split(',')
     ]
-
-
-def strip_and_lowercase(value):
-    return re.sub(r'[\s+|\W+]', '', value).lower()

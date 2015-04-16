@@ -1,9 +1,9 @@
 from flask import jsonify, url_for, request, abort
 from app.main import main
 from app.main.services.search_service import keyword_search, \
-    index, status_for_index, create_index, delete_index, status_for_all_indexes
-
-import re
+    index, status_for_index, create_index, delete_index, \
+    status_for_all_indexes
+from app.main.services.conversions import strip_and_lowercase
 
 
 @main.route('/')
@@ -105,7 +105,3 @@ def create_exact_service_types(service_types):
     for i in service_types:
         fixed.append(strip_and_lowercase(i))
     return fixed
-
-
-def strip_and_lowercase(value):
-    return re.sub(r'\s+', '', value).lower()

@@ -1,6 +1,6 @@
 from nose.tools import assert_equal, assert_in
 from app.main.services.query_builder import construct_query, \
-    is_filtered, extract_service_types, strip_and_lowercase
+    is_filtered, extract_service_types
 
 
 def test_should_have_correct_root_element():
@@ -189,25 +189,6 @@ def test_highlight_block_contains_correct_fields():
         yield \
             assert_equal, \
             example in query["highlight"]["fields"], \
-            expected, \
-            example
-
-
-def test_should_strip_whitespace_and_symbols():
-    cases = [
-        ("this", "this"),
-        ("THIS", "this"),
-        ("THIS ", "this"),
-        (" THiS ", "this"),
-        (" THi''S ", "this"),
-        (" 123THi''S ", "123this"),
-        (" 1\\!23THi''S ", "123this"),
-    ]
-
-    for example, expected in cases:
-        yield \
-            assert_equal, \
-            strip_and_lowercase(example), \
             expected, \
             example
 
