@@ -1,4 +1,4 @@
-from conversions import strip_and_lowercase
+from .conversions import strip_and_lowercase
 
 TEXT_FIELDS = [
     "id",
