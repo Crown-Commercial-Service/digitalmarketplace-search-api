@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     AUTH_REQUIRED = True
+    ALLOW_EXPLORER = True
 
     @staticmethod
     def init_app(app):
@@ -21,6 +22,7 @@ class Development(Config):
 
 class Live(Config):
     DEBUG = False
+    ALLOW_EXPLORER = False
 
 
 config = {

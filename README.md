@@ -1,5 +1,5 @@
 # digitalmarketplace-search-api
-API to handle interactions between the digitalmarketplace applications and search applications.
+API to handle interactions between the digitalmarketplace applications and search.
 
 - Python app, based on the [Flask framework](http://flask.pocoo.org/)
 
@@ -45,13 +45,10 @@ Start elasticsearch (in a new console window/tab)
 elasticsearch
 ```
 
-Index G6 services into your local elasticsearch index:
+The process for indexing of services is changing and this documentation will be updated shortly. In the meantime the explorer (see below) can be used to insert documents.
 
-```
-./scripts/index-g6-in-elasticsearch.py http://localhost:9200/services https://api.digitalmarketplace.service.gov.uk/services <api_bearer_token>
-```
 
-Set the required environment variable (in production this will point to the 
+Set the required environment variable (in production this will point to the
 load balancer in front of the Elasticsearch cluster).
 
 ```
@@ -90,3 +87,9 @@ and then you can include this token in your request headers, e.g.:
 ```
 curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/search?q=email
 ```
+
+Alternatively there is an API explorer running on
+
+    [http://localhost:5001/_explorer](http://localhost:5001/_explorer)
+
+Which provides a UI over the API calls.
