@@ -26,7 +26,9 @@ class Live(Config):
 
 
 config = {
-    'live': Live,
     'development': Development,
+    'preview': Development,
+    'staging': Live,
+    'production': Live,
     'test': Test,
 }
