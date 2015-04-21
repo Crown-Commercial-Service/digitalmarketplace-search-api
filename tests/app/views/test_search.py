@@ -102,6 +102,18 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
+    def test_should_index_a_document_with_no_service_types(self):
+        service = default_service()
+        service["service"]["serviceName"] = 123
+        del service["service"]["serviceTypes"]
+
+        response = self.client.post(
+            '/index-to-create/services/' + str(service["service"]["id"]),
+            data=json.dumps(service),
+            content_type='application/json')
+
+        assert_equal(response.status_code, 200)
+
 
 # TODO write a load of queries into here for the various fields
 class TestSearchQueries(BaseApplicationTest):
