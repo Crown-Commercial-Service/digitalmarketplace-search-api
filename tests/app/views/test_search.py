@@ -135,16 +135,36 @@ class TestFetchById(BaseApplicationTest):
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 200)
-        assert_equal(data['services']["_id"], str(service["service"]["id"]))
-        assert_equal(data['services']["_source"]["id"], str(service["service"]["id"]))
-        assert_equal(data['services']["_source"]["lot"], service["service"]["lot"])
-        assert_equal(data['services']["_source"]["serviceBenefits"], service["service"]["serviceBenefits"])
-        assert_equal(data['services']["_source"]["serviceFeatures"], service["service"]["serviceFeatures"])
-        assert_equal(data['services']["_source"]["serviceName"], service["service"]["serviceName"])
-        assert_equal(data['services']["_source"]["serviceSummary"], service["service"]["serviceSummary"])
-        assert_equal(data['services']["_source"]["serviceTypes"], service["service"]["serviceTypes"])
-        assert_equal(data['services']["_source"]["serviceTypesExact"], ['servicetypes'])
-        assert_equal(data['services']["_source"]["supplierName"], service["service"]["supplierName"])
+        assert_equal(
+            data['services']["_id"],
+            str(service["service"]["id"]))
+        assert_equal(
+            data['services']["_source"]["id"],
+            str(service["service"]["id"]))
+        assert_equal(
+            data['services']["_source"]["lot"],
+            service["service"]["lot"])
+        assert_equal(
+            data['services']["_source"]["serviceBenefits"],
+            service["service"]["serviceBenefits"])
+        assert_equal(
+            data['services']["_source"]["serviceFeatures"],
+            service["service"]["serviceFeatures"])
+        assert_equal(
+            data['services']["_source"]["serviceName"],
+            service["service"]["serviceName"])
+        assert_equal(
+            data['services']["_source"]["serviceSummary"],
+            service["service"]["serviceSummary"])
+        assert_equal(
+            data['services']["_source"]["serviceTypes"],
+            service["service"]["serviceTypes"])
+        assert_equal(
+            data['services']["_source"]["serviceTypesExact"],
+            ['servicetypes'])
+        assert_equal(
+            data['services']["_source"]["supplierName"],
+            service["service"]["supplierName"])
 
     def test_should_return_404_if_no_service(self):
         response = self.client.get(
