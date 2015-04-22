@@ -6,6 +6,14 @@ function getRoot() {
     fetch("/")
 }
 
+function fetchById() {
+    fetch("/" + $('#fetch_index_name').val() + "/" + $('#fetch_doc_type').val() + "/" + $('#fetch_service_id').val())
+}
+
+function deleteById() {
+    submit("/" + $('#delete_service_index_name').val() + "/" + $('#delete_service_doc_type').val() + "/" + $('#delete_service_id').val(), {}, "DELETE")
+}
+
 function getStatus() {
     fetch("/" + $('#index_name').val() + "/status")
 }

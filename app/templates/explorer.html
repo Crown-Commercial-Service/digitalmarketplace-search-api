@@ -30,6 +30,8 @@
                 <li><a href="#" id="update-link" data-toggle="collapse" data-target="#update-block">Index Services</a>
                 </li>
                 <li><a href="#" id="fetch-link" data-toggle="collapse" data-target="#fetch-block">Search</a></li>
+                <li><a href="#" id="fetch-by-id-link" data-toggle="collapse" data-target="#fetch-by-id-block">Fetch By Id</a></li>
+                <li><a href="#" id="delete-by-id-link" data-toggle="collapse" data-target="#delete-by-id-block">Delete By Id</a></li>
                 <li><a href="#" id="create-link" data-toggle="collapse" data-target="#create-block">Create Index</a>
                 </li>
                 <li><a href="#" id="delete-link" data-toggle="collapse" data-target="#delete-block">Delete Index</a>
@@ -122,6 +124,35 @@
             </textarea>
         </div>
     </div>
+
+    <div class="container collapse" id="fetch-by-id-block">
+        <h3>Fetch a service by id</h3>
+
+        <label><h6>Index name</h6></label>
+        <input id="fetch_index_name" type="text"/>
+        <label><h6>Index Type</h6></label>
+        <input id="fetch_doc_type" type="text"/>
+        <label><h6>Document Id</h6></label>
+        <input id="fetch_service_id" type="text"/>
+        <button class="btn btn-primary" type="button"
+                onclick='fetchById();'>Fetch service
+        </button>
+    </div>
+
+    <div class="container collapse" id="delete-by-id-block">
+        <h3>Delete a service by id</h3>
+
+        <label><h6>Index name</h6></label>
+        <input id="delete_service_index_name" type="text"/>
+        <label><h6>Index Type</h6></label>
+        <input id="delete_service_doc_type" type="text"/>
+        <label><h6>Document Id</h6></label>
+        <input id="delete_service_id" type="text"/>
+        <button class="btn btn-primary" type="button"
+                onclick='deleteById();'>Delete service
+        </button>
+    </div>
+
 </div>
 
 <div class="container collapse" id="fetch-block">
