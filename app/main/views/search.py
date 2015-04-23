@@ -2,7 +2,7 @@ from flask import jsonify, url_for, request, abort
 from app.main import main
 from app.main.services.search_service import keyword_search, \
     index, status_for_index, create_index, delete_index, \
-    status_for_all_indexes
+    status_for_all_indexes, fetch_by_id, delete_by_id
 from app.main.services.conversions import strip_and_lowercase
 
 
@@ -73,6 +73,24 @@ def status(index_name):
 def all_status():
     result = status_for_all_indexes()
     response = jsonify({"status": result["message"]})
+    response.status_code = result["status_code"]
+    return response
+
+
+@main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
+            methods=['GET'])
+def fetch_service(index_name, doc_type, service_id):
+    result = fetch_by_id(index_name, doc_type, service_id)
+    response = jsonify({"services": result["message"]})
+    response.status_code = result["status_code"]
+    return response
+
+
+@main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
+            methods=['DELETE'])
+def delete_service(index_name, doc_type, service_id):
+    result = delete_by_id(index_name, doc_type, service_id)
+    response = jsonify({"services": result["message"]})
     response.status_code = result["status_code"]
     return response
 

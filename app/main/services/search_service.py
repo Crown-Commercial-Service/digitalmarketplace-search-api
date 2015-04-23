@@ -30,6 +30,22 @@ def delete_index(index_name):
         return response(e.status_code, e.info["error"])
 
 
+def fetch_by_id(index_name, doc_type, document_id):
+    try:
+        res = es.get(index_name, document_id, doc_type)
+        return response(200, res)
+    except TransportError as e:
+        return response(e.status_code, e.info)
+
+
+def delete_by_id(index_name, doc_type, document_id):
+    try:
+        res = es.delete(index_name, doc_type, document_id)
+        return response(200, res)
+    except TransportError as e:
+        return response(e.status_code, e.info)
+
+
 def index(index_name, doc_type, document, document_id):
     try:
         es.index(
