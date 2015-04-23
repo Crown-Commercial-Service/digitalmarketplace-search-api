@@ -32,8 +32,9 @@ def search(index_name, doc_type):
             methods=['POST'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
-    json_payload['serviceTypesExact'] = \
-        create_exact_service_types(json_payload['serviceTypes'])
+    if 'serviceTypes' in json_payload:
+        json_payload['serviceTypesExact'] = \
+            create_exact_service_types(json_payload['serviceTypes'])
     result = index(
         index_name,
         doc_type,
