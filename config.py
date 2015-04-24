@@ -7,6 +7,13 @@ class Config:
     AUTH_REQUIRED = True
     ALLOW_EXPLORER = True
 
+    # Logging
+    DM_LOG_LEVEL = 'DEBUG'
+    DM_APP_NAME = 'search-api'
+    DM_LOG_PATH = '/var/log/digitalmarketplace/application.log'
+    DM_REQUEST_ID_HEADER = 'DM-Request-ID'
+    DM_DOWNSTREAM_REQUEST_ID_HEADER = 'X-Amz-Cf-Id'
+
     @staticmethod
     def init_app(app):
         pass
@@ -27,7 +34,7 @@ class Live(Config):
 
 config = {
     'development': Development,
-    'preview': Development,
+    'preview': Live,
     'staging': Live,
     'production': Live,
     'test': Test,
