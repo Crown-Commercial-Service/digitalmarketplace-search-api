@@ -6,7 +6,7 @@
           "type": "string",
           "index": "not_analyzed"
         },
-        "lot": {
+        "lotExact": {
           "type": "string",
           "index": "not_analyzed"
         },
@@ -30,6 +30,66 @@
         },
         "serviceTypesExact": {
           "type": "string",
+          "index": "not_analyzed"
+        },
+        "freeOptionExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "trialOptionExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "minimumContractPeriodExact": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "supportForThirdPartiesExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "selfServiceProvisioningExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "datacentresEUCodeExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "dataBackupRecoveryExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "dataExtractionRemovalExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "networksConnectedExact": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "apiAccessExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "openStandardsSupportedExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "openSourceExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "persistentStorageExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "guaranteedResourcesExact": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "elasticCloudExact": {
+          "type": "boolean",
           "index": "not_analyzed"
         }
       }

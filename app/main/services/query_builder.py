@@ -1,5 +1,8 @@
 from .conversions import strip_and_lowercase
 
+# These two arrays should be part of a mapping definition
+from werkzeug.datastructures import MultiDict
+
 TEXT_FIELDS = [
     "id",
     "lot",
@@ -9,6 +12,26 @@ TEXT_FIELDS = [
     "serviceBenefits",
     "serviceTypes",
     "supplierName"
+]
+
+FILTER_FIELDS = [
+    "lot",
+    "serviceTypes",
+    "freeOption",
+    "trialOption",
+    "minimumContractPeriod",
+    "supportForThirdParties",
+    "selfServiceProvisioning",
+    "datacentresEUCode",
+    "dataBackupRecovery",
+    "dataExtractionRemoval",
+    "networksConnected",
+    "apiAccess",
+    "openStandardsSupported",
+    "openSource",
+    "persistentStorage",
+    "guaranteedResources",
+    "elasticCloud"
 ]
 
 
@@ -28,6 +51,7 @@ def construct_query(query_args):
 
         }
     query["highlight"] = highlight_clause()
+    print query
     return query
 
 
@@ -42,9 +66,9 @@ def highlight_clause():
 
 
 def is_filtered(query_args):
-    if "serviceTypes" in query_args:
+    if "filter_serviceTypes" in query_args:
         return True
-    if "lot" in query_args:
+    if "filter_lot" in query_args:
         return True
     return False
 
@@ -73,34 +97,40 @@ def match_all_clause():
 
 
 def filter_clause(query_args):
+    # and_filters = MultiDict()
+    #
+    # filters = [
+    #     (format_key(param[0]), param[1])
+    #     for param in query_args.iterlists() if
+    #     param[0].startswith("filter_")]
+    #
+    # for a_filter in filters:
+    #     if len(a_filter[1]) > 0:
+    #         and_filters.add(a_filter[0], a_filter[1])
+
     return {
         "bool": {
-            "must": build_term_filters(query_args)
+            "must": get_filter_params(query_args)
         }
     }
 
 
-def build_term_filters(query_args):
-    must = []
-    if "serviceTypes" in query_args:
-        for service_type in extract_service_types(query_args):
-            must.append({
+def get_filter_params(query_args):
+    terms = []
+    filters = [
+        (format_key(param[0]), param[1])
+        for param in query_args.iterlists() if
+        param[0].startswith("filter_")]
+
+    for a_filter in filters:
+        for filter_value in a_filter[1]:
+            terms.append({
                 "term": {
-                    "serviceTypesExact":
-                        strip_and_lowercase(service_type)
+                    a_filter[0]: strip_and_lowercase(filter_value)
                 }
             })
-    if "lot" in query_args:
-        must.append({
-            "term": {
-                "lot": query_args["lot"]
-            }
-        })
-    return must
+    return terms
 
 
-def extract_service_types(query_args):
-    return [
-        service_type.strip()
-        for service_type in query_args["serviceTypes"].split(',')
-    ]
+def format_key(key):
+    return key.replace("filter_", '') + "Exact"
