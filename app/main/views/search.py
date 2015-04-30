@@ -3,7 +3,8 @@ from app.main import main
 from app.main.services.search_service import keyword_search, \
     index, status_for_index, create_index, delete_index, \
     status_for_all_indexes, fetch_by_id, delete_by_id
-from app.main.services.conversions import strip_and_lowercase
+from app.main.services.process_request_json import \
+    convert_request_json_into_index_json
 
 
 @main.route('/')
@@ -32,13 +33,11 @@ def search(index_name, doc_type):
             methods=['POST'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
-    if 'serviceTypes' in json_payload:
-        json_payload['serviceTypesExact'] = \
-            create_exact_service_types(json_payload['serviceTypes'])
+    index_json = convert_request_json_into_index_json(json_payload)
     result = index(
         index_name,
         doc_type,
-        json_payload,
+        index_json,
         service_id)
     response = jsonify({"results": result["message"]})
     response.status_code = result["status_code"]
@@ -117,10 +116,3 @@ def get_json_from_request(root_field):
     json_has_required_keys(payload, [root_field])
     update_json = payload[root_field]
     return update_json
-
-
-def create_exact_service_types(service_types):
-    fixed = []
-    for i in service_types:
-        fixed.append(strip_and_lowercase(i))
-    return fixed

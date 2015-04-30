@@ -3,6 +3,7 @@ import time
 from nose.tools import assert_equal
 
 from ..helpers import BaseApplicationTest
+from app.main.services.process_request_json import process
 
 
 class TestSearchIndexes(BaseApplicationTest):
@@ -132,6 +133,11 @@ class TestSearchQueries(BaseApplicationTest):
 
 
 class TestFetchById(BaseApplicationTest):
+    def test_should_return_404_if_no_service(self):
+        response = self.client.get(
+            '/index-to-create/services/100')
+
+        assert_equal(response.status_code, 404)
 
     def test_should_return_service_by_id(self):
         service = default_service()
@@ -153,40 +159,79 @@ class TestFetchById(BaseApplicationTest):
         assert_equal(
             data['services']["_source"]["id"],
             str(service["service"]["id"]))
-        assert_equal(
-            data['services']["_source"]["lot"],
-            service["service"]["lot"])
-        assert_equal(
-            data['services']["_source"]["serviceBenefits"],
-            service["service"]["serviceBenefits"])
-        assert_equal(
-            data['services']["_source"]["serviceFeatures"],
-            service["service"]["serviceFeatures"])
-        assert_equal(
-            data['services']["_source"]["serviceName"],
-            service["service"]["serviceName"])
-        assert_equal(
-            data['services']["_source"]["serviceSummary"],
-            service["service"]["serviceSummary"])
-        assert_equal(
-            data['services']["_source"]["serviceTypes"],
-            service["service"]["serviceTypes"])
-        assert_equal(
-            data['services']["_source"]["serviceTypesExact"],
-            ['servicetypes'])
-        assert_equal(
-            data['services']["_source"]["supplierName"],
-            service["service"]["supplierName"])
 
-    def test_should_return_404_if_no_service(self):
+        cases = [
+            "lot",
+            "serviceName",
+            "serviceSummary",
+            "serviceBenefits",
+            "serviceFeatures",
+            "serviceTypes",
+            "supplierName",
+            "freeOption",
+            "trialOption",
+            "minimumContractPeriod",
+            "supportForThirdParties",
+            "selfServiceProvisioning",
+            "datacentresEUCode",
+            "dataBackupRecovery",
+            "dataExtractionRemoval",
+            "networksConnected",
+            "apiAccess",
+            "openStandardsSupported",
+            "openSource",
+            "persistentStorage",
+            "guaranteedResources",
+            "elasticCloud"
+        ]
+
+        for key in cases:
+            assert_equal(
+                data['services']["_source"][key],
+                service["service"][key], key)
+
+    def test_service_should_have_all_exact_match_fields(self):
+        service = default_service()
+        self.client.post(
+            '/index-to-create/services/' + str(service["service"]["id"]),
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+
+        time.sleep(5)
         response = self.client.get(
-            '/index-to-create/services/100')
+            '/index-to-create/services/' + str(service["service"]["id"]))
 
-        assert_equal(response.status_code, 404)
+        data = get_json_from_response(response)
+        assert_equal(response.status_code, 200)
+
+        cases = [
+            "lot",
+            "serviceTypes",
+            "freeOption",
+            "trialOption",
+            "minimumContractPeriod",
+            "supportForThirdParties",
+            "selfServiceProvisioning",
+            "datacentresEUCode",
+            "dataBackupRecovery",
+            "dataExtractionRemoval",
+            "networksConnected",
+            "apiAccess",
+            "openStandardsSupported",
+            "openSource",
+            "persistentStorage",
+            "guaranteedResources",
+            "elasticCloud"
+        ]
+
+        for key in cases:
+            assert_equal(
+                data['services']["_source"][key + "Exact"],
+                process(service["service"], key), key)
 
 
 class TestDeleteById(BaseApplicationTest):
-
     def test_should_delete_service_by_id(self):
         service = default_service()
         self.client.post(
@@ -224,13 +269,28 @@ def default_service():
     return {
         "service": {
             "id": "id",
-            "lot": "lot",
+            "lot": "LoT",
             "serviceName": "serviceName",
             "serviceSummary": "serviceSummary",
             "serviceBenefits": "serviceBenefits",
             "serviceFeatures": "serviceFeatures",
             "serviceTypes": ["serviceTypes"],
-            "supplierName": "Supplier Name"
+            "supplierName": "Supplier Name",
+            "freeOption": True,
+            "trialOption": True,
+            "minimumContractPeriod": "Month",
+            "supportForThirdParties": True,
+            "selfServiceProvisioning": True,
+            "datacentresEUCode": True,
+            "dataBackupRecovery": True,
+            "dataExtractionRemoval": True,
+            "networksConnected": ["PSN", "PNN"],
+            "apiAccess": True,
+            "openStandardsSupported": True,
+            "openSource": True,
+            "persistentStorage": True,
+            "guaranteedResources": True,
+            "elasticCloud": True
         }
     }
 

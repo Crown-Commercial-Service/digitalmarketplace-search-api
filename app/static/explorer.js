@@ -27,13 +27,13 @@ function search() {
         if(queryString) {
             queryString += "&"
         }
-        queryString += "serviceTypes=" + $('#serviceTypes').val()
+        queryString += "filter_serviceTypes=" + $('#serviceTypes').val()
     }
     if($.trim($('#lot').val())) {
         if(queryString) {
             queryString += "&"
         }
-        queryString += "lot=" + $('#lot').val()
+        queryString += "filter_lot=" + $('#lot').val()
     }
     fetch("/" + $('#search_index_name').val() + "/" + $('#search_index_type').val() + "/search?" + encodeURI(queryString))
 }
