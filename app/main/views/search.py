@@ -29,7 +29,7 @@ def search(index_name, doc_type):
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
-            methods=['POST'])
+            methods=['PUT'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
     if 'serviceTypes' in json_payload:
@@ -99,7 +99,11 @@ def check_json_from_request(request):
     if request.content_type not in ['application/json',
                                     'application/json; charset=UTF-8']:
         abort(400, "Unexpected Content-Type, expecting 'application/json'")
-    data = request.get_json()
+    data = None
+    try:
+        data = request.get_json()
+    except Exception as e:
+        pass
 
     if data is None:
         abort(400, "Invalid JSON; must be a valid JSON object")
