@@ -2,6 +2,16 @@ from .query_builder import TEXT_FIELDS
 
 
 def convert_es_status(es_response, index_name):
+    if index_name in ["_all", ""]:
+        return [
+            _convert_es_index_status(es_response, name)
+            for name in es_response["indices"].keys()
+        ]
+    else:
+        return _convert_es_index_status(es_response, index_name)
+
+
+def _convert_es_index_status(es_response, index_name):
     index_status = es_response["indices"][index_name]
 
     status = {}
