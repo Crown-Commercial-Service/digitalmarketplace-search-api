@@ -1,4 +1,5 @@
-from nose.tools import assert_equal, assert_in
+import types
+from nose.tools import assert_equal, assert_in, assert_not_in
 from app.main.services.query_builder import construct_query, \
     is_filtered
 from werkzeug.datastructures import MultiDict
@@ -32,14 +33,20 @@ def test_should_make_multi_match_query_if_keywords_supplied():
         "serviceTypes",
         "supplierName"
     ]
-    )
+                 )
 
 
 def test_should_identify_filter_search_from_query_params():
-    assert_equal(is_filtered(build_query_params()), False)
-    assert_equal(is_filtered(build_query_params(lot="lot")), True)
-    assert_equal(
-        is_filtered(build_query_params(service_types=["serviceTypes"])), True)
+    cases = (
+        (build_query_params(), False),
+        (build_query_params(keywords="lot"), False),
+        (build_query_params(lot="lot"), True),
+        (build_query_params(keywords="something", lot="lot"), True),
+        (build_query_params(service_types=["serviceTypes"]), True)
+    )
+
+    for query, expected in cases:
+        yield assert_equal, is_filtered(query), expected
 
 
 def test_should_have_filtered_root_element_if_service_types_search():
@@ -80,7 +87,7 @@ def test_should_have_filtered_root_element_and_match_keywords():
         "serviceTypes",
         "supplierName"
     ]
-    )
+                 )
 
 
 def test_should_have_filtered_term_service_types_clause():
@@ -89,7 +96,7 @@ def test_should_have_filtered_term_service_types_clause():
                  query["query"]["filtered"]["filter"]["bool"]["must"][0], True)
     assert_equal(
         query["query"]["filtered"]["filter"]
-        ["bool"]["must"][0]["term"]["serviceTypesExact"],
+        ["bool"]["must"][0]["term"]["filter_serviceTypes"],
         "servicetypes")
 
 
@@ -100,7 +107,7 @@ def test_should_have_filtered_term_lot_clause():
         True)
     assert_equal(
         query["query"]["filtered"]["filter"]
-        ["bool"]["must"][0]["term"]["lotExact"],
+        ["bool"]["must"][0]["term"]["filter_lot"],
         "saas")
 
 
@@ -108,8 +115,18 @@ def test_should_have_filtered_term_for_lot_and_service_types_clause():
     query = construct_query(
         build_query_params(lot="SaaS", service_types=["serviceTypes"]))
     terms = query["query"]["filtered"]["filter"]["bool"]["must"]
-    assert_in({"term": {'serviceTypesExact': 'servicetypes'}}, terms)
-    assert_in({"term": {'lotExact': 'saas'}}, terms)
+    assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
+    assert_in({"term": {'filter_lot': 'saas'}}, terms)
+
+
+def test_should_not_filter_on_unknown_keys():
+    params = build_query_params(lot="SaaS", service_types=["serviceTypes"])
+    params.add("this", "that")
+    query = construct_query(params)
+    terms = query["query"]["filtered"]["filter"]["bool"]["must"]
+    assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
+    assert_in({"term": {'filter_lot': 'saas'}}, terms)
+    assert_not_in({"term": {'unknown': 'something to ignore'}}, terms)
 
 
 def test_should_have_filtered_term_for_multiple_service_types_clauses():
@@ -117,9 +134,9 @@ def test_should_have_filtered_term_for_multiple_service_types_clauses():
         build_query_params(
             service_types=["serviceTypes1", "serviceTypes2", "serviceTypes3"]))
     terms = query["query"]["filtered"]["filter"]["bool"]["must"]
-    assert_in({"term": {'serviceTypesExact': 'servicetypes1'}}, terms)
-    assert_in({"term": {'serviceTypesExact': 'servicetypes2'}}, terms)
-    assert_in({"term": {'serviceTypesExact': 'servicetypes3'}}, terms)
+    assert_in({"term": {'filter_serviceTypes': 'servicetypes1'}}, terms)
+    assert_in({"term": {'filter_serviceTypes': 'servicetypes2'}}, terms)
+    assert_in({"term": {'filter_serviceTypes': 'servicetypes3'}}, terms)
 
 
 def test_should_use_whitespace_stripped_lowercased_service_types():
@@ -130,7 +147,7 @@ def test_should_use_whitespace_stripped_lowercased_service_types():
         True)
     assert_equal(
         query["query"]["filtered"]["filter"]
-        ["bool"]["must"][0]["term"]["serviceTypesExact"],
+        ["bool"]["must"][0]["term"]["filter_serviceTypes"],
         "myservicetypes")
 
 
@@ -142,7 +159,7 @@ def test_should_use_no_non_alphanumeric_characters_in_service_types():
         True)
     assert_equal(
         query["query"]["filtered"]["filter"]["bool"]["must"][0]
-        ["term"]["serviceTypesExact"],
+        ["term"]["filter_serviceTypes"],
         "mysservicetypes")
 
 
@@ -186,7 +203,6 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
-# TODO convert to ImmutableDict
 def build_query_params(keywords=None, service_types=None, lot=None):
     query_params = MultiDict()
     if keywords:
