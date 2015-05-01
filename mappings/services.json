@@ -6,7 +6,7 @@
           "type": "string",
           "index": "not_analyzed"
         },
-        "lotExact": {
+        "lot": {
           "type": "string",
           "index": "not_analyzed"
         },
@@ -28,67 +28,67 @@
         "serviceTypes": {
           "type": "string"
         },
-        "serviceTypesExact": {
+        "filter_serviceTypes": {
           "type": "string",
           "index": "not_analyzed"
         },
-        "freeOptionExact": {
+        "filter_freeOption": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "trialOptionExact": {
+        "filter_trialOption": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "minimumContractPeriodExact": {
+        "filter_minimumContractPeriod": {
           "type": "string",
           "index": "not_analyzed"
         },
-        "supportForThirdPartiesExact": {
+        "filter_supportForThirdParties": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "selfServiceProvisioningExact": {
+        "filter_selfServiceProvisioning": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "datacentresEUCodeExact": {
+        "filter_datacentresEUCode": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "dataBackupRecoveryExact": {
+        "filter_dataBackupRecovery": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "dataExtractionRemovalExact": {
+        "filter_dataExtractionRemoval": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "networksConnectedExact": {
+        "filter_networksConnected": {
           "type": "string",
           "index": "not_analyzed"
         },
-        "apiAccessExact": {
+        "filter_apiAccess": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "openStandardsSupportedExact": {
+        "filter_openStandardsSupported": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "openSourceExact": {
+        "filter_openSource": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "persistentStorageExact": {
+        "filter_persistentStorage": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "guaranteedResourcesExact": {
+        "filter_guaranteedResources": {
           "type": "boolean",
           "index": "not_analyzed"
         },
-        "elasticCloudExact": {
+        "filter_elasticCloud": {
           "type": "boolean",
           "index": "not_analyzed"
         }

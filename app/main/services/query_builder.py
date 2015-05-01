@@ -1,8 +1,7 @@
+import re
 from .conversions import strip_and_lowercase
 
 # These two arrays should be part of a mapping definition
-from werkzeug.datastructures import MultiDict
-
 TEXT_FIELDS = [
     "id",
     "lot",
@@ -35,6 +34,75 @@ FILTER_FIELDS = [
 ]
 
 
+class QueryFilter:
+    """
+    Class to encapsulate a query multidict from flask
+
+    Filter name is the key from the multidict.
+
+    Multidict is map of key to a list, to encompass multiple HTTP params of same name
+
+    Filter value is derived from the mutlidict
+        - Single string value is an AND filter
+        - Single string value, that contains commas is treated as a CSV and becomes
+        an OR filter with each string a single term
+        - Multiple values is treated as an AND with several terms for that key
+
+    Examples:
+        filter_lot=saas&filter_lot=paas => lot == saas AND lot = paas
+        filter_lot=saas,paas => lot == saas OR lot ==saas
+        filter_lot=saas => lot == saas
+
+
+    """
+    OR = "or"
+    AND = "and"
+
+    def __init__(self, query_param):
+        self.filter_field = query_param[0]
+        self.filter_values = query_param[1]
+        self.filter_type = self.__filter_type__()
+
+    def __filter_type__(self):
+        if len(self.filter_values) > 1:  # multiple values for same key is an AND filter
+            return self.AND
+        if len(self.filter_values) == 1:
+            if re.search(",", self.filter_values[0]):
+                return self.OR  # comma separated single value for a field is an OR filter
+            return self.AND  # single value for a key is an AND filter
+
+    def is_and_filter(self):
+        return self.filter_type == self.AND
+
+    def is_or_filter(self):
+        return self.filter_type == self.OR
+
+    def terms(self):
+        terms = []
+        term_values = []
+
+        if self.is_or_filter():
+            term_values = self.filter_values[0].split(",")
+        if self.is_and_filter():
+            term_values = self.filter_values
+
+        for value in term_values:
+            terms.append({
+                "term": {
+                    self.filter_field: strip_and_lowercase(value)
+                }
+            })
+        return terms
+
+    def __str__(self):
+        return str({
+            "filter_field": self.filter_field,
+            "filter_values": self.filter_values,
+            "filter_type": self.filter_type,
+            "filter_terms": self.terms(),
+        })
+
+
 def construct_query(query_args):
     if not is_filtered(query_args):
         query = {
@@ -51,7 +119,6 @@ def construct_query(query_args):
 
         }
     query["highlight"] = highlight_clause()
-    print query
     return query
 
 
@@ -66,11 +133,7 @@ def highlight_clause():
 
 
 def is_filtered(query_args):
-    if "filter_serviceTypes" in query_args:
-        return True
-    if "filter_lot" in query_args:
-        return True
-    return False
+    return len(set(query_args.keys()).intersection(["filter_" + field for field in FILTER_FIELDS])) > 0
 
 
 def build_keywords_query(query_args):
@@ -97,40 +160,30 @@ def match_all_clause():
 
 
 def filter_clause(query_args):
-    # and_filters = MultiDict()
-    #
-    # filters = [
-    #     (format_key(param[0]), param[1])
-    #     for param in query_args.iterlists() if
-    #     param[0].startswith("filter_")]
-    #
-    # for a_filter in filters:
-    #     if len(a_filter[1]) > 0:
-    #         and_filters.add(a_filter[0], a_filter[1])
+    and_filters = []
+    or_filters = []
 
-    return {
-        "bool": {
-            "must": get_filter_params(query_args)
-        }
+    query_filters = [QueryFilter(query_arg) for query_arg in query_args.iterlists() if
+                     query_arg[0].startswith("filter")]
+
+    filters = {
+        "bool": {}
     }
 
+    for each_filter in query_filters:
+        if each_filter.is_and_filter():
+            for t in each_filter.terms():
+                and_filters.append(t)
+        if each_filter.is_or_filter():
+            for t in each_filter.terms():
+                or_filters.append(t)
 
-def get_filter_params(query_args):
-    terms = []
-    filters = [
-        (format_key(param[0]), param[1])
-        for param in query_args.iterlists() if
-        param[0].startswith("filter_")]
+    if and_filters:
+        filters["bool"]["must"] = and_filters
 
-    for a_filter in filters:
-        for filter_value in a_filter[1]:
-            terms.append({
-                "term": {
-                    a_filter[0]: strip_and_lowercase(filter_value)
-                }
-            })
-    return terms
+    if or_filters:
+        filters["bool"]["should"] = or_filters
+
+    return filters
 
 
-def format_key(key):
-    return key.replace("filter_", '') + "Exact"
