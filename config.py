@@ -20,7 +20,8 @@ class Config:
 
 
 class Test(Config):
-    DEBUG = True
+    DEBUG = True,
+    DM_LOG_LEVEL = 'CRITICAL'
 
 
 class Development(Config):
