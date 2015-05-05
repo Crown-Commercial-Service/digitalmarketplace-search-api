@@ -5,6 +5,7 @@ from app.mapping import SERVICES_MAPPING
 from app.main.services.response_formatters import \
     convert_es_status, convert_es_results
 from app.main.services.query_builder import construct_query
+from flask import current_app
 
 es_url = os.getenv('DM_ELASTICSEARCH_URL')
 es = Elasticsearch(es_url)
@@ -75,7 +76,10 @@ def keyword_search(index_name, doc_type, query_args):
         res = es.search(
             index=index_name,
             doc_type=doc_type,
-            body=construct_query(query_args))
+            body=construct_query(
+                query_args,
+                current_app.config['DM_SEARCH_PAGE_SIZE'])
+        )
         return response(200, convert_es_results(res, query_args))
     except TransportError as e:
         return response(e.status_code, _get_an_error_message(e))
