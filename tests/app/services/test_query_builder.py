@@ -1,5 +1,5 @@
 import types
-from nose.tools import assert_equal, assert_in, assert_not_in
+from nose.tools import assert_equal, assert_in, assert_not_in, assert_false
 from app.main.services.query_builder import construct_query, \
     is_filtered
 from werkzeug.datastructures import MultiDict
@@ -7,6 +7,22 @@ from werkzeug.datastructures import MultiDict
 
 def test_should_have_correct_root_element():
     assert_equal("query" in construct_query(build_query_params()), True)
+
+
+def test_should_have_page_size_set():
+    assert_equal(construct_query(build_query_params())["size"], 100)
+
+
+def test_should_be_able_to_override_pagesize():
+    assert_equal(construct_query(build_query_params(), 10)["size"], 10)
+
+
+def test_should_have_from_set():
+    assert_equal(construct_query(build_query_params(from_param=100))["from"], 100)
+
+
+def test_should_have_no_from_by_default():
+    assert_false("from" in construct_query(build_query_params()))
 
 
 def test_should_have_match_all_query_if_no_params():
@@ -203,7 +219,8 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
-def build_query_params(keywords=None, service_types=None, lot=None):
+def build_query_params(keywords=None, service_types=None, lot=None,
+                       from_param=None):
     query_params = MultiDict()
     if keywords:
         query_params["q"] = keywords
@@ -212,5 +229,6 @@ def build_query_params(keywords=None, service_types=None, lot=None):
             query_params.add("filter_serviceTypes", service_type)
     if lot:
         query_params["filter_lot"] = lot
-
+    if from_param:
+        query_params["from"] = from_param
     return query_params
