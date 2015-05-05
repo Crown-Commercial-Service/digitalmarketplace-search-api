@@ -18,7 +18,8 @@ def test_should_be_able_to_override_pagesize():
 
 
 def test_should_have_from_set():
-    assert_equal(construct_query(build_query_params(from_param=100))["from"], 100)
+    assert_equal(
+        construct_query(build_query_params(from_param=100))["from"], 100)
 
 
 def test_should_have_no_from_by_default():
@@ -48,12 +49,7 @@ def test_should_make_multi_match_query_if_keywords_supplied():
         "serviceBenefits",
         "serviceTypes",
         "supplierName"
-<<<<<<< HEAD
     ])
-=======
-    ]
-                 )
->>>>>>> Adding page size and from params to query builder
 
 
 def test_should_identify_filter_search_from_query_params():
@@ -106,12 +102,7 @@ def test_should_have_filtered_root_element_and_match_keywords():
         "serviceBenefits",
         "serviceTypes",
         "supplierName"
-<<<<<<< HEAD
     ])
-=======
-    ]
-                 )
->>>>>>> Adding page size and from params to query builder
 
 
 def test_should_have_filtered_term_service_types_clause():
@@ -227,30 +218,17 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
-<<<<<<< HEAD
-def build_query_params(keywords=None, service_types=None, lot=None):
+def build_query_params(keywords=None, service_types=None, lot=None,
+                       from_param=None):
     query_params = MultiDict()
-=======
-# TODO convert to ImmutableDict
-def build_query_params(
-        keywords=None,
-        service_types=None,
-        lot=None,
-        from_param=None):
-    query_params = {}
->>>>>>> Adding page size and from params to query builder
     if keywords:
         query_params["q"] = keywords
     if service_types:
         for service_type in service_types:
             query_params.add("filter_serviceTypes", service_type)
     if lot:
-<<<<<<< HEAD
         query_params["filter_lot"] = lot
-
-=======
         query_params["lot"] = lot
     if from_param:
         query_params["from"] = from_param
->>>>>>> Adding page size and from params to query builder
     return query_params
