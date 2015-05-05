@@ -16,7 +16,8 @@ def test_should_be_able_to_override_pagesize():
 
 
 def test_should_have_from_set():
-    assert_equal(construct_query(build_query_params(from_param=100))["from"], 100)
+    assert_equal(
+        construct_query(build_query_params(from_param=100))["from"], 100)
 
 
 def test_should_have_no_from_by_default():
@@ -46,8 +47,7 @@ def test_should_make_multi_match_query_if_keywords_supplied():
         "serviceBenefits",
         "serviceTypes",
         "supplierName"
-    ]
-                 )
+    ])
 
 
 def test_should_identify_filter_search_from_query_params():
@@ -94,8 +94,7 @@ def test_should_have_filtered_root_element_and_match_keywords():
         "serviceBenefits",
         "serviceTypes",
         "supplierName"
-    ]
-                 )
+    ])
 
 
 def test_should_have_filtered_term_service_types_clause():

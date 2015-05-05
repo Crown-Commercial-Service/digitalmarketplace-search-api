@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     AUTH_REQUIRED = True
     ALLOW_EXPLORER = True
-
+    DM_SEARCH_PAGE_SIZE = 100
     # Logging
     DM_LOG_LEVEL = 'DEBUG'
     DM_APP_NAME = 'search-api'

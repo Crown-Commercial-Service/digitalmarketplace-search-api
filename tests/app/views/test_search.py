@@ -117,22 +117,70 @@ class TestIndexingDocuments(BaseApplicationTest):
 
 # TODO write a load of queries into here for the various fields
 class TestSearchQueries(BaseApplicationTest):
-    def test_should_return_service_on_keyword_search(self):
-        service = default_service()
-        self.client.post(
-            '/index-to-create/services/' + str(service["service"]["id"]),
-            data=json.dumps(service),
-            content_type='application/json')
+    def setup(self):
+        super(TestSearchQueries, self).setup()
+        with self.app.app_context():
+            services = create_services(10)
+            for service in services:
+                self.client.post(
+                    '/index-to-create/services/' + str(service["service"]["id"]),
+                    data=json.dumps(service),
+                    content_type='application/json')
+            time.sleep(5)
 
-        time.sleep(5)
-        response = self.client.get(
-            '/index-to-create/services/search?q=serviceName')
-        assert_equal(response.status_code, 200)
-        assert_equal(get_json_from_response(response)["search"]["total"], 1)
+    def test_should_return_service_on_keyword_search(self):
+        with self.app.app_context():
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName')
+            assert_equal(response.status_code, 200)
+            assert_equal(get_json_from_response(response)["search"]["total"], 10)
+
+    def test_should_get_services_up_to_page_size(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName')
+            assert_equal(response.status_code, 200)
+            assert_equal(get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(len(get_json_from_response(response)["search"]["services"]), 5)
+
+    def test_should_get_services_next_page_of_services(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&from=5')
+            assert_equal(response.status_code, 200)
+            assert_equal(get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(len(get_json_from_response(response)["search"]["services"]), 5)
+
+    def test_should_get_no_services_on_out_of_bounds_from(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&from=10')
+            assert_equal(response.status_code, 200)
+            assert_equal(get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(len(get_json_from_response(response)["search"]["services"]), 0)
+
+    def test_should_get_no_services_on_out_of_bounds_from(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&from=10')
+            assert_equal(response.status_code, 200)
+            assert_equal(get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(len(get_json_from_response(response)["search"]["services"]), 0)
+
+    def test_should_get_400_response__on_negative_index(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&from=-10')
+            assert_equal(response.status_code, 400)
 
 
 class TestFetchById(BaseApplicationTest):
-
     def test_should_return_service_by_id(self):
         service = default_service()
         self.client.post(
@@ -186,7 +234,6 @@ class TestFetchById(BaseApplicationTest):
 
 
 class TestDeleteById(BaseApplicationTest):
-
     def test_should_delete_service_by_id(self):
         service = default_service()
         self.client.post(
@@ -218,6 +265,16 @@ class TestDeleteById(BaseApplicationTest):
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
         assert_equal(data['services']['found'], False)
+
+
+def create_services(number_of_services):
+    services = []
+    for i in range(number_of_services):
+        service = default_service()
+        service["service"]["id"] = str(i)
+        services.append(service)
+
+    return services
 
 
 def default_service():
