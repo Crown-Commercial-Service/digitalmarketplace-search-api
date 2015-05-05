@@ -48,18 +48,9 @@ def test_should_make_multi_match_query_if_keywords_supplied():
         "serviceFeatures",
         "serviceBenefits",
         "serviceTypes",
-<<<<<<< HEAD
         "supplierName",
         "frameworkName",
-=======
-        "supplierName"
-<<<<<<< HEAD
->>>>>>> Adding page size and from params to query builder
     ])
-=======
-    ]
-                 )
->>>>>>> Adding page size and from params to query builder
 
 
 def test_should_identify_filter_search_from_query_params():
@@ -111,18 +102,9 @@ def test_should_have_filtered_root_element_and_match_keywords():
         "serviceFeatures",
         "serviceBenefits",
         "serviceTypes",
-<<<<<<< HEAD
         "supplierName",
         "frameworkName",
-=======
-        "supplierName"
-<<<<<<< HEAD
->>>>>>> Adding page size and from params to query builder
     ])
-=======
-    ]
-                 )
->>>>>>> Adding page size and from params to query builder
 
 
 def test_should_have_filtered_term_service_types_clause():
@@ -238,40 +220,16 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
-<<<<<<< HEAD
 def build_query_params(keywords=None, service_types=None, lot=None,
                        from_param=None):
-=======
-<<<<<<< HEAD
-def build_query_params(keywords=None, service_types=None, lot=None):
->>>>>>> Adding page size and from params to query builder
     query_params = MultiDict()
-=======
-# TODO convert to ImmutableDict
-def build_query_params(
-        keywords=None,
-        service_types=None,
-        lot=None,
-        from_param=None):
-    query_params = {}
->>>>>>> Adding page size and from params to query builder
     if keywords:
         query_params["q"] = keywords
     if service_types:
         for service_type in service_types:
             query_params.add("filter_serviceTypes", service_type)
     if lot:
-<<<<<<< HEAD
         query_params["filter_lot"] = lot
-<<<<<<< HEAD
     if from_param:
         query_params["from"] = from_param
-=======
-
-=======
-        query_params["lot"] = lot
-    if from_param:
-        query_params["from"] = from_param
->>>>>>> Adding page size and from params to query builder
->>>>>>> Adding page size and from params to query builder
     return query_params
