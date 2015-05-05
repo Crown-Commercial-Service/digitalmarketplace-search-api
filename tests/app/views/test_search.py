@@ -201,7 +201,7 @@ class TestFetchById(BaseApplicationTest):
 
     def test_service_should_have_all_exact_match_fields(self):
         service = default_service()
-        self.client.post(
+        self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json'
