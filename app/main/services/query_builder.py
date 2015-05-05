@@ -11,6 +11,7 @@ TEXT_FIELDS = [
     "supplierName"
 ]
 
+
 def construct_query(query_args, page_size=100):
     if not is_filtered(query_args):
         query = {
