@@ -1,4 +1,3 @@
-import types
 from query_builder import FILTER_FIELDS, TEXT_FIELDS
 from conversions import strip_and_lowercase
 
@@ -6,11 +5,8 @@ from conversions import strip_and_lowercase
 def process_values_for_matching(request_json, key):
     values = request_json[key]
 
-    if isinstance(values, types.ListType):
-        fixed = []
-        for i in values:
-            fixed.append(strip_and_lowercase(i))
-        return fixed
+    if isinstance(values, list):
+        return [strip_and_lowercase(value) for value in values]
     elif isinstance(values, basestring):
         return strip_and_lowercase(values)
 
