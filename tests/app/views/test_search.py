@@ -1,9 +1,10 @@
+from app.main.services.conversions import strip_and_lowercase
+from app.main.services.process_request_json import process_values_for_matching
 from flask import json
 import time
 from nose.tools import assert_equal
 
 from ..helpers import BaseApplicationTest
-from app.main.services.process_request_json import process
 
 
 class TestSearchIndexes(BaseApplicationTest):
@@ -161,34 +162,42 @@ class TestFetchById(BaseApplicationTest):
             str(service["service"]["id"]))
 
         cases = [
-            "lot",
-            "serviceName",
-            "serviceSummary",
-            "serviceBenefits",
-            "serviceFeatures",
-            "serviceTypes",
-            "supplierName",
-            "freeOption",
-            "trialOption",
-            "minimumContractPeriod",
-            "supportForThirdParties",
-            "selfServiceProvisioning",
-            "datacentresEUCode",
-            "dataBackupRecovery",
-            "dataExtractionRemoval",
-            "networksConnected",
-            "apiAccess",
-            "openStandardsSupported",
-            "openSource",
-            "persistentStorage",
-            "guaranteedResources",
-            "elasticCloud"
+            # (indexed name, original name)
+            ("filter_lot", "lot"),
+            ("serviceName", "serviceName"),
+            ("serviceSummary", "serviceSummary"),
+            ("serviceBenefits", "serviceBenefits"),
+            ("serviceFeatures", "serviceFeatures"),
+            ("serviceTypes", "serviceTypes"),
+            ("filter_serviceTypes", "serviceTypes"),
+            ("supplierName", "supplierName"),
+            ("filter_freeOption", "freeOption"),
+            ("filter_trialOption", "trialOption"),
+            ("filter_minimumContractPeriod", "minimumContractPeriod"),
+            ("filter_supportForThirdParties", "supportForThirdParties"),
+            ("filter_selfServiceProvisioning", "selfServiceProvisioning"),
+            ("filter_datacentresEUCode", "datacentresEUCode"),
+            ("filter_dataBackupRecovery", "dataBackupRecovery"),
+            ("filter_dataExtractionRemoval", "dataExtractionRemoval"),
+            ("filter_networksConnected", "networksConnected"),
+            ("filter_apiAccess", "apiAccess"),
+            ("filter_openStandardsSupported", "openStandardsSupported"),
+            ("filter_openSource", "openSource"),
+            ("filter_persistentStorage", "persistentStorage"),
+            ("filter_guaranteedResources", "guaranteedResources"),
+            ("filter_elasticCloud", "elasticCloud")
         ]
 
+        # filter fields are processed (lowercase etc)
+        # and also have a new key (filter_FIELDNAME)
         for key in cases:
-            assert_equal(
-                data['services']["_source"][key],
-                service["service"][key], key)
+            original = service["service"][key[1]]
+            indexed = data['services']["_source"][key[0]]
+            if key[0].startswith("filter"):
+                original = process_values_for_matching(
+                    service["service"],
+                    key[1])
+            assert_equal(original, indexed)
 
     def test_service_should_have_all_exact_match_fields(self):
         service = default_service()
@@ -227,8 +236,8 @@ class TestFetchById(BaseApplicationTest):
 
         for key in cases:
             assert_equal(
-                data['services']["_source"][key + "Exact"],
-                process(service["service"], key), key)
+                data['services']["_source"]["filter_" + key],
+                process_values_for_matching(service["service"], key))
 
 
 class TestDeleteById(BaseApplicationTest):

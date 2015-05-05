@@ -21,7 +21,8 @@ def convert_request_json_into_index_json(request_json):
     filter_fields = [field for field in request_json if field in FILTER_FIELDS]
 
     for field in filter_fields:
-        request_json["filter_" + field] = process_values_for_matching(request_json, field)
+        request_json["filter_" + field] = \
+            process_values_for_matching(request_json, field)
         if field not in TEXT_FIELDS:
             del request_json[field]
 
