@@ -40,13 +40,16 @@ class QueryFilter:
 
     Filter name is the key from the multidict.
 
-    Multidict is map of key to a list, to encompass multiple HTTP params of same name
+    Multidict is map of key to a list, to encompass
+    multiple HTTP params of same name
 
     Filter value is derived from the mutlidict
         - Single string value is an AND filter
-        - Single string value, that contains commas is treated as a CSV and becomes
+        - Single string value, that contains commas is
+        treated as a CSV and becomes
         an OR filter with each string a single term
-        - Multiple values is treated as an AND with several terms for that key
+        - Multiple values is treated as an AND with
+        several terms for that key
 
     Examples:
         filter_lot=saas&filter_lot=paas => lot == saas AND lot = paas
@@ -64,12 +67,15 @@ class QueryFilter:
         self.filter_type = self.__filter_type()
 
     def __filter_type(self):
-        if len(self.filter_values) > 1:  # multiple values for same key is an AND filter
+        # multiple values for same key is an AND filter
+        if len(self.filter_values) > 1:
             return self.AND
         if len(self.filter_values) == 1:
             if re.search(",", self.filter_values[0]):
-                return self.OR  # comma separated single value for a field is an OR filter
-            return self.AND  # single value for a key is an AND filter
+                # comma separated single value for a field is an OR filter
+                return self.OR
+            # single value for a key is an AND filter
+            return self.AND
 
     def is_and_filter(self):
         return self.filter_type == self.AND
@@ -100,7 +106,7 @@ class QueryFilter:
             "filter_values": self.filter_values,
             "filter_type": self.filter_type,
             "filter_terms": self.terms(),
-        })
+            })
 
 
 def construct_query(query_args):
@@ -133,7 +139,8 @@ def highlight_clause():
 
 
 def is_filtered(query_args):
-    return len(set(query_args.keys()).intersection(["filter_" + field for field in FILTER_FIELDS])) > 0
+    return len(set(query_args.keys()).intersection(
+        ["filter_" + field for field in FILTER_FIELDS])) > 0
 
 
 def build_keywords_query(query_args):
@@ -163,8 +170,9 @@ def filter_clause(query_args):
     and_filters = []
     or_filters = []
 
-    query_filters = [QueryFilter(query_arg) for query_arg in query_args.iterlists() if
-                     query_arg[0].startswith("filter")]
+    query_filters = [QueryFilter(query_arg)
+                     for query_arg in query_args.iterlists()
+                     if query_arg[0].startswith("filter")]
 
     filters = {
         "bool": {}
@@ -185,5 +193,3 @@ def filter_clause(query_args):
         filters["bool"]["should"] = or_filters
 
     return filters
-
-
