@@ -61,9 +61,9 @@ class QueryFilter:
     OR = "or"
     AND = "and"
 
-    def __init__(self, query_param):
-        self.filter_field = query_param[0]
-        self.filter_values = query_param[1]
+    def __init__(self, field, values):
+        self.filter_field = field
+        self.filter_values = values
         self.filter_type = self.__filter_type()
 
     def __filter_type(self):
@@ -170,10 +170,9 @@ def filter_clause(query_args):
     and_filters = []
     or_filters = []
 
-    query_filters = [QueryFilter(query_arg)
-                     for query_arg in query_args.iterlists()
-                     if query_arg[0].startswith("filter")]
-
+    query_filters = [QueryFilter(field, values)
+                     for field, values in query_args.iterlists()
+                     if field.startswith("filter")]
     filters = {
         "bool": {}
     }
