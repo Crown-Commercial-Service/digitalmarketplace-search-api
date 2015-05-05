@@ -125,7 +125,8 @@ class TestSearchQueries(BaseApplicationTest):
             services = create_services(10)
             for service in services:
                 self.client.post(
-                    '/index-to-create/services/' + str(service["service"]["id"]),
+                    '/index-to-create/services/'
+                    + str(service["service"]["id"]),
                     data=json.dumps(service),
                     content_type='application/json')
             time.sleep(5)
@@ -142,17 +143,21 @@ class TestSearchQueries(BaseApplicationTest):
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName')
             assert_equal(response.status_code, 200)
-            assert_equal(get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
 
     def test_should_get_services_up_to_page_size(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
 
             response = self.client.get(
-                '/index-to-create/services/search?q=serviceName')
+                '/index-to-create/services/search?q=serviceName'
+            )
             assert_equal(response.status_code, 200)
-            assert_equal(get_json_from_response(response)["search"]["total"], 10)
-            assert_equal(len(get_json_from_response(response)["search"]["services"]), 5)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 5)
 
     def test_should_get_services_next_page_of_services(self):
         with self.app.app_context():
@@ -160,8 +165,10 @@ class TestSearchQueries(BaseApplicationTest):
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&from=5')
             assert_equal(response.status_code, 200)
-            assert_equal(get_json_from_response(response)["search"]["total"], 10)
-            assert_equal(len(get_json_from_response(response)["search"]["services"]), 5)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 5)
 
     def test_should_get_no_services_on_out_of_bounds_from(self):
         with self.app.app_context():
@@ -169,8 +176,10 @@ class TestSearchQueries(BaseApplicationTest):
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&from=10')
             assert_equal(response.status_code, 200)
-            assert_equal(get_json_from_response(response)["search"]["total"], 10)
-            assert_equal(len(get_json_from_response(response)["search"]["services"]), 0)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 0)
 
     def test_should_get_no_services_on_out_of_bounds_from(self):
         with self.app.app_context():
@@ -178,8 +187,10 @@ class TestSearchQueries(BaseApplicationTest):
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&from=10')
             assert_equal(response.status_code, 200)
-            assert_equal(get_json_from_response(response)["search"]["total"], 10)
-            assert_equal(len(get_json_from_response(response)["search"]["services"]), 0)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 0)
 
     def test_should_get_400_response__on_negative_index(self):
         with self.app.app_context():
