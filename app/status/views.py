@@ -23,5 +23,8 @@ def status():
         status="error",
         version=utils.get_version_label(),
         message="Error connecting to elasticsearch",
-        db_status=db_status
+        db_status={
+            'status_code': 500,
+            'message': db_status['message'][0]
+        }
     ), 500
