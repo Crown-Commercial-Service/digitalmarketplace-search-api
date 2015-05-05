@@ -171,7 +171,7 @@ def filter_clause(query_args):
     or_filters = []
 
     query_filters = [QueryFilter(field, values)
-                     for field, values in query_args.iterlists()
+                     for field, values in query_args.lists()
                      if field.startswith("filter")]
 
     filters = {

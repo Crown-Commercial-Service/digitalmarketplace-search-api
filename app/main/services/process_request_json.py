@@ -1,5 +1,7 @@
-from query_builder import FILTER_FIELDS, TEXT_FIELDS
-from conversions import strip_and_lowercase
+import six
+
+from .query_builder import FILTER_FIELDS, TEXT_FIELDS
+from .conversions import strip_and_lowercase
 
 
 def process_values_for_matching(request_json, key):
@@ -7,7 +9,7 @@ def process_values_for_matching(request_json, key):
 
     if isinstance(values, list):
         return [strip_and_lowercase(value) for value in values]
-    elif isinstance(values, basestring):
+    elif isinstance(values, six.string_types):
         return strip_and_lowercase(values)
 
     return values
