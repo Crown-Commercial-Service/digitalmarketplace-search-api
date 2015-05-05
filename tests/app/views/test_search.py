@@ -57,7 +57,7 @@ class TestIndexingDocuments(BaseApplicationTest):
     def test_should_index_a_document(self):
         service = default_service()
 
-        response = self.client.post(
+        response = self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
@@ -75,7 +75,7 @@ class TestIndexingDocuments(BaseApplicationTest):
         service = default_service()
         del service["service"]["serviceName"]
 
-        response = self.client.post(
+        response = self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
@@ -86,7 +86,7 @@ class TestIndexingDocuments(BaseApplicationTest):
         service = default_service()
         service["service"]["randomField"] = "some random"
 
-        response = self.client.post(
+        response = self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
@@ -97,7 +97,7 @@ class TestIndexingDocuments(BaseApplicationTest):
         service = default_service()
         service["service"]["serviceName"] = 123
 
-        response = self.client.post(
+        response = self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
@@ -109,7 +109,7 @@ class TestIndexingDocuments(BaseApplicationTest):
         service["service"]["serviceName"] = 123
         del service["service"]["serviceTypes"]
 
-        response = self.client.post(
+        response = self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
@@ -121,7 +121,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 class TestSearchQueries(BaseApplicationTest):
     def test_should_return_service_on_keyword_search(self):
         service = default_service()
-        self.client.post(
+        self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
@@ -142,7 +142,7 @@ class TestFetchById(BaseApplicationTest):
 
     def test_should_return_service_by_id(self):
         service = default_service()
-        self.client.post(
+        self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json'
@@ -243,7 +243,7 @@ class TestFetchById(BaseApplicationTest):
 class TestDeleteById(BaseApplicationTest):
     def test_should_delete_service_by_id(self):
         service = default_service()
-        self.client.post(
+        self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json'

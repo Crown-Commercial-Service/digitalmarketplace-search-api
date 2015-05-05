@@ -19,7 +19,7 @@ def create_index(index_name):
         es.indices.create(index=index_name, body=SERVICES_MAPPING)
         return response(200, "acknowledged")
     except TransportError as e:
-        return response(e.status_code, e.info["error"])
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def delete_index(index_name):
@@ -27,7 +27,7 @@ def delete_index(index_name):
         es.indices.delete(index=index_name)
         return response(200, "acknowledged")
     except TransportError as e:
-        return response(e.status_code, e.info["error"])
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def fetch_by_id(index_name, doc_type, document_id):
@@ -35,7 +35,7 @@ def fetch_by_id(index_name, doc_type, document_id):
         res = es.get(index_name, document_id, doc_type)
         return response(200, res)
     except TransportError as e:
-        return response(e.status_code, e.info)
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def delete_by_id(index_name, doc_type, document_id):
@@ -43,7 +43,7 @@ def delete_by_id(index_name, doc_type, document_id):
         res = es.delete(index_name, doc_type, document_id)
         return response(200, res)
     except TransportError as e:
-        return response(e.status_code, e.info)
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def index(index_name, doc_type, document, document_id):
@@ -55,7 +55,7 @@ def index(index_name, doc_type, document, document_id):
             body=document)
         return response(200, "acknowledged")
     except TransportError as e:
-        return response(e.status_code, e.info["error"])
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def status_for_index(index_name):
@@ -63,7 +63,7 @@ def status_for_index(index_name):
         res = es.indices.status(index=index_name, human=True)
         return response(200, convert_es_status(res, index_name))
     except TransportError as e:
-        return response(e.status_code, e.info["error"])
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def status_for_all_indexes():
@@ -78,4 +78,16 @@ def keyword_search(index_name, doc_type, query_args):
             body=construct_query(query_args))
         return response(200, convert_es_results(res, query_args))
     except TransportError as e:
-        return response(e.status_code, e.info["error"])
+        return response(e.status_code, _get_an_error_message(e))
+
+
+def _get_an_error_message(exception):
+    try:
+        info = exception.info
+    except:
+        return exception
+    try:
+        error = info['error']
+    except:
+        return info
+    return error
