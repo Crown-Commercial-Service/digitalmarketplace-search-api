@@ -61,9 +61,9 @@ class QueryFilter:
     def __init__(self, query_param):
         self.filter_field = query_param[0]
         self.filter_values = query_param[1]
-        self.filter_type = self.__filter_type__()
+        self.filter_type = self.__filter_type()
 
-    def __filter_type__(self):
+    def __filter_type(self):
         if len(self.filter_values) > 1:  # multiple values for same key is an AND filter
             return self.AND
         if len(self.filter_values) == 1:
