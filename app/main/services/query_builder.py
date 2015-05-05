@@ -173,7 +173,6 @@ def filter_clause(query_args):
     query_filters = [QueryFilter(field, values)
                      for field, values in query_args.lists()
                      if field.startswith("filter")]
-
     filters = {
         "bool": {}
     }
