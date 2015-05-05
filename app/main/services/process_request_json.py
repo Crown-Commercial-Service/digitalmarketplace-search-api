@@ -1,6 +1,6 @@
 import types
-from query_builder import FILTER_FIELDS, TEXT_FIELDS
-from conversions import strip_and_lowercase
+from .query_builder import FILTER_FIELDS, TEXT_FIELDS
+from .conversions import strip_and_lowercase
 
 
 def process_values_for_matching(request_json, key):
