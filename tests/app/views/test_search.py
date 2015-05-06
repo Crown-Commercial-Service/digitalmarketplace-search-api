@@ -1,3 +1,4 @@
+from app.main.services import search_service
 from flask import json
 import time
 from nose.tools import assert_equal
@@ -62,7 +63,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        time.sleep(5)  # needs time to propagate???
+        search_service.refresh('index-to-create')
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
@@ -127,7 +128,7 @@ class TestSearchQueries(BaseApplicationTest):
                     + str(service["service"]["id"]),
                     data=json.dumps(service),
                     content_type='application/json')
-            time.sleep(5)
+            search_service.refresh('index-to-create')
 
     def test_should_return_service_on_keyword_search(self):
         with self.app.app_context():
@@ -200,7 +201,8 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        time.sleep(5)
+        search_service.refresh('index-to-create')
+
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
@@ -253,7 +255,7 @@ class TestDeleteById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        time.sleep(5)
+        search_service.refresh('index-to-create')
         response = self.client.delete(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
