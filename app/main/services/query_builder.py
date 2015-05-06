@@ -34,7 +34,7 @@ FILTER_FIELDS = [
 ]
 
 
-class QueryFilter:
+class QueryFilter(object):
     """
     Class to encapsulate a query multidict from flask
 
