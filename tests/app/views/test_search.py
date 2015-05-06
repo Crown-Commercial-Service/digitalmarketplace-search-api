@@ -1,4 +1,3 @@
-from app.main.services.conversions import strip_and_lowercase
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
