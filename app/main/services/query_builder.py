@@ -109,7 +109,7 @@ class QueryFilter(object):
             })
 
 
-def construct_query(query_args, page_size=100):
+def construct_query(query_args, page=100):
     if not is_filtered(query_args):
         query = {
             "query": build_keywords_query(query_args)
@@ -126,7 +126,7 @@ def construct_query(query_args, page_size=100):
         }
     query["highlight"] = highlight_clause()
 
-    query["size"] = page_size
+    query["size"] = page
     if "from" in query_args:
         query["from"] = query_args.get("from")
 
