@@ -1,4 +1,3 @@
-import re
 from .conversions import strip_and_lowercase
 
 # These two arrays should be part of a mapping definition
@@ -71,7 +70,7 @@ class QueryFilter(object):
         if len(self.filter_values) > 1:
             return self.AND
         if len(self.filter_values) == 1:
-            if re.search(",", self.filter_values[0]):
+            if "," in self.filter_values[0]:
                 # comma separated single value for a field is an OR filter
                 return self.OR
             # single value for a key is an AND filter
@@ -179,11 +178,9 @@ def filter_clause(query_args):
 
     for each_filter in query_filters:
         if each_filter.is_and_filter():
-            for t in each_filter.terms():
-                and_filters.append(t)
+            and_filters += each_filter.terms()
         if each_filter.is_or_filter():
-            for t in each_filter.terms():
-                or_filters.append(t)
+            or_filters += each_filter.terms()
 
     if and_filters:
         filters["bool"]["must"] = and_filters
