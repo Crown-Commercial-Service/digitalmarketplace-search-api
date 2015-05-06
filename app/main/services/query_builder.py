@@ -1,5 +1,6 @@
 from .conversions import strip_and_lowercase
 
+# These two arrays should be part of a mapping definition
 TEXT_FIELDS = [
     "id",
     "lot",
@@ -10,6 +11,101 @@ TEXT_FIELDS = [
     "serviceTypes",
     "supplierName"
 ]
+
+FILTER_FIELDS = [
+    "lot",
+    "serviceTypes",
+    "freeOption",
+    "trialOption",
+    "minimumContractPeriod",
+    "supportForThirdParties",
+    "selfServiceProvisioning",
+    "datacentresEUCode",
+    "dataBackupRecovery",
+    "dataExtractionRemoval",
+    "networksConnected",
+    "apiAccess",
+    "openStandardsSupported",
+    "openSource",
+    "persistentStorage",
+    "guaranteedResources",
+    "elasticCloud"
+]
+
+
+class QueryFilter(object):
+    """
+    Class to encapsulate a query multidict from flask
+
+    Filter name is the key from the multidict.
+
+    Multidict is map of key to a list, to encompass
+    multiple HTTP params of same name
+
+    Filter value is derived from the mutlidict
+        - Single string value is an AND filter
+        - Single string value, that contains commas is
+        treated as a CSV and becomes
+        an OR filter with each string a single term
+        - Multiple values is treated as an AND with
+        several terms for that key
+
+    Examples:
+        filter_lot=saas&filter_lot=paas => lot == saas AND lot = paas
+        filter_lot=saas,paas => lot == saas OR lot ==saas
+        filter_lot=saas => lot == saas
+
+
+    """
+    OR = "or"
+    AND = "and"
+
+    def __init__(self, field, values):
+        self.filter_field = field
+        self.filter_values = values
+        self.filter_type = self.__filter_type()
+
+    def __filter_type(self):
+        # multiple values for same key is an AND filter
+        if len(self.filter_values) > 1:
+            return self.AND
+        if len(self.filter_values) == 1:
+            if "," in self.filter_values[0]:
+                # comma separated single value for a field is an OR filter
+                return self.OR
+            # single value for a key is an AND filter
+            return self.AND
+
+    def is_and_filter(self):
+        return self.filter_type == self.AND
+
+    def is_or_filter(self):
+        return self.filter_type == self.OR
+
+    def terms(self):
+        terms = []
+        term_values = []
+
+        if self.is_or_filter():
+            term_values = self.filter_values[0].split(",")
+        if self.is_and_filter():
+            term_values = self.filter_values
+
+        for value in term_values:
+            terms.append({
+                "term": {
+                    self.filter_field: strip_and_lowercase(value)
+                }
+            })
+        return terms
+
+    def __str__(self):
+        return str({
+            "filter_field": self.filter_field,
+            "filter_values": self.filter_values,
+            "filter_type": self.filter_type,
+            "filter_terms": self.terms(),
+            })
 
 
 def construct_query(query_args):
@@ -42,11 +138,8 @@ def highlight_clause():
 
 
 def is_filtered(query_args):
-    if "serviceTypes" in query_args:
-        return True
-    if "lot" in query_args:
-        return True
-    return False
+    return len(set(query_args.keys()).intersection(
+        ["filter_" + field for field in FILTER_FIELDS])) > 0
 
 
 def build_keywords_query(query_args):
@@ -73,34 +166,26 @@ def match_all_clause():
 
 
 def filter_clause(query_args):
-    return {
-        "bool": {
-            "must": build_term_filters(query_args)
-        }
+    and_filters = []
+    or_filters = []
+
+    query_filters = [QueryFilter(field, values)
+                     for field, values in query_args.lists()
+                     if field.startswith("filter")]
+    filters = {
+        "bool": {}
     }
 
+    for each_filter in query_filters:
+        if each_filter.is_and_filter():
+            and_filters += each_filter.terms()
+        if each_filter.is_or_filter():
+            or_filters += each_filter.terms()
 
-def build_term_filters(query_args):
-    must = []
-    if "serviceTypes" in query_args:
-        for service_type in extract_service_types(query_args):
-            must.append({
-                "term": {
-                    "serviceTypesExact":
-                        strip_and_lowercase(service_type)
-                }
-            })
-    if "lot" in query_args:
-        must.append({
-            "term": {
-                "lot": query_args["lot"]
-            }
-        })
-    return must
+    if and_filters:
+        filters["bool"]["must"] = and_filters
 
+    if or_filters:
+        filters["bool"]["should"] = or_filters
 
-def extract_service_types(query_args):
-    return [
-        service_type.strip()
-        for service_type in query_args["serviceTypes"].split(',')
-    ]
+    return filters

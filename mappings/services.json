@@ -28,8 +28,68 @@
         "serviceTypes": {
           "type": "string"
         },
-        "serviceTypesExact": {
+        "filter_serviceTypes": {
           "type": "string",
+          "index": "not_analyzed"
+        },
+        "filter_freeOption": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_trialOption": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_minimumContractPeriod": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "filter_supportForThirdParties": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_selfServiceProvisioning": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_datacentresEUCode": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_dataBackupRecovery": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_dataExtractionRemoval": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_networksConnected": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "filter_apiAccess": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_openStandardsSupported": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_openSource": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_persistentStorage": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_guaranteedResources": {
+          "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_elasticCloud": {
+          "type": "boolean",
           "index": "not_analyzed"
         }
       }

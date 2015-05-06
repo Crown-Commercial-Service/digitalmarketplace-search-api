@@ -1,3 +1,5 @@
+from app.main.services.conversions import strip_and_lowercase
+from app.main.services.process_request_json import process_values_for_matching
 from flask import json
 import time
 from nose.tools import assert_equal
@@ -132,6 +134,11 @@ class TestSearchQueries(BaseApplicationTest):
 
 
 class TestFetchById(BaseApplicationTest):
+    def test_should_return_404_if_no_service(self):
+        response = self.client.get(
+            '/index-to-create/services/100')
+
+        assert_equal(response.status_code, 404)
 
     def test_should_return_service_by_id(self):
         service = default_service()
@@ -153,40 +160,87 @@ class TestFetchById(BaseApplicationTest):
         assert_equal(
             data['services']["_source"]["id"],
             str(service["service"]["id"]))
-        assert_equal(
-            data['services']["_source"]["lot"],
-            service["service"]["lot"])
-        assert_equal(
-            data['services']["_source"]["serviceBenefits"],
-            service["service"]["serviceBenefits"])
-        assert_equal(
-            data['services']["_source"]["serviceFeatures"],
-            service["service"]["serviceFeatures"])
-        assert_equal(
-            data['services']["_source"]["serviceName"],
-            service["service"]["serviceName"])
-        assert_equal(
-            data['services']["_source"]["serviceSummary"],
-            service["service"]["serviceSummary"])
-        assert_equal(
-            data['services']["_source"]["serviceTypes"],
-            service["service"]["serviceTypes"])
-        assert_equal(
-            data['services']["_source"]["serviceTypesExact"],
-            ['servicetypes'])
-        assert_equal(
-            data['services']["_source"]["supplierName"],
-            service["service"]["supplierName"])
 
-    def test_should_return_404_if_no_service(self):
+        cases = [
+            # (indexed name, original name)
+            ("filter_lot", "lot"),
+            ("serviceName", "serviceName"),
+            ("serviceSummary", "serviceSummary"),
+            ("serviceBenefits", "serviceBenefits"),
+            ("serviceFeatures", "serviceFeatures"),
+            ("serviceTypes", "serviceTypes"),
+            ("filter_serviceTypes", "serviceTypes"),
+            ("supplierName", "supplierName"),
+            ("filter_freeOption", "freeOption"),
+            ("filter_trialOption", "trialOption"),
+            ("filter_minimumContractPeriod", "minimumContractPeriod"),
+            ("filter_supportForThirdParties", "supportForThirdParties"),
+            ("filter_selfServiceProvisioning", "selfServiceProvisioning"),
+            ("filter_datacentresEUCode", "datacentresEUCode"),
+            ("filter_dataBackupRecovery", "dataBackupRecovery"),
+            ("filter_dataExtractionRemoval", "dataExtractionRemoval"),
+            ("filter_networksConnected", "networksConnected"),
+            ("filter_apiAccess", "apiAccess"),
+            ("filter_openStandardsSupported", "openStandardsSupported"),
+            ("filter_openSource", "openSource"),
+            ("filter_persistentStorage", "persistentStorage"),
+            ("filter_guaranteedResources", "guaranteedResources"),
+            ("filter_elasticCloud", "elasticCloud")
+        ]
+
+        # filter fields are processed (lowercase etc)
+        # and also have a new key (filter_FIELDNAME)
+        for key in cases:
+            original = service["service"][key[1]]
+            indexed = data['services']["_source"][key[0]]
+            if key[0].startswith("filter"):
+                original = process_values_for_matching(
+                    service["service"],
+                    key[1])
+            assert_equal(original, indexed)
+
+    def test_service_should_have_all_exact_match_fields(self):
+        service = default_service()
+        self.client.put(
+            '/index-to-create/services/' + str(service["service"]["id"]),
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+
+        time.sleep(5)
         response = self.client.get(
-            '/index-to-create/services/100')
+            '/index-to-create/services/' + str(service["service"]["id"]))
 
-        assert_equal(response.status_code, 404)
+        data = get_json_from_response(response)
+        assert_equal(response.status_code, 200)
+
+        cases = [
+            "lot",
+            "serviceTypes",
+            "freeOption",
+            "trialOption",
+            "minimumContractPeriod",
+            "supportForThirdParties",
+            "selfServiceProvisioning",
+            "datacentresEUCode",
+            "dataBackupRecovery",
+            "dataExtractionRemoval",
+            "networksConnected",
+            "apiAccess",
+            "openStandardsSupported",
+            "openSource",
+            "persistentStorage",
+            "guaranteedResources",
+            "elasticCloud"
+        ]
+
+        for key in cases:
+            assert_equal(
+                data['services']["_source"]["filter_" + key],
+                process_values_for_matching(service["service"], key))
 
 
 class TestDeleteById(BaseApplicationTest):
-
     def test_should_delete_service_by_id(self):
         service = default_service()
         self.client.put(
@@ -224,13 +278,28 @@ def default_service():
     return {
         "service": {
             "id": "id",
-            "lot": "lot",
+            "lot": "LoT",
             "serviceName": "serviceName",
             "serviceSummary": "serviceSummary",
             "serviceBenefits": "serviceBenefits",
             "serviceFeatures": "serviceFeatures",
             "serviceTypes": ["serviceTypes"],
-            "supplierName": "Supplier Name"
+            "supplierName": "Supplier Name",
+            "freeOption": True,
+            "trialOption": True,
+            "minimumContractPeriod": "Month",
+            "supportForThirdParties": True,
+            "selfServiceProvisioning": True,
+            "datacentresEUCode": True,
+            "dataBackupRecovery": True,
+            "dataExtractionRemoval": True,
+            "networksConnected": ["PSN", "PNN"],
+            "apiAccess": True,
+            "openStandardsSupported": True,
+            "openSource": True,
+            "persistentStorage": True,
+            "guaranteedResources": True,
+            "elasticCloud": True
         }
     }
 
