@@ -1,5 +1,5 @@
-from app.main.services.conversions import strip_and_lowercase
 from app.main.services.process_request_json import process_values_for_matching
+from app.main.services import search_service
 from flask import json
 import time
 from nose.tools import assert_equal
@@ -64,7 +64,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        time.sleep(5)  # needs time to propagate???
+        search_service.refresh('index-to-create')
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
@@ -119,18 +119,81 @@ class TestIndexingDocuments(BaseApplicationTest):
 
 # TODO write a load of queries into here for the various fields
 class TestSearchQueries(BaseApplicationTest):
-    def test_should_return_service_on_keyword_search(self):
+    def setup(self):
+        super(TestSearchQueries, self).setup()
+        with self.app.app_context():
+            services = create_services(10)
+            for service in services:
+                self.client.put(
+                    '/index-to-create/services/'
+                    + str(service["service"]["id"]),
+                    data=json.dumps(service),
+                    content_type='application/json')
+            search_service.refresh('index-to-create')
+
+    def test_should_return_service_on_id(self):
         service = default_service()
         self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
 
-        time.sleep(5)
-        response = self.client.get(
-            '/index-to-create/services/search?q=serviceName')
-        assert_equal(response.status_code, 200)
-        assert_equal(get_json_from_response(response)["search"]["total"], 1)
+    def test_should_return_service_on_keyword_search(self):
+        with self.app.app_context():
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName')
+            assert_equal(response.status_code, 200)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+
+    def test_should_get_services_up_to_page_size(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName'
+            )
+            assert_equal(response.status_code, 200)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 5)
+
+    def test_should_get_services_next_page_of_services(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&from=5')
+            assert_equal(response.status_code, 200)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 5)
+
+    def test_should_get_no_services_on_out_of_bounds_from(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&page=3')
+            assert_equal(response.status_code, 200)
+            assert_equal(
+                get_json_from_response(response)["search"]["total"], 10)
+            assert_equal(
+                len(get_json_from_response(response)["search"]["services"]), 0)
+
+    def test_should_get_400_response__on_negative_page(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&page=-1')
+            assert_equal(response.status_code, 400)
+
+    def test_should_get_400_response__on_non_numeric_page(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&page=foo')
+            assert_equal(response.status_code, 400)
 
 
 class TestFetchById(BaseApplicationTest):
@@ -148,7 +211,8 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        time.sleep(5)
+        search_service.refresh('index-to-create')
+
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
@@ -249,7 +313,7 @@ class TestDeleteById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        time.sleep(5)
+        search_service.refresh('index-to-create')
         response = self.client.delete(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
@@ -272,6 +336,16 @@ class TestDeleteById(BaseApplicationTest):
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
         assert_equal(data['services']['found'], False)
+
+
+def create_services(number_of_services):
+    services = []
+    for i in range(number_of_services):
+        service = default_service()
+        service["service"]["id"] = str(i)
+        services.append(service)
+
+    return services
 
 
 def default_service():
