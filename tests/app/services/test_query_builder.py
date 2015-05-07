@@ -1,4 +1,3 @@
-import types
 from nose.tools import assert_equal, assert_in, assert_not_in, assert_false
 from app.main.services.query_builder import construct_query, \
     is_filtered
@@ -17,9 +16,9 @@ def test_should_be_able_to_override_pagesize():
     assert_equal(construct_query(build_query_params(), 10)["size"], 10)
 
 
-def test_should_have_from_set():
+def test_page_should_set_from_parameter():
     assert_equal(
-        construct_query(build_query_params(from_param=100))["from"], 100)
+        construct_query(build_query_params(page=2))["from"], 100)
 
 
 def test_should_have_no_from_by_default():
@@ -218,8 +217,7 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
-def build_query_params(keywords=None, service_types=None, lot=None,
-                       from_param=None):
+def build_query_params(keywords=None, service_types=None, lot=None, page=None):
     query_params = MultiDict()
     if keywords:
         query_params["q"] = keywords
@@ -229,6 +227,6 @@ def build_query_params(keywords=None, service_types=None, lot=None,
     if lot:
         query_params["filter_lot"] = lot
         query_params["lot"] = lot
-    if from_param:
-        query_params["from"] = from_param
+    if page:
+        query_params["page"] = page
     return query_params
