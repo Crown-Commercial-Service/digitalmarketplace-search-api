@@ -124,14 +124,14 @@ class TestSearchQueries(BaseApplicationTest):
         with self.app.app_context():
             services = create_services(10)
             for service in services:
-                self.client.post(
+                self.client.put(
                     '/index-to-create/services/'
                     + str(service["service"]["id"]),
                     data=json.dumps(service),
                     content_type='application/json')
             search_service.refresh('index-to-create')
 
-    def test_should_return_service_on_keyword_search(self):
+    def test_should_return_service_on_id(self):
         service = default_service()
         self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
