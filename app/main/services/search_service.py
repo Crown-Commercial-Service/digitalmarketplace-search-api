@@ -87,6 +87,8 @@ def keyword_search(index_name, doc_type, query_args):
         return response(200, convert_es_results(res, query_args))
     except TransportError as e:
         return response(e.status_code, _get_an_error_message(e))
+    except ValueError as e:
+        return response(400, str(e))
 
 
 def _get_an_error_message(exception):

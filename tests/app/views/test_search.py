@@ -174,29 +174,25 @@ class TestSearchQueries(BaseApplicationTest):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
-                '/index-to-create/services/search?q=serviceName&from=10')
+                '/index-to-create/services/search?q=serviceName&page=3')
             assert_equal(response.status_code, 200)
             assert_equal(
                 get_json_from_response(response)["search"]["total"], 10)
             assert_equal(
                 len(get_json_from_response(response)["search"]["services"]), 0)
 
-    def test_should_get_no_services_on_out_of_bounds_from(self):
+    def test_should_get_400_response__on_negative_page(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
-                '/index-to-create/services/search?q=serviceName&from=10')
-            assert_equal(response.status_code, 200)
-            assert_equal(
-                get_json_from_response(response)["search"]["total"], 10)
-            assert_equal(
-                len(get_json_from_response(response)["search"]["services"]), 0)
+                '/index-to-create/services/search?q=serviceName&page=-1')
+            assert_equal(response.status_code, 400)
 
-    def test_should_get_400_response__on_negative_index(self):
+    def test_should_get_400_response__on_non_numeric_page(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
-                '/index-to-create/services/search?q=serviceName&from=-10')
+                '/index-to-create/services/search?q=serviceName&page=foo')
             assert_equal(response.status_code, 400)
 
 
