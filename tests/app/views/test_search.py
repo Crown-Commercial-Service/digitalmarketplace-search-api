@@ -31,16 +31,16 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.client.put('/index-to-create')
         assert_equal(response.status_code, 400)
         assert_equal(
-            get_json_from_response(response)["results"],
-            "IndexAlreadyExistsException[[index-to-create] already exists]")
+            "IndexAlreadyExistsException[[index-to-create] already exists]"
+            in get_json_from_response(response)["results"], True)
 
     def test_should_not_be_able_delete_index_twice(self):
         self.client.put('/index-to-create')
         self.client.delete('/index-to-create')
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["results"],
-                     "IndexMissingException[[index-to-create] missing]")
+        assert_equal("IndexMissingException[[index-to-create] missing]"
+                     in get_json_from_response(response)["results"], True)
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist/status')

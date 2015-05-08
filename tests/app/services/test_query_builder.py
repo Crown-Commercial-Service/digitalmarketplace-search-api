@@ -31,7 +31,8 @@ def test_should_make_multi_match_query_if_keywords_supplied():
         "serviceFeatures",
         "serviceBenefits",
         "serviceTypes",
-        "supplierName"
+        "supplierName",
+        "frameworkName"
     ])
 
 
@@ -84,7 +85,8 @@ def test_should_have_filtered_root_element_and_match_keywords():
         "serviceFeatures",
         "serviceBenefits",
         "serviceTypes",
-        "supplierName"
+        "supplierName",
+        "frameworkName"
     ])
 
 
