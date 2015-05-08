@@ -9,7 +9,8 @@ TEXT_FIELDS = [
     "serviceFeatures",
     "serviceBenefits",
     "serviceTypes",
-    "supplierName"
+    "supplierName",
+    "frameworkName"
 ]
 
 FILTER_FIELDS = [

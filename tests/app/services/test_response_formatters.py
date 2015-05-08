@@ -27,6 +27,7 @@ def test_should_build_search_response_from_es_response():
 
     assert_equal(res["services"][0]["id"], "5390159512076288")
     assert_equal(res["services"][0]["lot"], "SaaS")
+    assert_equal(res["services"][0]["frameworkName"], "G-Cloud 6")
     assert_equal(res["services"][0]["supplierName"], "Supplier Name")
     assert_equal(res["services"][0]["serviceName"], "Email Verification")
     assert_equal(res["services"][0]["serviceTypes"], [

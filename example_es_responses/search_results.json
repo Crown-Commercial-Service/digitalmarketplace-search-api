@@ -13,6 +13,7 @@
         "_source": {
           "id": "5390159512076288",
           "lot": "SaaS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Increase email deliverability",
             "Reduce bogus registrations",
@@ -64,6 +65,7 @@
         "_source": {
           "id": "6446043935801344",
           "lot": "SCS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Creativity to achieve cut-through",
             "Advanced Targeting and Segmentation",
@@ -123,6 +125,7 @@
         "_source": {
           "id": "4514646266478592",
           "lot": "SCS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "User messaging options",
             "Intergrated email support"
@@ -172,6 +175,7 @@
         "_source": {
           "id": "5766140261302272",
           "lot": "SaaS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Secure, managed service ",
             "Fully resilient service ",
@@ -215,6 +219,7 @@
         "_source": {
           "id": "4573911983325184",
           "lot": "SCS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Unlimited Storage as standard ",
             "Achieve Legal and Compliance targets",
@@ -261,6 +266,7 @@
         "_source": {
           "id": "5034117041225728",
           "lot": "SaaS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Reduced IT infrastructure costs",
             "Enhanced security",
@@ -306,6 +312,7 @@
         "_source": {
           "id": "5309011876380672",
           "lot": "SCS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Ensures predictable outcomes, minimised risk, maximised productivity during technology change",
             "Accelerated ability to use enhanced capabilities of Microsoft Exchange ",
@@ -356,6 +363,7 @@
         "_source": {
           "id": "5365560355323904",
           "lot": "SaaS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Stop malicious or unwanted email from ever reaching your ",
             "Prevents malicious URLs in emails from affecting end users",
@@ -420,6 +428,7 @@
         "_source": {
           "id": "6082103036870656",
           "lot": "SaaS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Inbox success",
             "IP pool flexibility",
@@ -470,6 +479,7 @@
         "_source": {
           "id": "6433200507191296",
           "lot": "SaaS",
+          "frameworkName": "G-Cloud 6",
           "serviceBenefits": [
             "Bottomless user mailboxes",
             "Personal archive access from Outlook, MAC, tablet and mobile devices",
