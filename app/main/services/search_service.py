@@ -3,9 +3,9 @@ import os
 from elasticsearch import Elasticsearch, TransportError
 from app.mapping import SERVICES_MAPPING
 from app.main.services.response_formatters import \
-    convert_es_status, convert_es_results
+    convert_es_status, convert_es_results, generate_pagination_links
 from app.main.services.query_builder import construct_query
-from flask import current_app
+from flask import current_app, url_for
 
 es_url = os.getenv('DM_ELASTICSEARCH_URL')
 es = Elasticsearch(es_url)
@@ -77,14 +77,21 @@ def status_for_all_indexes():
 
 def keyword_search(index_name, doc_type, query_args):
     try:
+        page_size = int(current_app.config['DM_SEARCH_PAGE_SIZE'])
         res = es.search(
             index=index_name,
             doc_type=doc_type,
-            body=construct_query(
-                query_args,
-                current_app.config['DM_SEARCH_PAGE_SIZE'])
+            body=construct_query(query_args, page_size)
         )
-        return response(200, convert_es_results(res, query_args))
+        results = convert_es_results(res, query_args)
+
+        url_for_search = lambda **kwargs: \
+            url_for('.search', index_name=index_name, doc_type=doc_type,
+                    **kwargs)
+        results['links'] = generate_pagination_links(
+            query_args, results['total'], page_size, url_for_search)
+
+        return response(200, results)
     except TransportError as e:
         return response(e.status_code, _get_an_error_message(e))
     except ValueError as e:

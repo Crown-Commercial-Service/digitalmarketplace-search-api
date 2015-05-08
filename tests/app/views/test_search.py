@@ -2,7 +2,7 @@ from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
 import time
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_in
 
 from ..helpers import BaseApplicationTest
 
@@ -158,6 +158,18 @@ class TestSearchQueries(BaseApplicationTest):
                 get_json_from_response(response)["search"]["total"], 10)
             assert_equal(
                 len(get_json_from_response(response)["search"]["services"]), 5)
+
+    def test_should_get_pagination_links(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '3'
+
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&page=2')
+            response_json = get_json_from_response(response)
+
+            assert_equal(response.status_code, 200)
+            assert_in("page=1", response_json['links']['prev'])
+            assert_in("page=3", response_json['links']['next'])
 
     def test_should_get_services_next_page_of_services(self):
         with self.app.app_context():

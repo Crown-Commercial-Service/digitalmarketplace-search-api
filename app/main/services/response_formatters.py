@@ -1,3 +1,5 @@
+import math
+
 from .query_builder import TEXT_FIELDS
 
 
@@ -42,8 +44,21 @@ def convert_es_results(results, query_args):
         "query": query_args,
         "total": total,
         "took": took,
-        "services": services
+        "services": services,
     }
+
+
+def generate_pagination_links(query_args, total, page_size, url_for_search):
+    page = int(query_args.get('page', 1))
+    max_page = int(math.ceil(float(total) / page_size))
+    args_no_page = {k: v for k, v in query_args.lists() if k != 'page'}
+
+    links = dict()
+    if page > 1:
+        links['prev'] = url_for_search(page=page-1, **args_no_page)
+    if page < max_page:
+        links['next'] = url_for_search(page=page+1, **args_no_page)
+    return links
 
 
 def append_field_if_present(result, service, field):
