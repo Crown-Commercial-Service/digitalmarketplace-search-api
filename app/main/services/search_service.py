@@ -11,12 +11,16 @@ es_url = os.getenv('DM_ELASTICSEARCH_URL')
 es = Elasticsearch(es_url)
 
 
-def refresh(index_name):
-    return es.indices.refresh(index_name)
-
-
 def response(status_code, message):
     return {"status_code": status_code, "message": message}
+
+
+def refresh(index_name):
+    try:
+        es.indices.refresh(index_name)
+        return response(200, "acknowledged")
+    except TransportError as e:
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def create_index(index_name):
@@ -72,7 +76,11 @@ def status_for_index(index_name):
 
 
 def status_for_all_indexes():
-    return status_for_index("_all")
+    try:
+        res = es.indices.status(index="_all", human=True)
+        return response(200, res)
+    except TransportError as e:
+        return response(e.status_code, _get_an_error_message(e))
 
 
 def keyword_search(index_name, doc_type, query_args):

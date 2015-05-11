@@ -45,8 +45,10 @@ class TestSearchIndexes(BaseApplicationTest):
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist/status')
         assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["status"],
-                     "IndexMissingException[[index-does-not-exist] missing]")
+        assert_equal(
+            "IndexMissingException[[index-does-not-exist] missing]" in
+            get_json_from_response(response)["status"],
+            True)
 
 
 class TestIndexingDocuments(BaseApplicationTest):
