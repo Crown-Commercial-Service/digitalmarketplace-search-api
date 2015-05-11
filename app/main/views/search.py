@@ -23,17 +23,9 @@ def root():
 
 @main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])
 def search(index_name, doc_type):
-    result = keyword_search(index_name, doc_type, request.args)
+    result, status_code = keyword_search(index_name, doc_type, request.args)
 
-    response_json = dict()
-    if "links" in result['message']:
-        response_json['links'] = result['message']['links']
-        del result['message']['links']
-    response_json['search'] = result['message']
-
-    response = jsonify(**response_json)
-    response.status_code = result["status_code"]
-    return response
+    return jsonify(**result), status_code
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
