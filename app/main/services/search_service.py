@@ -97,11 +97,14 @@ def keyword_search(index_name, doc_type, query_args):
         url_for_search = lambda **kwargs: \
             url_for('.search', index_name=index_name, doc_type=doc_type,
                     **kwargs)
-        return {
+
+        response = {
             "search": results,
             "links": generate_pagination_links(
                 query_args, results['total'], page_size, url_for_search)
-        }, 200
+        }
+
+        return response, 200
     except TransportError as e:
         return message(_get_an_error_message(e)), e.status_code
     except ValueError as e:
@@ -111,10 +114,11 @@ def keyword_search(index_name, doc_type, query_args):
 def _get_an_error_message(exception):
     try:
         info = exception.info
-    except:
+    except AttributeError:
         return exception
     try:
         error = info['error']
-    except:
+    except KeyError:
         return info
+
     return error
