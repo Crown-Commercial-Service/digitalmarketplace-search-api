@@ -66,9 +66,9 @@ def index(index_name, doc_type, document, document_id):
             id=document_id,
             doc_type=doc_type,
             body=document)
-        return response(200, "acknowledged")
+        return message("acknowledged"), 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return message(_get_an_error_message(e)), e.status_code
 
 
 def status_for_index(index_name):
