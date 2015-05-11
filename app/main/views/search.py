@@ -23,10 +23,9 @@ def root():
 
 @main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])
 def search(index_name, doc_type):
-    result = keyword_search(index_name, doc_type, request.args)
-    response = jsonify({"search": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = keyword_search(index_name, doc_type, request.args)
+
+    return jsonify(**result), status_code
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
@@ -34,14 +33,9 @@ def search(index_name, doc_type):
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
     index_json = convert_request_json_into_index_json(json_payload)
-    result = index(
-        index_name,
-        doc_type,
-        index_json,
-        service_id)
-    response = jsonify({"results": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = index(index_name, doc_type, index_json, service_id)
+
+    return jsonify(**result), status_code
 
 
 @main.route('/<string:index_name>', methods=['PUT'])
