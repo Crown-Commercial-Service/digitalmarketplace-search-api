@@ -11,48 +11,44 @@ es_url = os.getenv('DM_ELASTICSEARCH_URL')
 es = Elasticsearch(es_url)
 
 
-def message(message):
-    return {"message": message}
-
-
 def refresh(index_name):
     try:
         es.indices.refresh(index_name)
-        return message("acknowledged"), 200
+        return "acknowledged", 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def create_index(index_name):
     try:
         es.indices.create(index=index_name, body=SERVICES_MAPPING)
-        return message("acknowledged"), 200
+        return "acknowledged", 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def delete_index(index_name):
     try:
         es.indices.delete(index=index_name)
-        return message("acknowledged"), 200
+        return "acknowledged", 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def fetch_by_id(index_name, doc_type, document_id):
     try:
         res = es.get(index_name, document_id, doc_type)
-        return {"services": res}, 200
+        return res, 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def delete_by_id(index_name, doc_type, document_id):
     try:
         res = es.delete(index_name, doc_type, document_id)
-        return message(res), 200
+        return res, 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def index(index_name, doc_type, document, document_id):
@@ -62,25 +58,25 @@ def index(index_name, doc_type, document, document_id):
             id=document_id,
             doc_type=doc_type,
             body=document)
-        return message("acknowledged"), 200
+        return "acknowledged", 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def status_for_index(index_name):
     try:
         res = es.indices.status(index=index_name, human=True)
-        return {"status": convert_es_status(res, index_name)}, 200
+        return convert_es_status(res, index_name), 200
     except TransportError as e:
-        return {"status": _get_an_error_message(e)}, e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def status_for_all_indexes():
     try:
         res = es.indices.status(index="_all", human=True)
-        return {"status": res}, 200
+        return res, 200
     except TransportError as e:
-        return {"status": _get_an_error_message(e)}, e.status_code
+        return _get_an_error_message(e), e.status_code
 
 
 def keyword_search(index_name, doc_type, query_args):
@@ -106,9 +102,9 @@ def keyword_search(index_name, doc_type, query_args):
 
         return response, 200
     except TransportError as e:
-        return message(_get_an_error_message(e)), e.status_code
+        return _get_an_error_message(e), e.status_code
     except ValueError as e:
-        return message(str(e)), 400
+        return str(e), 400
 
 
 def _get_an_error_message(exception):
