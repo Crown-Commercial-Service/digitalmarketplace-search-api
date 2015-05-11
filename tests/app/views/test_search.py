@@ -338,7 +338,7 @@ class TestDeleteById(BaseApplicationTest):
             '/index-to-create/services/' + str(service["service"]["id"]))
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['services']['found'], False)
+        assert_equal(data['message']['found'], False)
 
     def test_should_return_404_if_no_service(self):
         self.client.put('/index-to-create')
