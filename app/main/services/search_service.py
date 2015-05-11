@@ -30,17 +30,17 @@ def refresh(index_name):
 def create_index(index_name):
     try:
         es.indices.create(index=index_name, body=SERVICES_MAPPING)
-        return response(200, "acknowledged")
+        return message("acknowledged"), 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return message(_get_an_error_message(e)), e.status_code
 
 
 def delete_index(index_name):
     try:
         es.indices.delete(index=index_name)
-        return response(200, "acknowledged")
+        return message("acknowledged"), 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return message(_get_an_error_message(e)), e.status_code
 
 
 def fetch_by_id(index_name, doc_type, document_id):

@@ -40,18 +40,16 @@ def index_document(index_name, doc_type, service_id):
 
 @main.route('/<string:index_name>', methods=['PUT'])
 def create(index_name):
-    result = create_index(index_name)
-    response = jsonify({"results": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = create_index(index_name)
+
+    return jsonify(**result), status_code
 
 
 @main.route('/<string:index_name>', methods=['DELETE'])
 def delete(index_name):
-    result = delete_index(index_name)
-    response = jsonify({"results": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = delete_index(index_name)
+
+    return jsonify(**result), status_code
 
 
 @main.route('/<string:index_name>/status', methods=['GET'])
