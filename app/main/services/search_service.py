@@ -22,9 +22,9 @@ def message(message):
 def refresh(index_name):
     try:
         es.indices.refresh(index_name)
-        return response(200, "acknowledged")
+        return message("acknowledged"), 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return message(_get_an_error_message(e)), e.status_code
 
 
 def create_index(index_name):
@@ -74,17 +74,17 @@ def index(index_name, doc_type, document, document_id):
 def status_for_index(index_name):
     try:
         res = es.indices.status(index=index_name, human=True)
-        return response(200, convert_es_status(res, index_name))
+        return {"status": convert_es_status(res, index_name)}, 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return {"status": _get_an_error_message(e)}, e.status_code
 
 
 def status_for_all_indexes():
     try:
         res = es.indices.status(index="_all", human=True)
-        return response(200, res)
+        return {"status": res}, 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return {"status": _get_an_error_message(e)}, e.status_code
 
 
 def keyword_search(index_name, doc_type, query_args):

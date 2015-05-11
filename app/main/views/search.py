@@ -54,18 +54,16 @@ def delete(index_name):
 
 @main.route('/<string:index_name>/status', methods=['GET'])
 def status(index_name):
-    result = status_for_index(index_name)
-    response = jsonify({"status": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = status_for_index(index_name)
+
+    return jsonify(**result), status_code
 
 
 @main.route('/status', methods=['GET'])
 def all_status():
-    result = status_for_all_indexes()
-    response = jsonify({"status": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = status_for_all_indexes()
+
+    return jsonify(**result), status_code
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
