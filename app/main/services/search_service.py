@@ -54,9 +54,9 @@ def fetch_by_id(index_name, doc_type, document_id):
 def delete_by_id(index_name, doc_type, document_id):
     try:
         res = es.delete(index_name, doc_type, document_id)
-        return response(200, res)
+        return message(res), 200
     except TransportError as e:
-        return response(e.status_code, _get_an_error_message(e))
+        return message(_get_an_error_message(e)), e.status_code
 
 
 def index(index_name, doc_type, document, document_id):

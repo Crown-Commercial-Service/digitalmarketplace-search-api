@@ -77,10 +77,9 @@ def fetch_service(index_name, doc_type, service_id):
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
             methods=['DELETE'])
 def delete_service(index_name, doc_type, service_id):
-    result = delete_by_id(index_name, doc_type, service_id)
-    response = jsonify({"services": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = delete_by_id(index_name, doc_type, service_id)
+
+    return jsonify(**result), status_code
 
 
 def check_json_from_request(request):

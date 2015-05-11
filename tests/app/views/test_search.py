@@ -332,7 +332,7 @@ class TestDeleteById(BaseApplicationTest):
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 200)
-        assert_equal(data['services']['found'], True)
+        assert_equal(data['message']['found'], True)
 
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
@@ -348,7 +348,7 @@ class TestDeleteById(BaseApplicationTest):
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['services']['found'], False)
+        assert_equal(data['message']['found'], False)
 
 
 def create_services(number_of_services):
