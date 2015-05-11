@@ -11,10 +11,6 @@ es_url = os.getenv('DM_ELASTICSEARCH_URL')
 es = Elasticsearch(es_url)
 
 
-def response(status_code, message):
-    return {"status_code": status_code, "message": message}
-
-
 def message(message):
     return {"message": message}
 
