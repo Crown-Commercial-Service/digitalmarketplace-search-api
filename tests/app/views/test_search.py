@@ -285,7 +285,7 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        time.sleep(5)
+        search_service.refresh("index-to-create")
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
