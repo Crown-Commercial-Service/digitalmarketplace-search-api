@@ -208,6 +208,28 @@ class TestSearchQueries(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName&page=foo')
             assert_equal(response.status_code, 400)
 
+    def test_highlighting_should_use_defined_html_tags(self):
+        service = default_service()
+        service["service"]['serviceSummary'] = \
+            u"Accessing, storing and retaining email"
+        highlighted_summary = \
+            "Accessing, <em class='search-result-highlighted-text'>storing" +\
+            "</em> and retaining email"
+        self.client.put(
+            '/index-to-create/services/' + str(service["service"]["id"]),
+            data=json.dumps(service),
+            content_type='application/json')
+
+        time.sleep(5)
+        response = self.client.get(
+            '/index-to-create/services/search?q=storing')
+        assert_equal(response.status_code, 200)
+        search_results = get_json_from_response(response)["search"]["services"]
+        assert_equal(
+            search_results[0]["highlight"]["serviceSummary"][0],
+            highlighted_summary
+        )
+
 
 class TestFetchById(BaseApplicationTest):
     def test_should_return_404_if_no_service(self):
