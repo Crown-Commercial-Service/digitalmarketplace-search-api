@@ -25,7 +25,11 @@ def root():
 def search(index_name, doc_type):
     result, status_code = keyword_search(index_name, doc_type, request.args)
 
-    return jsonify(**result), status_code
+    if status_code == 200:
+        return jsonify(search=result['search'],
+                       links=result['links']), status_code
+    else:
+        return jsonify(message=result), status_code
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
@@ -35,57 +39,54 @@ def index_document(index_name, doc_type, service_id):
     index_json = convert_request_json_into_index_json(json_payload)
     result, status_code = index(index_name, doc_type, index_json, service_id)
 
-    return jsonify(**result), status_code
+    return jsonify(message=result), status_code
 
 
 @main.route('/<string:index_name>', methods=['PUT'])
 def create(index_name):
-    result = create_index(index_name)
-    response = jsonify({"results": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = create_index(index_name)
+
+    return jsonify(message=result), status_code
 
 
 @main.route('/<string:index_name>', methods=['DELETE'])
 def delete(index_name):
-    result = delete_index(index_name)
-    response = jsonify({"results": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = delete_index(index_name)
+
+    return jsonify(message=result), status_code
 
 
 @main.route('/<string:index_name>/status', methods=['GET'])
 def status(index_name):
-    result = status_for_index(index_name)
-    response = jsonify({"status": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = status_for_index(index_name)
+
+    return jsonify(status=result), status_code
 
 
 @main.route('/status', methods=['GET'])
 def all_status():
-    result = status_for_all_indexes()
-    response = jsonify({"status": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = status_for_all_indexes()
+
+    return jsonify(status=result), status_code
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
             methods=['GET'])
 def fetch_service(index_name, doc_type, service_id):
-    result = fetch_by_id(index_name, doc_type, service_id)
-    response = jsonify({"services": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = fetch_by_id(index_name, doc_type, service_id)
+
+    if status_code == 200:
+        return jsonify(services=result), status_code
+    else:
+        return jsonify(message=result), status_code
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
             methods=['DELETE'])
 def delete_service(index_name, doc_type, service_id):
-    result = delete_by_id(index_name, doc_type, service_id)
-    response = jsonify({"services": result["message"]})
-    response.status_code = result["status_code"]
-    return response
+    result, status_code = delete_by_id(index_name, doc_type, service_id)
+
+    return jsonify(message=result), status_code
 
 
 def check_json_from_request(request):

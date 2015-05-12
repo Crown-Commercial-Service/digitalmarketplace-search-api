@@ -1,7 +1,6 @@
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
-import time
 from nose.tools import assert_equal, assert_in
 
 from ..helpers import BaseApplicationTest
@@ -11,7 +10,7 @@ class TestSearchIndexes(BaseApplicationTest):
     def test_should_be_able_create_and_delete_index(self):
         response = self.client.put('/index-to-create')
         assert_equal(response.status_code, 200)
-        assert_equal(get_json_from_response(response)["results"],
+        assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
         response = self.client.get('/index-to-create/status')
@@ -19,7 +18,7 @@ class TestSearchIndexes(BaseApplicationTest):
 
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 200)
-        assert_equal(get_json_from_response(response)["results"],
+        assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
         response = self.client.get('/index-to-create/status')
@@ -32,7 +31,7 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(response.status_code, 400)
         assert_equal(
             "IndexAlreadyExistsException[[index-to-create] already exists]"
-            in get_json_from_response(response)["results"], True)
+            in get_json_from_response(response)["message"], True)
 
     def test_should_not_be_able_delete_index_twice(self):
         self.client.put('/index-to-create')
@@ -40,7 +39,7 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
         assert_equal("IndexMissingException[[index-to-create] missing]"
-                     in get_json_from_response(response)["results"], True)
+                     in get_json_from_response(response)["message"], True)
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist/status')
@@ -333,13 +332,13 @@ class TestDeleteById(BaseApplicationTest):
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 200)
-        assert_equal(data['services']['found'], True)
+        assert_equal(data['message']['found'], True)
 
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['services']['found'], False)
+        assert_equal(data['message']['found'], False)
 
     def test_should_return_404_if_no_service(self):
         self.client.put('/index-to-create')
@@ -349,7 +348,7 @@ class TestDeleteById(BaseApplicationTest):
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['services']['found'], False)
+        assert_equal(data['message']['found'], False)
 
 
 def create_services(number_of_services):
