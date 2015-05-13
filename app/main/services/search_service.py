@@ -114,7 +114,7 @@ def _get_an_error_message(exception):
         return exception
     try:
         error = info['error']
-    except KeyError:
+    except (KeyError, TypeError):
         return info
 
     return error
