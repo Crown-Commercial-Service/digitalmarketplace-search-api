@@ -73,8 +73,7 @@ def status_for_index(index_name):
 
 def status_for_all_indexes():
     try:
-        res = es.indices.status(index="_all", human=True)
-        return res, 200
+        return status_for_index('_all')
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
 
