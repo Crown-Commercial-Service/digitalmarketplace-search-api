@@ -46,3 +46,37 @@ class BaseApplicationTest(object):
             del os.environ['DM_SEARCH_API_AUTH_TOKENS']
         else:
             os.environ['DM_SEARCH_API_AUTH_TOKENS'] = self._auth_tokens
+
+
+def default_service(**kwargs):
+    service = {
+        "id": "id",
+        "lot": "LoT",
+        "serviceName": "serviceName",
+        "serviceSummary": "serviceSummary",
+        "serviceBenefits": "serviceBenefits",
+        "serviceFeatures": "serviceFeatures",
+        "serviceTypes": ["serviceTypes"],
+        "supplierName": "Supplier Name",
+        "freeOption": True,
+        "trialOption": True,
+        "minimumContractPeriod": "Month",
+        "supportForThirdParties": True,
+        "selfServiceProvisioning": True,
+        "datacentresEUCode": True,
+        "dataBackupRecovery": True,
+        "dataExtractionRemoval": True,
+        "networksConnected": ["PSN", "PNN"],
+        "apiAccess": True,
+        "openStandardsSupported": True,
+        "openSource": True,
+        "persistentStorage": True,
+        "guaranteedResources": True,
+        "elasticCloud": True
+    }
+
+    service.update(kwargs)
+
+    return {
+        "service": service
+    }
