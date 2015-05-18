@@ -30,5 +30,5 @@ function display_result {
 pep8 .
 display_result $? 1 "Code style check"
 
-nosetests -v -s --with-doctest
+nosetests -v -s --with-doctest --logging-level=CRITICAL
 display_result $? 2 "Unit tests"
