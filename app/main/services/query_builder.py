@@ -168,6 +168,7 @@ def multi_match_clause(keywords):
             "query": keywords,
             "fields": TEXT_FIELDS,
             "use_dis_max": True,
+            "default_operator": "and",
         }
     }
 
