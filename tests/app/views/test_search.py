@@ -3,7 +3,7 @@ from app.main.services import search_service
 from flask import json
 from nose.tools import assert_equal, assert_in
 
-from ..helpers import BaseApplicationTest
+from ..helpers import BaseApplicationTest, default_service
 
 
 class TestSearchIndexes(BaseApplicationTest):
@@ -118,10 +118,9 @@ class TestIndexingDocuments(BaseApplicationTest):
         assert_equal(response.status_code, 200)
 
 
-# TODO write a load of queries into here for the various fields
-class TestSearchQueries(BaseApplicationTest):
+class TestSearchEndpoint(BaseApplicationTest):
     def setup(self):
-        super(TestSearchQueries, self).setup()
+        super(TestSearchEndpoint, self).setup()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -379,41 +378,10 @@ class TestDeleteById(BaseApplicationTest):
 def create_services(number_of_services):
     services = []
     for i in range(number_of_services):
-        service = default_service()
-        service["service"]["id"] = str(i)
+        service = default_service(id=str(i))
         services.append(service)
 
     return services
-
-
-def default_service():
-    return {
-        "service": {
-            "id": "id",
-            "lot": "LoT",
-            "serviceName": "serviceName",
-            "serviceSummary": "serviceSummary",
-            "serviceBenefits": "serviceBenefits",
-            "serviceFeatures": "serviceFeatures",
-            "serviceTypes": ["serviceTypes"],
-            "supplierName": "Supplier Name",
-            "freeOption": True,
-            "trialOption": True,
-            "minimumContractPeriod": "Month",
-            "supportForThirdParties": True,
-            "selfServiceProvisioning": True,
-            "datacentresEUCode": True,
-            "dataBackupRecovery": True,
-            "dataExtractionRemoval": True,
-            "networksConnected": ["PSN", "PNN"],
-            "apiAccess": True,
-            "openStandardsSupported": True,
-            "openSource": True,
-            "persistentStorage": True,
-            "guaranteedResources": True,
-            "elasticCloud": True
-        }
-    }
 
 
 def get_json_from_response(response):
