@@ -13,6 +13,7 @@ TEXT_FIELDS = [
     "frameworkName"
 ]
 
+
 FILTER_FIELDS = [
     "lot",
     "serviceTypes",
@@ -106,7 +107,7 @@ class QueryFilter(object):
             "filter_values": self.filter_values,
             "filter_type": self.filter_type,
             "filter_terms": self.terms(),
-            })
+        })
 
 
 def construct_query(query_args, page_size=100):
@@ -163,10 +164,11 @@ def build_keywords_query(query_args):
 
 def multi_match_clause(keywords):
     return {
-        "multi_match": {
+        "query_string": {
             "query": keywords,
             "fields": TEXT_FIELDS,
-            "operator": "and"
+            "use_dis_max": True,
+            "default_operator": "and",
         }
     }
 

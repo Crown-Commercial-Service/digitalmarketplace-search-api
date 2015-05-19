@@ -35,24 +35,53 @@ def test_and_filters():
 
 
 def test_filter_combinations():
-    yield(check_query,
-          'filter_minimumContractPeriod=Hour&filter_openSource=false',
-          20, {'id': even})
+    yield (check_query,
+           'filter_minimumContractPeriod=Hour&filter_openSource=false',
+           20, {'id': even})
 
-    yield(check_query,
-          'filter_minimumContractPeriod=Hour&filter_lot=SaaS',
-          10, {'lot': matches('SaaS')})
+    yield (check_query,
+           'filter_minimumContractPeriod=Hour&filter_lot=SaaS',
+           10, {'lot': matches('SaaS')})
 
-    yield(check_query,
-          'q=12&filter_minimumContractPeriod=Hour&filter_lot=SaaS',
-          1, {'lot': matches('SaaS'), 'id': matches('12')})
+    yield (check_query,
+           'q=12&filter_minimumContractPeriod=Hour&filter_lot=SaaS',
+           1, {'lot': matches('SaaS'), 'id': matches('12')})
 
-    yield(check_query,
-          'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {})
+    yield (check_query,
+           'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {})
+
+
+def test_basic_keyword_search():
+    yield (check_query,
+           'q=Service',
+           120, {})
+
+
+def test_and_keyword_search():
+    yield (check_query,
+           'q=Service 1',
+           1, {})
+
+
+def test_phrase_keyword_search():
+    yield (check_query,
+           'q="Service 12"',
+           1, {})
+
+
+def test_negated_keyword_search():
+    yield (check_query,
+           'q=Service -12',
+           119, {})
+
+
+def test_or_keyword_search():
+    yield (check_query,
+           'q=Service || 12',
+           120, {})
 
 
 # Module setup and teardown
-
 def setup_module():
     app = create_app('test')
     test_client = app.test_client()
