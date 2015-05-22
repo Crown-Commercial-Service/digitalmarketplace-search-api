@@ -14,15 +14,15 @@ with open("example_es_responses/search_results.json") as search_results:
 def test_should_build_query_block_in_response():
     res = convert_es_results(SEARCH_RESULTS_JSON,
                              {"q": "keywords", "category": "some catergory"})
-    assert_equal(res["query"]["q"], "keywords")
-    assert_equal(res["query"]["category"], "some catergory")
+    assert_equal(res["meta"]["query"]["q"], "keywords")
+    assert_equal(res["meta"]["query"]["category"], "some catergory")
 
 
 def test_should_build_search_response_from_es_response():
     res = convert_es_results(SEARCH_RESULTS_JSON, {"q": "keywords"})
-    assert_equal(res["query"]["q"], "keywords")
-    assert_equal(res["total"], 628)
-    assert_equal(res["took"], 69)
+    assert_equal(res["meta"]["query"]["q"], "keywords")
+    assert_equal(res["meta"]["total"], 628)
+    assert_equal(res["meta"]["took"], 69)
     assert_equal(len(res["services"]), 10)
 
     assert_equal(res["services"][0]["id"], "5390159512076288")
