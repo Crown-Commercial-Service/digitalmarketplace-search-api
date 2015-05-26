@@ -35,6 +35,12 @@ function search() {
         }
         queryString += "filter_lot=" + $('#lot').val()
     }
+    if($.trim($('#page').val())) {
+        if(queryString) {
+            queryString += "&"
+        }
+        queryString += "page=" + $('#page').val()
+    }
     fetch("/" + $('#search_index_name').val() + "/" + $('#search_index_type').val() + "/search?" + encodeURI(queryString))
 }
 
