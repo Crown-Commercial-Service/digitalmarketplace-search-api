@@ -144,7 +144,7 @@ class TestSearchEndpoint(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName')
             assert_equal(response.status_code, 200)
             assert_equal(
-                get_json_from_response(response)["search"]["total"], 10)
+                get_json_from_response(response)["meta"]["total"], 10)
 
     def test_should_get_services_up_to_page_size(self):
         with self.app.app_context():
@@ -155,9 +155,9 @@ class TestSearchEndpoint(BaseApplicationTest):
             )
             assert_equal(response.status_code, 200)
             assert_equal(
-                get_json_from_response(response)["search"]["total"], 10)
+                get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
-                len(get_json_from_response(response)["search"]["services"]), 5)
+                len(get_json_from_response(response)["services"]), 5)
 
     def test_should_get_pagination_links(self):
         with self.app.app_context():
@@ -178,9 +178,9 @@ class TestSearchEndpoint(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName&from=5')
             assert_equal(response.status_code, 200)
             assert_equal(
-                get_json_from_response(response)["search"]["total"], 10)
+                get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
-                len(get_json_from_response(response)["search"]["services"]), 5)
+                len(get_json_from_response(response)["services"]), 5)
 
     def test_should_get_no_services_on_out_of_bounds_from(self):
         with self.app.app_context():
@@ -189,9 +189,9 @@ class TestSearchEndpoint(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName&page=3')
             assert_equal(response.status_code, 200)
             assert_equal(
-                get_json_from_response(response)["search"]["total"], 10)
+                get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
-                len(get_json_from_response(response)["search"]["services"]), 0)
+                len(get_json_from_response(response)["services"]), 0)
 
     def test_should_get_400_response__on_negative_page(self):
         with self.app.app_context():
@@ -226,7 +226,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             assert_equal(response.status_code, 200)
             search_results = get_json_from_response(
                 response
-            )["search"]["services"]
+            )["services"]
             assert_equal(
                 search_results[0]["highlight"]["serviceSummary"][0],
                 highlighted_summary

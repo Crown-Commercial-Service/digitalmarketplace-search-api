@@ -91,12 +91,14 @@ def keyword_search(index_name, doc_type, query_args):
 
         url_for_search = lambda **kwargs: \
             url_for('.search', index_name=index_name, doc_type=doc_type,
-                    **kwargs)
-
+                    _external=True, **kwargs)
         response = {
-            "search": results,
+            "meta": results['meta'],
+            "services": results['services'],
             "links": generate_pagination_links(
-                query_args, results['total'], page_size, url_for_search)
+                query_args, results['meta']['total'],
+                page_size, url_for_search
+            )
         }
 
         return response, 200

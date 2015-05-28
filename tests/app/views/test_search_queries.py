@@ -148,9 +148,9 @@ def search_or_results(query_or_results):
 def count_for_query(query, expected_count):
     results = search_or_results(query)
     assert_equal(
-        results['search']['total'], expected_count,
+        results['meta']['total'], expected_count,
         "Unexpected number of results. Expected {}, received {}:\n{}".format(
-            expected_count, results['search']['total'],
+            expected_count, results['meta']['total'],
             json.dumps(results, indent=2)
         )
     )
@@ -160,7 +160,7 @@ def count_for_query(query, expected_count):
 
 def result_fields_check(query, check_fns):
     results = search_or_results(query)
-    services = results['search']['services']
+    services = results['services']
     for field in check_fns:
         ok_(all(check_fns[field](service[field]) for service in services),
             "Field '{}' check '{}' failed for search results:\n{}".format(

@@ -41,9 +41,11 @@ def convert_es_results(results, query_args):
         services.append(result)
 
     return {
-        "query": query_args,
-        "total": total,
-        "took": took,
+        "meta": {
+            "query": query_args,
+            "total": total,
+            "took": took
+        },
         "services": services,
     }
 

@@ -26,7 +26,8 @@ def search(index_name, doc_type):
     result, status_code = keyword_search(index_name, doc_type, request.args)
 
     if status_code == 200:
-        return jsonify(search=result['search'],
+        return jsonify(meta=result['meta'],
+                       services=result['services'],
                        links=result['links']), status_code
     else:
         return jsonify(message=result), status_code
