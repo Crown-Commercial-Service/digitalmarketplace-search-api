@@ -1,10 +1,14 @@
 import os
-from dmutils.status import enabled_since
+from dmutils.status import enabled_since, get_version_label
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+
+    VERSION = get_version_label(
+        os.path.abspath(os.path.dirname(__file__))
+    )
     AUTH_REQUIRED = True
     ALLOW_EXPLORER = True
     DM_SEARCH_PAGE_SIZE = 100
