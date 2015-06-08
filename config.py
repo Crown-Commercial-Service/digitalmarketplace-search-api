@@ -15,6 +15,9 @@ class Config:
     DM_REQUEST_ID_HEADER = 'DM-Request-ID'
     DM_DOWNSTREAM_REQUEST_ID_HEADER = 'X-Amz-Cf-Id'
 
+    # Feature Flags
+    RAISE_ERROR_ON_MISSING_FEATURES = True
+
     @staticmethod
     def init_app(app):
         pass
