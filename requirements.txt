@@ -2,8 +2,7 @@ Flask==0.10.1
 Flask-Bootstrap==3.3.2.1
 Flask-Script==2.0.5
 six==1.9.0
-
--e git+https://github.com/alphagov/digitalmarketplace-utils.git@0.4.2#egg=digitalmarketplace-utils
+git+https://github.com/alphagov/digitalmarketplace-utils.git@0.21.0#egg=digitalmarketplace-utils==0.21.0
 
 # Elasticsearch 1.0
 elasticsearch>=1.0.0,<2.0.0

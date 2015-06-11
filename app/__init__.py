@@ -1,27 +1,30 @@
 from flask import Flask
-from config import config
+from config import config as configs
 from flask.ext.bootstrap import Bootstrap
-from dmutils import logging
+from dmutils import init_app, flask_featureflags
 
 from .main import main as main_blueprint
 from .status import status as status_blueprint
 
 
 bootstrap = Bootstrap()
+feature_flags = flask_featureflags.FeatureFlag()
 
 
 def create_app(config_name):
-    app = Flask(__name__)
-    app.config.from_object(config[config_name])
-    config[config_name].init_app(app)
+    application = Flask(__name__)
 
-    bootstrap.init_app(app)
-    logging.init_app(app)
+    init_app(
+        application,
+        configs[config_name],
+        bootstrap=bootstrap,
+        feature_flags=feature_flags
+    )
 
-    app.register_blueprint(status_blueprint)
-    app.register_blueprint(main_blueprint)
-    if config[config_name].ALLOW_EXPLORER:
+    application.register_blueprint(status_blueprint)
+    application.register_blueprint(main_blueprint)
+    if configs[config_name].ALLOW_EXPLORER:
         from .explorer import explorer as explorer_blueprint
 
-        app.register_blueprint(explorer_blueprint)
-    return app
+        application.register_blueprint(explorer_blueprint)
+    return application
