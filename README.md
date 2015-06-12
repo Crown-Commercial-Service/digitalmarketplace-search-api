@@ -93,3 +93,8 @@ Alternatively there is an API explorer running on
     [http://localhost:5001/_explorer](http://localhost:5001/_explorer)
 
 Which provides a UI over the API calls.
+
+### Using FeatureFlags
+
+To use feature flags, check out the documentation in (the README of)
+[digitalmarketplace-utils](https://github.com/alphagov/digitalmarketplace-utils#using-featureflags).
