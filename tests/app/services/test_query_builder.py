@@ -35,10 +35,9 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     keywords = "these are my keywords"
     query = construct_query(build_query_params(keywords))
     assert_equal("query" in query, True)
-    assert_equal("query_string" in query["query"], True)
-    query_string_clause = query["query"]["query_string"]
+    assert_in("simple_query_string", query["query"])
+    query_string_clause = query["query"]["simple_query_string"]
     assert_equal(query_string_clause["query"], keywords)
-    assert_equal(query_string_clause["use_dis_max"], True)
     assert_equal(query_string_clause["default_operator"], "and")
     assert_equal(query_string_clause["fields"], [
         "id",
@@ -89,11 +88,10 @@ def test_should_have_filtered_root_element_and_match_keywords():
     query = construct_query(
         build_query_params(keywords="some keywords",
                            service_types=["my serviceTypes"])
-    )
-    assert_equal("query_string" in query["query"]["filtered"]["query"], True)
-    query_string_clause = query["query"]["filtered"]["query"]["query_string"]
+    )["query"]["filtered"]["query"]
+    assert_in("simple_query_string", query)
+    query_string_clause = query["simple_query_string"]
     assert_equal(query_string_clause["query"], "some keywords")
-    assert_equal(query_string_clause["use_dis_max"], True)
     assert_equal(query_string_clause["default_operator"], "and")
     assert_equal(query_string_clause["fields"], [
         "id",
