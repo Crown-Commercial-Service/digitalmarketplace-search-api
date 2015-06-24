@@ -51,6 +51,36 @@ def test_filter_combinations():
            'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {})
 
 
+def test_special_characters():
+    # Elasticserch reserved characters:
+    #   + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
+
+    yield (check_query, 'q=Service%3D1', 1, {})  # =
+    yield (check_query, 'q=Service%211', 1, {})  # !
+    yield (check_query, 'q=Service%5E1', 1, {})  # ^
+    yield (check_query, 'q=Service%7E1', 1, {})  # ~
+    yield (check_query, 'q=Service%3F1', 1, {})  # ?
+    yield (check_query, 'q=Service%3A1', 1, {})  # :
+    yield (check_query, 'q=Service%5C 1', 1, {})  # \
+    yield (check_query, 'q=Service%2F1', 1, {})  # /
+    yield (check_query, 'q=Service%26%261', 1, {})  # &&
+    yield (check_query, 'q=Service 1*', 1, {})
+
+    yield (check_query, 'q=Service>1', 1, {})
+    yield (check_query, 'q=Service<1', 1, {})
+
+    yield (check_query, 'q=Service(1', 1, {})
+    yield (check_query, 'q=Service)1', 1, {})
+
+    yield (check_query, 'q=Service{1', 1, {})
+    yield (check_query, 'q=Service}1', 1, {})
+
+    yield (check_query, 'q=Service[1', 1, {})
+    yield (check_query, 'q=Service]1', 1, {})
+
+    yield (check_query, 'q=id%3A1', 0, {})
+
+
 def test_basic_keyword_search():
     yield (check_query,
            'q=Service',
@@ -62,11 +92,22 @@ def test_and_keyword_search():
            'q=Service 1',
            1, {})
 
+    yield (check_query, 'q=Service 1 2 3', 0, {})
+
+    yield (check_query, 'q=+Service +1', 1, {})
+    yield (check_query, 'q=Service %26 100', 1, {})
+    yield (check_query, 'q=Service %26%26 100', 1, {})
+
 
 def test_phrase_keyword_search():
-    yield (check_query,
-           'q="Service 12"',
-           1, {})
+    yield (check_query, 'q="Service 12"', 1, {})
+
+    yield (check_query, 'q="Service -12"', 1, {})
+    yield (check_query, 'q=Service -12"', 119, {})
+    yield (check_query, 'q="Service -12', 119, {})
+
+    yield (check_query, 'q="Service | -12"', 1, {})
+    yield (check_query, 'q="Service %26 12"', 1, {})
 
 
 def test_negated_keyword_search():
@@ -74,11 +115,22 @@ def test_negated_keyword_search():
            'q=Service -12',
            119, {})
 
+    yield (check_query, 'q=12 -12', 0, {})
+
 
 def test_or_keyword_search():
     yield (check_query,
            'q=Service || 12',
            120, {})
+
+    yield (check_query, 'q=missing | 12', 1, {})
+    yield (check_query, 'q=missing || 12', 1, {})
+
+
+def test_escaped_characters():
+    yield (check_query, 'q=\\"Service | 12\\"', 120, {})
+    yield (check_query, 'q=\-12', 1, {})
+    yield (check_query, 'q=Service \| 12', 1, {})
 
 
 # Module setup and teardown

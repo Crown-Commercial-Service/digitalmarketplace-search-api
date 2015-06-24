@@ -163,12 +163,36 @@ def build_keywords_query(query_args):
 
 
 def multi_match_clause(keywords):
+    """Builds a query string supporting basic query syntax.
+
+    Uses "simple_query_string" with a predefined list of supported flags:
+
+        OR          enables the `|` operator
+
+        AND         enables the `+` operator. AND is a default operator, so
+                    adding `+` doesn't affect the results.
+
+        NOT         enables the `-` operator
+
+        WHITESPACE  allows using whitespace escape sequences. `-` operator
+                    doesn't work without the WHITESPACE flag possibly due to
+                    a bug in the current (1.6) version of Elasticsearch.
+
+        PHRASE      enables `"` to group tokens into phrases
+
+        ESCAPE      allows escaping reserved characters with `\`
+
+    (https://www.elastic.co/guide/en/elasticsearch/reference/1.6/query-dsl-simple-query-string-query.html)
+
+    "simple_query_string" doesn't support "use_dis_max" flag.
+
+    """
     return {
-        "query_string": {
+        "simple_query_string": {
             "query": keywords,
             "fields": TEXT_FIELDS,
-            "use_dis_max": True,
             "default_operator": "and",
+            "flags": "OR|AND|NOT|PHRASE|ESCAPE|WHITESPACE"
         }
     }
 
