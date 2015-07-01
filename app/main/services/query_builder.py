@@ -23,6 +23,7 @@ FILTER_FIELDS = [
     "supportForThirdParties",
     "selfServiceProvisioning",
     "datacentresEUCode",
+    "datacentreTier",
     "dataBackupRecovery",
     "dataExtractionRemoval",
     "networksConnected",

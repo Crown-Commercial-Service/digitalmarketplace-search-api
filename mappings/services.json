@@ -60,6 +60,10 @@
           "type": "boolean",
           "index": "not_analyzed"
         },
+        "filter_datacentreTier": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
         "filter_dataBackupRecovery": {
           "type": "boolean",
           "index": "not_analyzed"
