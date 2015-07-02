@@ -295,9 +295,7 @@ class TestFetchById(BaseApplicationTest):
             original = service["service"][key[1]]
             indexed = data['services']["_source"][key[0]]
             if key[0].startswith("filter"):
-                original = process_values_for_matching(
-                    service["service"],
-                    key[1])
+                original = process_values_for_matching(service["service"][key[1]])
             assert_equal(original, indexed)
 
     def test_service_should_have_all_exact_match_fields(self):
@@ -338,7 +336,7 @@ class TestFetchById(BaseApplicationTest):
         for key in cases:
             assert_equal(
                 data['services']["_source"]["filter_" + key],
-                process_values_for_matching(service["service"], key))
+                process_values_for_matching(service["service"][key]))
 
 
 class TestDeleteById(BaseApplicationTest):
