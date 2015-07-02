@@ -36,81 +36,6 @@ FILTER_FIELDS = [
 ]
 
 
-class QueryFilter(object):
-    """
-    Class to encapsulate a query multidict from flask
-
-    Filter name is the key from the multidict.
-
-    Multidict is map of key to a list, to encompass
-    multiple HTTP params of same name
-
-    Filter value is derived from the mutlidict
-        - Single string value is an AND filter
-        - Single string value, that contains commas is
-        treated as a CSV and becomes
-        an OR filter with each string a single term
-        - Multiple values is treated as an AND with
-        several terms for that key
-
-    Examples:
-        filter_lot=saas&filter_lot=paas => lot == saas AND lot = paas
-        filter_lot=saas,paas => lot == saas OR lot ==saas
-        filter_lot=saas => lot == saas
-
-
-    """
-    OR = "or"
-    AND = "and"
-
-    def __init__(self, field, values):
-        self.filter_field = field
-        self.filter_values = values
-        self.filter_type = self.__filter_type()
-
-    def __filter_type(self):
-        # multiple values for same key is an AND filter
-        if len(self.filter_values) > 1:
-            return self.AND
-        if len(self.filter_values) == 1:
-            if "," in self.filter_values[0]:
-                # comma separated single value for a field is an OR filter
-                return self.OR
-            # single value for a key is an AND filter
-            return self.AND
-
-    def is_and_filter(self):
-        return self.filter_type == self.AND
-
-    def is_or_filter(self):
-        return self.filter_type == self.OR
-
-    def terms(self):
-        terms = []
-        term_values = []
-
-        if self.is_or_filter():
-            term_values = self.filter_values[0].split(",")
-        if self.is_and_filter():
-            term_values = self.filter_values
-
-        for value in term_values:
-            terms.append({
-                "term": {
-                    self.filter_field: strip_and_lowercase(value)
-                }
-            })
-        return terms
-
-    def __str__(self):
-        return str({
-            "filter_field": self.filter_field,
-            "filter_values": self.filter_values,
-            "filter_type": self.filter_type,
-            "filter_terms": self.terms(),
-        })
-
-
 def construct_query(query_args, page_size=100):
     if not is_filtered(query_args):
         query = {
@@ -204,27 +129,83 @@ def match_all_clause():
     }
 
 
+def field_is_or_filter(field_values):
+    return (len(field_values) == 1) and ("," in field_values[0])
+
+
+def field_filters(field_name, field_values):
+    """Build a list of Elasticsearch filters for the given field."""
+    if field_is_or_filter(field_values):
+        field_values = field_values[0].split(",")
+        return or_field_filters(field_name, field_values)
+    else:
+        return and_field_filters(field_name, field_values)
+
+
+def or_field_filters(field_name, field_values):
+    """OR filter returns documents that contain a field matching any of the values.
+
+    Returns a list containing a single Elasticsearch "terms" filter.
+    "terms" filter matches the given field with any of the values.
+
+    "bool" execution generates a term filter (which is cached) for each term,
+    and wraps those in a bool filter. This way each individual value match is
+    cached (as opposed to the default of caching the whole filter result) and
+    the cache can be reused in different combinations of values.
+
+    (https://www.elastic.co/guide/en/elasticsearch/reference/1.6/query-dsl-terms-filter.html)
+
+    """
+    terms = [strip_and_lowercase(value) for value in field_values]
+    return [{
+        "terms": {
+            field_name: terms,
+            "execution": "bool"
+        }
+    }]
+
+
+def and_field_filters(field_name, field_values):
+    """AND filter returns documents that contain fields matching all of the values.
+
+    Returns a list of "term" filters: one for each of the filter values.
+
+    """
+    return [{
+        "term": {
+            field_name: strip_and_lowercase(value)
+        }
+    } for value in field_values]
+
+
 def filter_clause(query_args):
-    and_filters = []
-    or_filters = []
+    """Build a filter clause from the query arguments.
 
-    query_filters = [QueryFilter(field, values)
-                     for field, values in query_args.lists()
-                     if field.startswith("filter")]
+    Iterates over the request.args MultiDict and builds
+    OR or AND filters with values for each field.
+
+    Since the field values are grouped within the MultiDict
+    each field will be either an OR or an AND filter.
+
+    The resulting filter lists are joined into a single flat
+    list of filters that is wrapped with a `bool` `must` filter.
+
+    This means that all individual field filters must match at
+    the same time, but depending on the particular field filter
+    type the field value has to match either all filter values or
+    just any one of them.
+
+    """
+
+    query_filters = []
+    for field, values in query_args.lists():
+        if field.startswith("filter"):
+            query_filters.extend(field_filters(field, values))
+
     filters = {
-        "bool": {}
+        "bool": {
+            "must": query_filters
+        }
     }
-
-    for each_filter in query_filters:
-        if each_filter.is_and_filter():
-            and_filters += each_filter.terms()
-        if each_filter.is_or_filter():
-            or_filters += each_filter.terms()
-
-    if and_filters:
-        filters["bool"]["must"] = and_filters
-
-    if or_filters:
-        filters["bool"]["should"] = or_filters
 
     return filters
