@@ -23,6 +23,10 @@ def create_index(index_name):
     except TransportError as e:
         if u'IndexAlreadyExistsException' in _get_an_error_message(e):
             return put_index_mapping(index_name)
+        current_app.logger.error(
+            "Failed to create the index %s: %s",
+            index, _get_an_error_message(e)
+        )
         return _get_an_error_message(e), e.status_code
 
 
@@ -35,6 +39,10 @@ def put_index_mapping(index_name):
         )
         return "acknowledged", 200
     except TransportError as e:
+        current_app.logger.error(
+            "Failed to update the index mapping for %s: %s",
+            index, _get_an_error_message(e)
+        )
         return _get_an_error_message(e), e.status_code
 
 
@@ -71,6 +79,10 @@ def index(index_name, doc_type, document, document_id):
             body=document)
         return "acknowledged", 200
     except TransportError as e:
+        current_app.logger.error(
+            "Failed to index the document %s: %s",
+            document_id, _get_an_error_message(e)
+        )
         return _get_an_error_message(e), e.status_code
 
 
