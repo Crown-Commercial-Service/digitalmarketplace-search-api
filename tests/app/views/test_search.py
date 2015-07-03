@@ -1,3 +1,5 @@
+import mock
+
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
@@ -24,14 +26,22 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 404)
 
-    def test_should_not_be_able_create_index_twice(self):
+    def test_creating_existing_index_updates_mapping(self):
         self.client.put('/index-to-create')
 
-        response = self.client.put('/index-to-create')
-        assert_equal(response.status_code, 400)
-        assert_equal(
-            "IndexAlreadyExistsException[[index-to-create] already exists]"
-            in get_json_from_response(response)["message"], True)
+        with self.app.app_context():
+            with mock.patch(
+                'app.main.services.search_service.es.indices.put_mapping'
+            ) as es_mock:
+                response = self.client.put('/index-to-create')
+
+        assert_equal(response.status_code, 200)
+        assert_equal("acknowledged", get_json_from_response(response)["message"])
+        es_mock.assert_called_with(
+            index='index-to-create',
+            doc_type='services',
+            body=mock.ANY
+        )
 
     def test_should_not_be_able_delete_index_twice(self):
         self.client.put('/index-to-create')

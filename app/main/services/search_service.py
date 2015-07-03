@@ -24,6 +24,20 @@ def create_index(index_name):
         es.indices.create(index=index_name, body=SERVICES_MAPPING)
         return "acknowledged", 200
     except TransportError as e:
+        if u'IndexAlreadyExistsException' in _get_an_error_message(e):
+            return put_index_mapping(index_name)
+        return _get_an_error_message(e), e.status_code
+
+
+def put_index_mapping(index_name):
+    try:
+        es.indices.put_mapping(
+            index=index_name,
+            doc_type="services",
+            body=SERVICES_MAPPING["mappings"]["services"]
+        )
+        return "acknowledged", 200
+    except TransportError as e:
         return _get_an_error_message(e), e.status_code
 
 
