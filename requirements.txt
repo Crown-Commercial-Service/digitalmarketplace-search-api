@@ -6,3 +6,4 @@ git+https://github.com/alphagov/digitalmarketplace-utils.git@0.21.0#egg=digitalm
 
 # Elasticsearch 1.0
 elasticsearch>=1.0.0,<2.0.0
+Flask-Elasticsearch==0.2.1

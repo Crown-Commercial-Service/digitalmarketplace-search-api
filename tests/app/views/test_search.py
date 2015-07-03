@@ -75,7 +75,8 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        search_service.refresh('index-to-create')
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
@@ -258,7 +259,8 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        search_service.refresh('index-to-create')
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
 
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
@@ -316,7 +318,8 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        search_service.refresh("index-to-create")
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
@@ -358,7 +361,8 @@ class TestDeleteById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        search_service.refresh('index-to-create')
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
         response = self.client.delete(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
