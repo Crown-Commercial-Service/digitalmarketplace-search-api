@@ -1,6 +1,7 @@
 {
   "mappings": {
     "services": {
+      "dynamic": "strict",
       "properties": {
         "id": {
           "type": "string",
