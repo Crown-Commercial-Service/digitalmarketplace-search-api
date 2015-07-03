@@ -47,15 +47,15 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     assert_equal(query_string_clause["query"], keywords)
     assert_equal(query_string_clause["default_operator"], "and")
     assert_equal(query_string_clause["fields"], [
+        "frameworkName",
         "id",
         "lot",
+        "serviceBenefits",
+        "serviceFeatures",
         "serviceName",
         "serviceSummary",
-        "serviceFeatures",
-        "serviceBenefits",
         "serviceTypes",
         "supplierName",
-        "frameworkName",
     ])
 
 
@@ -101,15 +101,15 @@ def test_should_have_filtered_root_element_and_match_keywords():
     assert_equal(query_string_clause["query"], "some keywords")
     assert_equal(query_string_clause["default_operator"], "and")
     assert_equal(query_string_clause["fields"], [
+        "frameworkName",
         "id",
         "lot",
+        "serviceBenefits",
+        "serviceFeatures",
         "serviceName",
         "serviceSummary",
-        "serviceFeatures",
-        "serviceBenefits",
         "serviceTypes",
         "supplierName",
-        "frameworkName",
     ])
 
 

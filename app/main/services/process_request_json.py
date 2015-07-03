@@ -1,6 +1,6 @@
 import six
 
-from .query_builder import FILTER_FIELDS, TEXT_FIELDS
+from ...mapping import FILTER_FIELDS, TEXT_FIELDS
 from .conversions import strip_and_lowercase
 
 FILTER_FIELDS_SET = set(FILTER_FIELDS)

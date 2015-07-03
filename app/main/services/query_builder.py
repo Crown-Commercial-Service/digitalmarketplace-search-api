@@ -1,39 +1,5 @@
 from .conversions import strip_and_lowercase
-
-# These two arrays should be part of a mapping definition
-TEXT_FIELDS = [
-    "id",
-    "lot",
-    "serviceName",
-    "serviceSummary",
-    "serviceFeatures",
-    "serviceBenefits",
-    "serviceTypes",
-    "supplierName",
-    "frameworkName"
-]
-
-
-FILTER_FIELDS = [
-    "lot",
-    "serviceTypes",
-    "freeOption",
-    "trialOption",
-    "minimumContractPeriod",
-    "supportForThirdParties",
-    "selfServiceProvisioning",
-    "datacentresEUCode",
-    "datacentreTier",
-    "dataBackupRecovery",
-    "dataExtractionRemoval",
-    "networksConnected",
-    "apiAccess",
-    "openStandardsSupported",
-    "openSource",
-    "persistentStorage",
-    "guaranteedResources",
-    "elasticCloud"
-]
+from ...mapping import TEXT_FIELDS, FILTER_FIELDS
 
 
 def construct_query(query_args, page_size=100):
