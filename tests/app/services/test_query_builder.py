@@ -193,6 +193,14 @@ def test_should_have_highlight_block_on_filtered_search():
     assert_equal("highlight" in query, True)
 
 
+def test_highlight_block_sets_encoder_to_html():
+    query = construct_query(
+        build_query_params(keywords="some keywords",
+                           service_types=["some serviceTypes"]))
+
+    assert_equal(query["highlight"]["encoder"], "html")
+
+
 def test_highlight_block_contains_correct_fields():
     query = construct_query(
         build_query_params(keywords="some keywords",

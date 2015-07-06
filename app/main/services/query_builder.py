@@ -138,10 +138,11 @@ def construct_query(query_args, page_size=100):
 
 
 def highlight_clause():
-    highlights = dict({
+    highlights = {
+        "encoder": "html",
         "pre_tags": ["<em class='search-result-highlighted-text'>"],
         "post_tags": ["</em>"]
-    })
+    }
     highlights["fields"] = {}
 
     for field in TEXT_FIELDS:
