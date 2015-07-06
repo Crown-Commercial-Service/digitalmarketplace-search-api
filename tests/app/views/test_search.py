@@ -232,6 +232,29 @@ class TestSearchEndpoint(BaseApplicationTest):
                 highlighted_summary
             )
 
+    def test_highlighting_should_escape_html(self):
+        service = default_service(
+            serviceSummary="accessing, storing <h1>and retaining</h1> email"
+        )
+
+        self.client.put(
+            '/index-to-create/services/%s' % service["service"]["id"],
+            data=json.dumps(service), content_type='application/json')
+
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
+
+        response = self.client.get(
+            '/index-to-create/services/search?q=storing'
+        )
+        assert_equal(response.status_code, 200)
+        search_results = get_json_from_response(response)["services"]
+        assert_equal(
+            search_results[0]["highlight"]["serviceSummary"][0],
+            "accessing, <em class='search-result-highlighted-text'>" +
+            "storing</em> &lt;h1&gt;and retaining&lt;&#x2F;h1&gt; email"
+        )
+
 
 class TestFetchById(BaseApplicationTest):
     def test_should_return_404_if_no_service(self):
