@@ -1,14 +1,11 @@
-import os
+from flask import current_app, url_for
+from elasticsearch import TransportError
 
-from elasticsearch import Elasticsearch, TransportError
+from ... import elasticsearch_client as es
 from app.mapping import SERVICES_MAPPING
 from app.main.services.response_formatters import \
     convert_es_status, convert_es_results, generate_pagination_links
 from app.main.services.query_builder import construct_query
-from flask import current_app, url_for
-
-es_url = os.getenv('DM_ELASTICSEARCH_URL')
-es = Elasticsearch(es_url)
 
 
 def refresh(index_name):
@@ -24,6 +21,28 @@ def create_index(index_name):
         es.indices.create(index=index_name, body=SERVICES_MAPPING)
         return "acknowledged", 200
     except TransportError as e:
+        if u'IndexAlreadyExistsException' in _get_an_error_message(e):
+            return put_index_mapping(index_name)
+        current_app.logger.error(
+            "Failed to create the index %s: %s",
+            index, _get_an_error_message(e)
+        )
+        return _get_an_error_message(e), e.status_code
+
+
+def put_index_mapping(index_name):
+    try:
+        es.indices.put_mapping(
+            index=index_name,
+            doc_type="services",
+            body=SERVICES_MAPPING["mappings"]["services"]
+        )
+        return "acknowledged", 200
+    except TransportError as e:
+        current_app.logger.error(
+            "Failed to update the index mapping for %s: %s",
+            index, _get_an_error_message(e)
+        )
         return _get_an_error_message(e), e.status_code
 
 
@@ -60,6 +79,10 @@ def index(index_name, doc_type, document, document_id):
             body=document)
         return "acknowledged", 200
     except TransportError as e:
+        current_app.logger.error(
+            "Failed to index the document %s: %s",
+            document_id, _get_an_error_message(e)
+        )
         return _get_an_error_message(e), e.status_code
 
 

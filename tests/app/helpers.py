@@ -65,6 +65,7 @@ def default_service(**kwargs):
         "dataBackupRecovery": True,
         "dataExtractionRemoval": True,
         "networksConnected": ["PSN", "PNN"],
+        "datacentreTier": "tia-942 tier 1",
         "apiAccess": True,
         "openStandardsSupported": True,
         "openSource": True,

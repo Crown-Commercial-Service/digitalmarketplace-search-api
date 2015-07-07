@@ -1,14 +1,12 @@
 from flask import Flask
 from config import config as configs
 from flask.ext.bootstrap import Bootstrap
+from flask.ext.elasticsearch import FlaskElasticsearch
 from dmutils import init_app, flask_featureflags
-
-from .main import main as main_blueprint
-from .status import status as status_blueprint
-
 
 bootstrap = Bootstrap()
 feature_flags = flask_featureflags.FeatureFlag()
+elasticsearch_client = FlaskElasticsearch()
 
 
 def create_app(config_name):
@@ -20,6 +18,11 @@ def create_app(config_name):
         bootstrap=bootstrap,
         feature_flags=feature_flags
     )
+
+    elasticsearch_client.init_app(application)
+
+    from .main import main as main_blueprint
+    from .status import status as status_blueprint
 
     application.register_blueprint(status_blueprint)
     application.register_blueprint(main_blueprint)

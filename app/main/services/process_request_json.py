@@ -1,12 +1,13 @@
 import six
 
-from .query_builder import FILTER_FIELDS, TEXT_FIELDS
+from ...mapping import FILTER_FIELDS, TEXT_FIELDS
 from .conversions import strip_and_lowercase
 
+FILTER_FIELDS_SET = set(FILTER_FIELDS)
+TEXT_FIELDS_SET = set(TEXT_FIELDS)
 
-def process_values_for_matching(request_json, key):
-    values = request_json[key]
 
+def process_values_for_matching(values):
     if isinstance(values, list):
         return [strip_and_lowercase(value) for value in values]
     elif isinstance(values, six.string_types):
@@ -16,12 +17,14 @@ def process_values_for_matching(request_json, key):
 
 
 def convert_request_json_into_index_json(request_json):
-    filter_fields = [field for field in request_json if field in FILTER_FIELDS]
+    index_json = {}
 
-    for field in filter_fields:
-        request_json["filter_" + field] = \
-            process_values_for_matching(request_json, field)
-        if field not in TEXT_FIELDS:
-            del request_json[field]
+    for field in request_json:
+        if field in FILTER_FIELDS_SET:
+            index_json["filter_" + field] = process_values_for_matching(
+                request_json[field]
+            )
+        if field in TEXT_FIELDS_SET:
+            index_json[field] = request_json[field]
 
-    return request_json
+    return index_json

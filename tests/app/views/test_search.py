@@ -1,3 +1,5 @@
+import mock
+
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
@@ -24,14 +26,22 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 404)
 
-    def test_should_not_be_able_create_index_twice(self):
+    def test_creating_existing_index_updates_mapping(self):
         self.client.put('/index-to-create')
 
-        response = self.client.put('/index-to-create')
-        assert_equal(response.status_code, 400)
-        assert_equal(
-            "IndexAlreadyExistsException[[index-to-create] already exists]"
-            in get_json_from_response(response)["message"], True)
+        with self.app.app_context():
+            with mock.patch(
+                'app.main.services.search_service.es.indices.put_mapping'
+            ) as es_mock:
+                response = self.client.put('/index-to-create')
+
+        assert_equal(response.status_code, 200)
+        assert_equal("acknowledged", get_json_from_response(response)["message"])
+        es_mock.assert_called_with(
+            index='index-to-create',
+            doc_type='services',
+            body=mock.ANY
+        )
 
     def test_should_not_be_able_delete_index_twice(self):
         self.client.put('/index-to-create')
@@ -65,7 +75,8 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         assert_equal(response.status_code, 200)
 
-        search_service.refresh('index-to-create')
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 200)
         assert_equal(
@@ -271,7 +282,8 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        search_service.refresh('index-to-create')
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
 
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
@@ -318,9 +330,7 @@ class TestFetchById(BaseApplicationTest):
             original = service["service"][key[1]]
             indexed = data['services']["_source"][key[0]]
             if key[0].startswith("filter"):
-                original = process_values_for_matching(
-                    service["service"],
-                    key[1])
+                original = process_values_for_matching(service["service"][key[1]])
             assert_equal(original, indexed)
 
     def test_service_should_have_all_exact_match_fields(self):
@@ -331,7 +341,8 @@ class TestFetchById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        search_service.refresh("index-to-create")
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
 
@@ -361,7 +372,7 @@ class TestFetchById(BaseApplicationTest):
         for key in cases:
             assert_equal(
                 data['services']["_source"]["filter_" + key],
-                process_values_for_matching(service["service"], key))
+                process_values_for_matching(service["service"][key]))
 
 
 class TestDeleteById(BaseApplicationTest):
@@ -373,7 +384,8 @@ class TestDeleteById(BaseApplicationTest):
             content_type='application/json'
         )
 
-        search_service.refresh('index-to-create')
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
         response = self.client.delete(
             '/index-to-create/services/' + str(service["service"]["id"]))
 

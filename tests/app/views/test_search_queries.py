@@ -20,6 +20,13 @@ def test_or_filters():
     yield (check_query, 'filter_lot=SaaS,PaaS',
            60, {'lot': one_of(['SaaS', 'PaaS'])})
     yield check_query, 'filter_minimumContractPeriod=Hour,Day', 80, {}
+    yield (check_query, 'filter_datacentreTier=tia-942 tier 1,tia-942 tier 2',
+           120, {})
+    yield (check_query, 'filter_datacentreTier=tia-942 tier 3,tia-942 tier 2',
+           0, {})
+    yield (check_query,
+           'filter_minimumContractPeriod=Hour,Day&filter_datacentreTier=tia-942 tier 3,tia-942 tier 2',
+           0, {})
 
 
 def test_and_filters():
@@ -37,6 +44,14 @@ def test_and_filters():
 def test_filter_combinations():
     yield (check_query,
            'filter_minimumContractPeriod=Hour&filter_openSource=false',
+           20, {'id': even})
+
+    yield (check_query,
+           'filter_minimumContractPeriod=Hour,Day&filter_openSource=false',
+           40, {'id': even})
+
+    yield (check_query,
+           'filter_minimumContractPeriod=Hour,Day&filter_openSource=false&filter_lot=SaaS',
            20, {'id': even})
 
     yield (check_query,

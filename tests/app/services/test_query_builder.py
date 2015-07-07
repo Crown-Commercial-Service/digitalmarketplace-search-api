@@ -1,6 +1,13 @@
-from nose.tools import assert_equal, assert_in, assert_not_in, assert_false
-from app.main.services.query_builder import construct_query, \
-    is_filtered
+from nose.tools import (
+    assert_equal, assert_in, assert_not_in,
+    assert_false, assert_true
+)
+from app.main.services.query_builder import construct_query, is_filtered
+from app.main.services.query_builder import (
+    field_is_or_filter, field_filters,
+    or_field_filters, and_field_filters,
+    filter_clause
+)
 from werkzeug.datastructures import MultiDict
 
 
@@ -40,15 +47,15 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     assert_equal(query_string_clause["query"], keywords)
     assert_equal(query_string_clause["default_operator"], "and")
     assert_equal(query_string_clause["fields"], [
+        "frameworkName",
         "id",
         "lot",
+        "serviceBenefits",
+        "serviceFeatures",
         "serviceName",
         "serviceSummary",
-        "serviceFeatures",
-        "serviceBenefits",
         "serviceTypes",
         "supplierName",
-        "frameworkName",
     ])
 
 
@@ -94,15 +101,15 @@ def test_should_have_filtered_root_element_and_match_keywords():
     assert_equal(query_string_clause["query"], "some keywords")
     assert_equal(query_string_clause["default_operator"], "and")
     assert_equal(query_string_clause["fields"], [
+        "frameworkName",
         "id",
         "lot",
+        "serviceBenefits",
+        "serviceFeatures",
         "serviceName",
         "serviceSummary",
-        "serviceFeatures",
-        "serviceBenefits",
         "serviceTypes",
         "supplierName",
-        "frameworkName",
     ])
 
 
@@ -239,3 +246,118 @@ def build_query_params(keywords=None, service_types=None, lot=None, page=None):
     if page:
         query_params["page"] = page
     return query_params
+
+
+class TestFieldFilters(object):
+    def test_field_is_or_filter(self):
+        assert_true(field_is_or_filter(['a,b']))
+
+    def test_field_is_or_filter_no_comma(self):
+        assert_false(field_is_or_filter(['a']))
+
+    def test_field_is_or_filter_multiple_values_no_comma(self):
+        assert_false(field_is_or_filter(['a', 'b']))
+
+    def test_field_is_or_filter_multiple_values(self):
+        assert_false(field_is_or_filter(['a,b', 'b,c']))
+
+    def test_or_field_filters(self):
+        assert_equal(
+            or_field_filters('filterName', ['Aa bb', 'Bb cc']),
+            [{"terms": {"filterName": ['aabb', 'bbcc'], "execution": "bool"}}]
+        )
+
+    def test_or_field_filters_single_value(self):
+        assert_equal(
+            or_field_filters('filterName', ['Aa bb']),
+            [{"terms": {"filterName": ['aabb'], "execution": "bool"}}]
+        )
+
+    def test_and_field_filters(self):
+        assert_equal(
+            and_field_filters('filterName', ['Aa bb', 'Bb cc']),
+            [
+                {"term": {"filterName": 'aabb'}},
+                {"term": {"filterName": 'bbcc'}}
+            ]
+        )
+
+    def test_and_field_filters_single_value(self):
+        assert_equal(
+            and_field_filters('filterName', ['Aa bb']),
+            [{"term": {"filterName": 'aabb'}}]
+        )
+
+    def test_field_filters_single_value(self):
+        assert_equal(
+            field_filters('filterName', ['Aa Bb']),
+            [{"term": {"filterName": 'aabb'}}]
+        )
+
+    def test_field_filters_multiple_and_values(self):
+        assert_equal(
+            field_filters('filterName', ['Aa bb', 'Bb,Cc']),
+            [
+                {"term": {"filterName": 'aabb'}},
+                {"term": {"filterName": 'bbcc'}}
+            ]
+        )
+
+    def test_field_filters_or_value(self):
+        assert_equal(
+            field_filters('filterName', ['Aa,Bb']),
+            [{"terms": {"filterName": ['aa', 'bb'], "execution": "bool"}}]
+        )
+
+
+class TestFilterClause(object):
+    def test_filter_ignores_non_filter_query_args(self):
+        assert_equal(
+            filter_clause(
+                MultiDict({'fieldName': ['Aa bb'], 'lot': ['saas']})
+            ),
+            {'bool': {'must': []}}
+        )
+
+    def test_single_and_field(self):
+        assert_equal(
+            filter_clause(MultiDict(
+                {'filter_fieldName': ['Aa bb'], 'lot': 'saas'}
+            )),
+            {'bool': {
+                'must': [
+                    {"term": {"filter_fieldName": 'aabb'}},
+                ]
+            }}
+        )
+
+    def test_single_or_field(self):
+        assert_equal(
+            filter_clause(MultiDict({'filter_fieldName': ['Aa,Bb']})),
+            {'bool': {
+                'must': [
+                    {"terms": {"filter_fieldName": ['aa', 'bb'], "execution": "bool"}},
+                ]
+            }}
+        )
+
+    def test_or_and_combination(self):
+        bool_filter = filter_clause(MultiDict({
+            'filter_andFieldName': ['Aa', 'bb'],
+            'filter_orFieldName': ['Aa,Bb']
+        }))
+
+        assert_in(
+            {"terms": {"filter_orFieldName": ['aa', 'bb'], "execution": "bool"}},
+            bool_filter['bool']['must']
+        )
+
+        assert_in(
+            {"term": {"filter_andFieldName": 'aa'}},
+            bool_filter['bool']['must']
+        )
+
+        assert_in(
+            {"term": {"filter_andFieldName": 'bb'}},
+            bool_filter['bool']['must']
+        )

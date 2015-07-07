@@ -1,6 +1,7 @@
 {
   "mappings": {
     "services": {
+      "dynamic": "strict",
       "properties": {
         "id": {
           "type": "string",
@@ -32,6 +33,10 @@
         "serviceTypes": {
           "type": "string"
         },
+        "filter_lot": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
         "filter_serviceTypes": {
           "type": "string",
           "index": "not_analyzed"
@@ -58,6 +63,10 @@
         },
         "filter_datacentresEUCode": {
           "type": "boolean",
+          "index": "not_analyzed"
+        },
+        "filter_datacentreTier": {
+          "type": "string",
           "index": "not_analyzed"
         },
         "filter_dataBackupRecovery": {
