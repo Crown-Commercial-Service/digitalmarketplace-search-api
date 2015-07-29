@@ -1,9 +1,10 @@
 import mock
+import re
 
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
-from nose.tools import assert_equal, assert_in
+from nose.tools import assert_equal, assert_in, assert_less
 
 from ..helpers import BaseApplicationTest, default_service
 
@@ -142,6 +143,19 @@ class TestSearchEndpoint(BaseApplicationTest):
                     content_type='application/json')
             search_service.refresh('index-to-create')
 
+    def _put_into_and_get_back_from_elasticsearch(self, service, query_string):
+
+        self.client.put(
+            '/index-to-create/services/{}'.format(service["service"]["id"]),
+            data=json.dumps(service), content_type='application/json')
+
+        with self.app.app_context():
+            search_service.refresh('index-to-create')
+
+        return self.client.get(
+            '/index-to-create/services/search?{}'.format(query_string)
+        )
+
     def test_should_return_service_on_id(self):
         service = default_service()
         self.client.put(
@@ -219,44 +233,33 @@ class TestSearchEndpoint(BaseApplicationTest):
             assert_equal(response.status_code, 400)
 
     def test_highlighting_should_use_defined_html_tags(self):
-        with self.app.app_context():
-            service = default_service()
-            service["service"]['serviceSummary'] = \
-                u"Accessing, storing and retaining email"
-            highlighted_summary = \
-                "Accessing, <em class='search-result-highlighted-text'>" +\
-                "storing</em> and retaining email"
-            self.client.put(
-                '/index-to-create/services/' + str(service["service"]["id"]),
-                data=json.dumps(service),
-                content_type='application/json')
-            search_service.refresh('index-to-create')
+        service = default_service(
+            serviceSummary="Accessing, storing and retaining email"
+        )
+        highlighted_summary = \
+            "Accessing, <em class='search-result-highlighted-text'>storing</em> and retaining email"
 
-            response = self.client.get(
-                '/index-to-create/services/search?q=storing')
-            assert_equal(response.status_code, 200)
-            search_results = get_json_from_response(
-                response
-            )["services"]
-            assert_equal(
-                search_results[0]["highlight"]["serviceSummary"][0],
-                highlighted_summary
-            )
+        response = self._put_into_and_get_back_from_elasticsearch(
+            service=service,
+            query_string='q=storing'
+        )
+        assert_equal(response.status_code, 200)
+        search_results = get_json_from_response(
+            response
+        )["services"]
+        assert_equal(
+            search_results[0]["highlight"]["serviceSummary"][0],
+            highlighted_summary
+        )
 
     def test_highlighting_should_escape_html(self):
         service = default_service(
             serviceSummary="accessing, storing <h1>and retaining</h1> email"
         )
 
-        self.client.put(
-            '/index-to-create/services/%s' % service["service"]["id"],
-            data=json.dumps(service), content_type='application/json')
-
-        with self.app.app_context():
-            search_service.refresh('index-to-create')
-
-        response = self.client.get(
-            '/index-to-create/services/search?q=storing'
+        response = self._put_into_and_get_back_from_elasticsearch(
+            service=service,
+            query_string='q=storing'
         )
         assert_equal(response.status_code, 200)
         search_results = get_json_from_response(response)["services"]
@@ -265,6 +268,49 @@ class TestSearchEndpoint(BaseApplicationTest):
             "accessing, <em class='search-result-highlighted-text'>" +
             "storing</em> &lt;h1&gt;and retaining&lt;&#x2F;h1&gt; email"
         )
+
+    def test_highlight_service_summary_limited_if_search_string_matches(self):
+
+        # 200 words, 1000 characters
+        really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 20
+
+        service = default_service(
+            serviceSummary=really_long_service_summary
+        )
+
+        response = self._put_into_and_get_back_from_elasticsearch(
+            service=service,
+            query_string='q=characters'
+        )
+        assert_equal(response.status_code, 200)
+
+        search_results = get_json_from_response(response)["services"]
+        stripped_search_results = re.sub(
+            "<[^<]+?>", "", search_results[0]["highlight"]["serviceSummary"][0]
+        )
+        assert_less(len(stripped_search_results), 400)
+
+    def test_highlight_service_summary_limited_if_no_matches(self):
+
+        # 200 words, 1000 characters
+        really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 20
+
+        service = default_service(
+            serviceSummary=really_long_service_summary,
+            lot='TaaS'
+        )
+
+        # Doesn't actually search by lot, returns all services
+        response = self._put_into_and_get_back_from_elasticsearch(
+            service=service,
+            query_string='lot=TaaS'
+        )
+        assert_equal(response.status_code, 200)
+
+        search_results = get_json_from_response(response)["services"]
+        # Get the first with a matching value from a list
+        search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
+        assert_less(len(search_result["highlight"]["serviceSummary"][0]), 400)
 
 
 class TestFetchById(BaseApplicationTest):
