@@ -38,7 +38,12 @@ def highlight_clause():
     highlights["fields"] = {}
 
     for field in TEXT_FIELDS:
-        highlights["fields"][field] = {}
+        # 400 characters is generally >= 50 words
+        highlights["fields"][field] = {
+            "number_of_fragments": 1,
+            "fragment_size": 400,
+            "no_match_size": 400
+        }
 
     return highlights
 

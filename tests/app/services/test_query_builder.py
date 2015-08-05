@@ -234,6 +234,16 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
+def test_highlight_block_character_length_for_service_summary():
+    query = construct_query(
+        build_query_params(keywords="some keywords",
+                           service_types=["some serviceTypes"]))
+
+    assert_equal("highlight" in query, True)
+    assert_equal(query["highlight"]["fields"]["serviceSummary"]["no_match_size"], 400)
+    assert_equal(query["highlight"]["fields"]["serviceSummary"]["fragment_size"], 400)
+
+
 def build_query_params(keywords=None, service_types=None, lot=None, page=None):
     query_params = MultiDict()
     if keywords:
