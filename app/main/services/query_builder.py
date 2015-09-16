@@ -32,8 +32,8 @@ def construct_query(query_args, page_size=100):
 def highlight_clause():
     highlights = {
         "encoder": "html",
-        "pre_tags": ["<em class='search-result-highlighted-text'>"],
-        "post_tags": ["</em>"]
+        "pre_tags": ["<mark class='search-result-highlighted-text'>"],
+        "post_tags": ["</mark>"]
     }
     highlights["fields"] = {}
 
