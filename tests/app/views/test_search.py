@@ -237,7 +237,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             serviceSummary="Accessing, storing and retaining email"
         )
         highlighted_summary = \
-            "Accessing, <em class='search-result-highlighted-text'>storing</em> and retaining email"
+            "Accessing, <mark class='search-result-highlighted-text'>storing</mark> and retaining email"
 
         response = self._put_into_and_get_back_from_elasticsearch(
             service=service,
@@ -265,8 +265,8 @@ class TestSearchEndpoint(BaseApplicationTest):
         search_results = get_json_from_response(response)["services"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
-            "accessing, <em class='search-result-highlighted-text'>" +
-            "storing</em> &lt;h1&gt;and retaining&lt;&#x2F;h1&gt; email"
+            "accessing, <mark class='search-result-highlighted-text'>" +
+            "storing</mark> &lt;h1&gt;and retaining&lt;&#x2F;h1&gt; email"
         )
 
     def test_highlight_service_summary_limited_if_search_string_matches(self):
