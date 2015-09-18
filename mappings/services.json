@@ -19,6 +19,7 @@
           "type": "string"
         },
         "serviceSummary": {
+          "index_options" : "offsets",
           "type": "string"
         },
         "serviceBenefits": {
