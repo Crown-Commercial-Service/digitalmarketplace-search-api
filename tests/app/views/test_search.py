@@ -133,6 +133,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 class TestSearchEndpoint(BaseApplicationTest):
     def setup(self):
         super(TestSearchEndpoint, self).setup()
+        self.client.put('/index-to-create')
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -283,7 +284,7 @@ class TestSearchEndpoint(BaseApplicationTest):
         search_results = get_json_from_response(response)["services"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
-            "Oh <script>alert(\"Yo\");</script>"
+            "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
         )
 
     def test_highlight_service_summary_limited_if_search_string_matches(self):
