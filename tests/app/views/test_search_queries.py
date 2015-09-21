@@ -110,8 +110,10 @@ def test_and_keyword_search():
     yield (check_query, 'q=Service 1 2 3', 0, {})
 
     yield (check_query, 'q=+Service +1', 1, {})
-    yield (check_query, 'q=Service %26 100', 1, {})
-    yield (check_query, 'q=Service %26%26 100', 1, {})
+    yield (check_query, 'q=Service %26100', 1, {})
+    yield (check_query, 'q=Service %26 100', 0, {})
+    yield (check_query, 'q=Service %26%26100', 1, {})
+    yield (check_query, 'q=Service %26%26 100', 0, {})
 
 
 def test_phrase_keyword_search():
@@ -145,7 +147,8 @@ def test_or_keyword_search():
 def test_escaped_characters():
     yield (check_query, 'q=\\"Service | 12\\"', 120, {})
     yield (check_query, 'q=\-12', 1, {})
-    yield (check_query, 'q=Service \| 12', 1, {})
+    yield (check_query, 'q=Service \|12', 1, {})
+    yield (check_query, 'q=Service \| 12', 0, {})
 
 
 # Module setup and teardown
@@ -156,6 +159,7 @@ def setup_module():
     setup_authorization(app)
 
     with app.app_context():
+        test_client.put('/index-to-create')
         services = list(create_services(120))
         for service in services:
             test_client.put(
