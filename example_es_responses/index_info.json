@@ -1,0 +1,52 @@
+{
+  "g-cloud": {
+    "aliases": {
+      "galias": {}
+    },
+    "mappings": {
+      "services": {
+        "dynamic": "strict",
+        "_meta": {
+          "version": "2015-09-28"
+        },
+        "properties": {}
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1443534824067",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "version": {
+          "created": "1070199"
+        },
+        "uuid": "uEDxiMU5SaGCMMsXAmMepg"
+      }
+    },
+    "warmers": {}
+  },
+  "g-cloud-new": {
+    "aliases": {},
+    "mappings": {
+      "services": {
+        "dynamic": "strict",
+        "_meta": {
+          "version": "2015-09-28"
+        },
+        "properties": {}
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1443534817736",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "version": {
+          "created": "1070199"
+        },
+        "uuid": "EF3FQS0YSTmrLuxYuUJNSA"
+      }
+    },
+    "warmers": {}
+  }
+}

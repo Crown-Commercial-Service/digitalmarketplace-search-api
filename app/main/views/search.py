@@ -2,7 +2,7 @@ from flask import jsonify, url_for, request, abort
 from app.main import main
 from app.main.services.search_service import keyword_search, \
     index, status_for_index, create_index, delete_index, \
-    status_for_all_indexes, fetch_by_id, delete_by_id, create_alias
+    fetch_by_id, delete_by_id, create_alias
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 
@@ -64,16 +64,9 @@ def delete(index_name):
     return jsonify(message=result), status_code
 
 
-@main.route('/<string:index_name>/status', methods=['GET'])
+@main.route('/<string:index_name>', methods=['GET'])
 def status(index_name):
     result, status_code = status_for_index(index_name)
-
-    return jsonify(status=result), status_code
-
-
-@main.route('/status', methods=['GET'])
-def all_status():
-    result, status_code = status_for_all_indexes()
 
     return jsonify(status=result), status_code
 

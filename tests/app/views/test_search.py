@@ -16,7 +16,7 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
-        response = self.client.get('/index-to-create/status')
+        response = self.client.get('/index-to-create')
         assert_equal(response.status_code, 200)
 
         response = self.client.delete('/index-to-create')
@@ -24,7 +24,7 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
-        response = self.client.get('/index-to-create/status')
+        response = self.client.get('/index-to-create')
         assert_equal(response.status_code, 404)
 
     def test_should_be_able_to_create_aliases(self):
@@ -100,7 +100,7 @@ class TestSearchIndexes(BaseApplicationTest):
                      in get_json_from_response(response)["message"], True)
 
     def test_should_return_404_if_no_index(self):
-        response = self.client.get('/index-does-not-exist/status')
+        response = self.client.get('/index-does-not-exist')
         assert_equal(response.status_code, 404)
         assert_equal(
             "IndexMissingException[[index-does-not-exist] missing]" in
@@ -125,7 +125,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         with self.app.app_context():
             search_service.refresh('index-to-create')
-        response = self.client.get('/index-to-create/status')
+        response = self.client.get('/index-to-create')
         assert_equal(response.status_code, 200)
         assert_equal(
             get_json_from_response(response)["status"]["num_docs"],

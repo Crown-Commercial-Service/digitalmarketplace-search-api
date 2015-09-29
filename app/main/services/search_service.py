@@ -106,9 +106,11 @@ def index(index_name, doc_type, document, document_id):
 def status_for_index(index_name):
     try:
         res = es.indices.status(index=index_name, human=True)
-        return convert_es_status(res, index_name), 200
+        info = es.indices.get(index_name)
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
+
+    return convert_es_status(index_name, res, info), 200
 
 
 def status_for_all_indexes():

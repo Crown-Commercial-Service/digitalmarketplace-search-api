@@ -7,6 +7,9 @@ from app.main.services.response_formatters import \
 with open("example_es_responses/status.json") as services:
     STATUS_JSON = json.load(services)
 
+with open("example_es_responses/index_info.json") as services:
+    INDEX_INFO_JSON = json.load(services)
+
 with open("example_es_responses/search_results.json") as search_results:
     SEARCH_RESULTS_JSON = json.load(search_results)
 
@@ -59,14 +62,22 @@ def test_should_not_include_highlights_if_not_in_es_results():
 
 
 def test_should_build_status_response_from_es_response():
-    res = convert_es_status(STATUS_JSON, "g-cloud")
-    assert_equal(res["num_docs"], 10380)
-    assert_equal(res["primary_size"], "16.8mb")
+    res = convert_es_status("g-cloud", STATUS_JSON, INDEX_INFO_JSON)
+    assert_equal(res, {
+        "num_docs": 10380,
+        "primary_size": "16.8mb",
+        "mapping_version": "2015-09-28",
+        "aliases": ["galias"],
+    })
 
 
 def test_should_build_status_response_from_es_response_with_empty_index():
     status_json_with_no_docs = dict(STATUS_JSON)
     del status_json_with_no_docs["indices"]["g-cloud"]["docs"]
-    res = convert_es_status(status_json_with_no_docs, "g-cloud")
-    assert_equal("num_docs" in res, False)
-    assert_equal(res["primary_size"], "16.8mb")
+    res = convert_es_status("g-cloud", status_json_with_no_docs)
+    assert_equal(res, {
+        "aliases": [],
+        "mapping_version": None,
+        "num_docs": None,
+        "primary_size": "16.8mb",
+    })
