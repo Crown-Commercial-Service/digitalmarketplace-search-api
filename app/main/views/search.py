@@ -2,7 +2,7 @@ from flask import jsonify, url_for, request, abort
 from app.main import main
 from app.main.services.search_service import keyword_search, \
     index, status_for_index, create_index, delete_index, \
-    status_for_all_indexes, fetch_by_id, delete_by_id
+    status_for_all_indexes, fetch_by_id, delete_by_id, create_alias
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 
@@ -45,7 +45,14 @@ def index_document(index_name, doc_type, service_id):
 
 @main.route('/<string:index_name>', methods=['PUT'])
 def create(index_name):
-    result, status_code = create_index(index_name)
+    create_type = get_json_from_request('type')
+    if create_type == 'index':
+        result, status_code = create_index(index_name)
+    elif create_type == 'alias':
+        alias_target = get_json_from_request('target')
+        result, status_code = create_alias(index_name, alias_target)
+    else:
+        abort(400, "Unrecognized 'type' value. Expected 'index' or 'alias'")
 
     return jsonify(message=result), status_code
 

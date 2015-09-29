@@ -11,7 +11,7 @@ from ..helpers import BaseApplicationTest, default_service
 
 class TestSearchIndexes(BaseApplicationTest):
     def test_should_be_able_create_and_delete_index(self):
-        response = self.client.put('/index-to-create')
+        response = self.create_index()
         assert_equal(response.status_code, 200)
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
@@ -28,13 +28,13 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(response.status_code, 404)
 
     def test_creating_existing_index_updates_mapping(self):
-        self.client.put('/index-to-create')
+        self.create_index()
 
         with self.app.app_context():
             with mock.patch(
                 'app.main.services.search_service.es.indices.put_mapping'
             ) as es_mock:
-                response = self.client.put('/index-to-create')
+                response = self.create_index()
 
         assert_equal(response.status_code, 200)
         assert_equal("acknowledged", get_json_from_response(response)["message"])
@@ -45,7 +45,7 @@ class TestSearchIndexes(BaseApplicationTest):
         )
 
     def test_should_not_be_able_delete_index_twice(self):
-        self.client.put('/index-to-create')
+        self.create_index()
         self.client.delete('/index-to-create')
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
@@ -64,7 +64,7 @@ class TestSearchIndexes(BaseApplicationTest):
 class TestIndexingDocuments(BaseApplicationTest):
     def setup(self):
         super(TestIndexingDocuments, self).setup()
-        self.client.put('/index-to-create')
+        self.create_index()
 
     def test_should_index_a_document(self):
         service = default_service()
@@ -133,7 +133,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 class TestSearchEndpoint(BaseApplicationTest):
     def setup(self):
         super(TestSearchEndpoint, self).setup()
-        self.client.put('/index-to-create')
+        self.create_index()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -464,7 +464,7 @@ class TestDeleteById(BaseApplicationTest):
         assert_equal(data['message']['found'], False)
 
     def test_should_return_404_if_no_service(self):
-        self.client.put('/index-to-create')
+        self.create_index()
 
         response = self.client.delete(
             '/index-to-create/delete/100')
