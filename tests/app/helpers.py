@@ -4,6 +4,7 @@ import os
 import json
 
 from app import create_app
+from app import elasticsearch_client
 
 
 class WSGIApplicationWithEnvironment(object):
@@ -37,7 +38,8 @@ class BaseApplicationTest(object):
         }), content_type="application/json")
 
     def teardown(self):
-        self.client.delete('/' + self.default_index_name)
+        with self.app.app_context():
+            elasticsearch_client.indices.delete('index-*')
         teardown_authorization()
 
 

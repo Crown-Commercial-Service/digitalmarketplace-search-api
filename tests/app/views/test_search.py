@@ -27,6 +27,53 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.client.get('/index-to-create/status')
         assert_equal(response.status_code, 404)
 
+    def test_should_be_able_to_create_aliases(self):
+        self.create_index()
+        response = self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 200)
+        assert_equal(get_json_from_response(response)["message"], "acknowledged")
+
+    def test_cant_create_alias_for_missing_index(self):
+        response = self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 404)
+        assert_in("IndexMissingException", get_json_from_response(response)["message"])
+
+    def test_cant_replace_index_with_alias(self):
+        self.create_index()
+        response = self.client.put('/index-to-create', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 400)
+        assert_in("InvalidAliasNameException", get_json_from_response(response)["message"])
+
+    def test_can_update_alias(self):
+        self.create_index()
+        self.create_index('index-to-create-2')
+        self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        response = self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create-2"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 200)
+        status = get_json_from_response(self.client.get('/_all'))["status"]
+        assert_equal(status['index-to-create']['aliases'], [])
+        assert_equal(status['index-to-create-2']['aliases'], ['index-alias'])
+
     def test_creating_existing_index_updates_mapping(self):
         self.create_index()
 
