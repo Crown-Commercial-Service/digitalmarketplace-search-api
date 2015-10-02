@@ -44,7 +44,7 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 404)
-        assert_in("IndexMissingException", get_json_from_response(response)["message"])
+        assert_in("IndexMissingException", get_json_from_response(response)["error"])
 
     def test_cant_replace_index_with_alias(self):
         self.create_index()
@@ -54,7 +54,7 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 400)
-        assert_in("InvalidAliasNameException", get_json_from_response(response)["message"])
+        assert_in("InvalidAliasNameException", get_json_from_response(response)["error"])
 
     def test_can_update_alias(self):
         self.create_index()
@@ -97,14 +97,14 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
         assert_equal("IndexMissingException[[index-to-create] missing]"
-                     in get_json_from_response(response)["message"], True)
+                     in get_json_from_response(response)["error"], True)
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist')
         assert_equal(response.status_code, 404)
         assert_equal(
             "IndexMissingException[[index-does-not-exist] missing]" in
-            get_json_from_response(response)["status"],
+            get_json_from_response(response)["error"],
             True)
 
 
@@ -508,7 +508,7 @@ class TestDeleteById(BaseApplicationTest):
             '/index-to-create/services/' + str(service["service"]["id"]))
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['message']['found'], False)
+        assert_equal(data['error']['found'], False)
 
     def test_should_return_404_if_no_service(self):
         self.create_index()
@@ -518,7 +518,7 @@ class TestDeleteById(BaseApplicationTest):
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['message']['found'], False)
+        assert_equal(data['error']['found'], False)
 
 
 def create_services(number_of_services):
