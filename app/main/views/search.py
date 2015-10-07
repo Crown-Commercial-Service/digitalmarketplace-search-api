@@ -2,7 +2,7 @@ from flask import jsonify, url_for, request, abort
 from app.main import main
 from app.main.services.search_service import keyword_search, \
     index, status_for_index, create_index, delete_index, \
-    status_for_all_indexes, fetch_by_id, delete_by_id
+    fetch_by_id, delete_by_id, create_alias
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 
@@ -30,7 +30,7 @@ def search(index_name, doc_type):
                        services=result['services'],
                        links=result['links']), status_code
     else:
-        return jsonify(message=result), status_code
+        return api_response(result, status_code)
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
@@ -40,35 +40,35 @@ def index_document(index_name, doc_type, service_id):
     index_json = convert_request_json_into_index_json(json_payload)
     result, status_code = index(index_name, doc_type, index_json, service_id)
 
-    return jsonify(message=result), status_code
+    return api_response(result, status_code)
 
 
 @main.route('/<string:index_name>', methods=['PUT'])
 def create(index_name):
-    result, status_code = create_index(index_name)
+    create_type = get_json_from_request('type')
+    if create_type == 'index':
+        result, status_code = create_index(index_name)
+    elif create_type == 'alias':
+        alias_target = get_json_from_request('target')
+        result, status_code = create_alias(index_name, alias_target)
+    else:
+        abort(400, "Unrecognized 'type' value. Expected 'index' or 'alias'")
 
-    return jsonify(message=result), status_code
+    return api_response(result, status_code)
 
 
 @main.route('/<string:index_name>', methods=['DELETE'])
 def delete(index_name):
     result, status_code = delete_index(index_name)
 
-    return jsonify(message=result), status_code
+    return api_response(result, status_code)
 
 
-@main.route('/<string:index_name>/status', methods=['GET'])
+@main.route('/<string:index_name>', methods=['GET'])
 def status(index_name):
     result, status_code = status_for_index(index_name)
 
-    return jsonify(status=result), status_code
-
-
-@main.route('/status', methods=['GET'])
-def all_status():
-    result, status_code = status_for_all_indexes()
-
-    return jsonify(status=result), status_code
+    return api_response(result, status_code, key='status')
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
@@ -79,7 +79,7 @@ def fetch_service(index_name, doc_type, service_id):
     if status_code == 200:
         return jsonify(services=result), status_code
     else:
-        return jsonify(message=result), status_code
+        return api_response(result, status_code)
 
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
@@ -87,7 +87,14 @@ def fetch_service(index_name, doc_type, service_id):
 def delete_service(index_name, doc_type, service_id):
     result, status_code = delete_by_id(index_name, doc_type, service_id)
 
-    return jsonify(message=result), status_code
+    return api_response(result, status_code)
+
+
+def api_response(data, status_code, key='message'):
+    if status_code // 100 == 2:
+        return jsonify({key: data}), status_code
+    else:
+        return jsonify(error=data), status_code
 
 
 def check_json_from_request(request):

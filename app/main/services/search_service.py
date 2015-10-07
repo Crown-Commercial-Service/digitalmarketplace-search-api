@@ -30,6 +30,23 @@ def create_index(index_name):
         return _get_an_error_message(e), e.status_code
 
 
+def create_alias(alias_name, target_index):
+    """Sets an alias for a given index
+
+    If alias already exists it's removed from any existing indexes first.
+
+    """
+
+    try:
+        es.indices.update_aliases({"actions": [
+            {"remove": {"index": "_all", "alias": alias_name}},
+            {"add": {"index": target_index, "alias": alias_name}}
+        ]})
+        return "acknowledged", 200
+    except TransportError as e:
+        return _get_an_error_message(e), e.status_code
+
+
 def put_index_mapping(index_name):
     try:
         es.indices.put_mapping(
@@ -89,9 +106,11 @@ def index(index_name, doc_type, document, document_id):
 def status_for_index(index_name):
     try:
         res = es.indices.status(index=index_name, human=True)
-        return convert_es_status(res, index_name), 200
+        info = es.indices.get(index_name)
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
+
+    return convert_es_status(index_name, res, info), 200
 
 
 def status_for_all_indexes():

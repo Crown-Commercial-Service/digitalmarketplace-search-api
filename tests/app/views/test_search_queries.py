@@ -159,7 +159,11 @@ def setup_module():
     setup_authorization(app)
 
     with app.app_context():
-        test_client.put('/index-to-create')
+        test_client.put(
+            '/index-to-create',
+            data=json.dumps({"type": "index"}),
+            content_type="application/json",
+        )
         services = list(create_services(120))
         for service in services:
             test_client.put(

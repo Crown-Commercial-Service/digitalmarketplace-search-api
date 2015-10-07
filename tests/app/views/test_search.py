@@ -11,12 +11,12 @@ from ..helpers import BaseApplicationTest, default_service
 
 class TestSearchIndexes(BaseApplicationTest):
     def test_should_be_able_create_and_delete_index(self):
-        response = self.client.put('/index-to-create')
+        response = self.create_index()
         assert_equal(response.status_code, 200)
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
-        response = self.client.get('/index-to-create/status')
+        response = self.client.get('/index-to-create')
         assert_equal(response.status_code, 200)
 
         response = self.client.delete('/index-to-create')
@@ -24,17 +24,64 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
-        response = self.client.get('/index-to-create/status')
+        response = self.client.get('/index-to-create')
         assert_equal(response.status_code, 404)
 
+    def test_should_be_able_to_create_aliases(self):
+        self.create_index()
+        response = self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 200)
+        assert_equal(get_json_from_response(response)["message"], "acknowledged")
+
+    def test_cant_create_alias_for_missing_index(self):
+        response = self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 404)
+        assert_in("IndexMissingException", get_json_from_response(response)["error"])
+
+    def test_cant_replace_index_with_alias(self):
+        self.create_index()
+        response = self.client.put('/index-to-create', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 400)
+        assert_in("InvalidAliasNameException", get_json_from_response(response)["error"])
+
+    def test_can_update_alias(self):
+        self.create_index()
+        self.create_index('index-to-create-2')
+        self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        response = self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create-2"
+        }), content_type="application/json")
+
+        assert_equal(response.status_code, 200)
+        status = get_json_from_response(self.client.get('/_all'))["status"]
+        assert_equal(status['index-to-create']['aliases'], [])
+        assert_equal(status['index-to-create-2']['aliases'], ['index-alias'])
+
     def test_creating_existing_index_updates_mapping(self):
-        self.client.put('/index-to-create')
+        self.create_index()
 
         with self.app.app_context():
             with mock.patch(
                 'app.main.services.search_service.es.indices.put_mapping'
             ) as es_mock:
-                response = self.client.put('/index-to-create')
+                response = self.create_index()
 
         assert_equal(response.status_code, 200)
         assert_equal("acknowledged", get_json_from_response(response)["message"])
@@ -45,26 +92,26 @@ class TestSearchIndexes(BaseApplicationTest):
         )
 
     def test_should_not_be_able_delete_index_twice(self):
-        self.client.put('/index-to-create')
+        self.create_index()
         self.client.delete('/index-to-create')
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
         assert_equal("IndexMissingException[[index-to-create] missing]"
-                     in get_json_from_response(response)["message"], True)
+                     in get_json_from_response(response)["error"], True)
 
     def test_should_return_404_if_no_index(self):
-        response = self.client.get('/index-does-not-exist/status')
+        response = self.client.get('/index-does-not-exist')
         assert_equal(response.status_code, 404)
         assert_equal(
             "IndexMissingException[[index-does-not-exist] missing]" in
-            get_json_from_response(response)["status"],
+            get_json_from_response(response)["error"],
             True)
 
 
 class TestIndexingDocuments(BaseApplicationTest):
     def setup(self):
         super(TestIndexingDocuments, self).setup()
-        self.client.put('/index-to-create')
+        self.create_index()
 
     def test_should_index_a_document(self):
         service = default_service()
@@ -78,7 +125,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 
         with self.app.app_context():
             search_service.refresh('index-to-create')
-        response = self.client.get('/index-to-create/status')
+        response = self.client.get('/index-to-create')
         assert_equal(response.status_code, 200)
         assert_equal(
             get_json_from_response(response)["status"]["num_docs"],
@@ -133,7 +180,7 @@ class TestIndexingDocuments(BaseApplicationTest):
 class TestSearchEndpoint(BaseApplicationTest):
     def setup(self):
         super(TestSearchEndpoint, self).setup()
-        self.client.put('/index-to-create')
+        self.create_index()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -461,17 +508,17 @@ class TestDeleteById(BaseApplicationTest):
             '/index-to-create/services/' + str(service["service"]["id"]))
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['message']['found'], False)
+        assert_equal(data['error']['found'], False)
 
     def test_should_return_404_if_no_service(self):
-        self.client.put('/index-to-create')
+        self.create_index()
 
         response = self.client.delete(
             '/index-to-create/delete/100')
 
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
-        assert_equal(data['message']['found'], False)
+        assert_equal(data['error']['found'], False)
 
 
 def create_services(number_of_services):

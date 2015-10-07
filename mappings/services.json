@@ -1,6 +1,9 @@
 {
   "mappings": {
     "services": {
+      "_meta": {
+          "version": "2015-09-28"
+      },
       "dynamic": "strict",
       "properties": {
         "id": {

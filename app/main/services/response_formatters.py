@@ -3,27 +3,27 @@ import math
 from .query_builder import TEXT_FIELDS
 
 
-def convert_es_status(es_response, index_name):
+def convert_es_status(index_name, status_response, info_response=None):
     if index_name in ["_all", ""]:
-        return [
-            _convert_es_index_status(es_response, name)
-            for name in es_response["indices"].keys()
-        ]
+        return {
+            name: _convert_es_index_status(name, status_response, info_response or {})
+            for name in status_response["indices"].keys()
+        }
     else:
-        return _convert_es_index_status(es_response, index_name)
+        return _convert_es_index_status(index_name, status_response, info_response or {})
 
 
-def _convert_es_index_status(es_response, index_name):
-    index_status = es_response["indices"][index_name]
+def _convert_es_index_status(index_name, status_response, info_response):
+    index_status = status_response['indices'][index_name]
+    index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
+    index_aliases = info_response.get(index_name, {}).get('aliases', {})
 
-    status = {}
-
-    if "docs" in index_status:
-        status["num_docs"] = index_status["docs"]["num_docs"]
-
-    status["primary_size"] = index_status["index"]["primary_size"]
-
-    return status
+    return {
+        'num_docs': index_status.get('docs', {}).get('num_docs'),
+        'primary_size': index_status["index"]["primary_size"],
+        'mapping_version': index_mapping.get('_meta', {}).get('version'),
+        'aliases': list(index_aliases.keys()),
+    }
 
 
 def convert_es_results(results, query_args):

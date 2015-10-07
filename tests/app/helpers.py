@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
 import os
+import json
 
 from app import create_app
+from app import elasticsearch_client
 
 
 class WSGIApplicationWithEnvironment(object):
@@ -28,8 +30,16 @@ class BaseApplicationTest(object):
     def do_not_provide_access_token(self):
         self.app.wsgi_app = self.app.wsgi_app.app
 
+    def create_index(self, index_name=None):
+        if index_name is None:
+            index_name = self.default_index_name
+        return self.client.put('/{}'.format(index_name), data=json.dumps({
+            "type": "index"
+        }), content_type="application/json")
+
     def teardown(self):
-        self.client.delete('/' + self.default_index_name)
+        with self.app.app_context():
+            elasticsearch_client.indices.delete('index-*')
         teardown_authorization()
 
 
