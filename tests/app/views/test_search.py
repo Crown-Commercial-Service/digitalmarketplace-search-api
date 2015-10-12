@@ -37,6 +37,33 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(response.status_code, 200)
         assert_equal(get_json_from_response(response)["message"], "acknowledged")
 
+    def test_should_not_be_able_to_delete_aliases(self):
+        self.create_index()
+        self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        response = self.client.delete('/index-alias')
+
+        assert_equal(response.status_code, 400)
+        assert_equal(get_json_from_response(response)["error"], "Cannot delete alias 'index-alias'")
+
+    def test_should_not_be_able_to_delete_index_with_alias(self):
+        self.create_index()
+        self.client.put('/index-alias', data=json.dumps({
+            "type": "alias",
+            "target": "index-to-create"
+        }), content_type="application/json")
+
+        response = self.client.delete('/index-to-create')
+
+        assert_equal(response.status_code, 400)
+        assert_equal(
+            get_json_from_response(response)["error"],
+            "Index 'index-to-create' is aliased as 'index-alias' and cannot be deleted"
+        )
+
     def test_cant_create_alias_for_missing_index(self):
         response = self.client.put('/index-alias', data=json.dumps({
             "type": "alias",
