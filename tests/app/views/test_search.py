@@ -4,7 +4,7 @@ import re
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
-from nose.tools import assert_equal, assert_in, assert_less
+from nose.tools import assert_equal, assert_in, assert_true
 
 from ..helpers import BaseApplicationTest, default_service
 
@@ -353,7 +353,7 @@ class TestSearchEndpoint(BaseApplicationTest):
         stripped_search_results = re.sub(
             "<[^<]+?>", "", search_results[0]["highlight"]["serviceSummary"][0]
         )
-        assert_less(len(stripped_search_results), 400)
+        assert_true(390 < len(stripped_search_results) < 410)
 
     def test_highlight_service_summary_limited_if_no_matches(self):
 
@@ -375,7 +375,7 @@ class TestSearchEndpoint(BaseApplicationTest):
         search_results = get_json_from_response(response)["services"]
         # Get the first with a matching value from a list
         search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
-        assert_less(len(search_result["highlight"]["serviceSummary"][0]), 400)
+        assert_true(390 < len(search_result["highlight"]["serviceSummary"][0]) < 410)
 
 
 class TestFetchById(BaseApplicationTest):
