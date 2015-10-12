@@ -2,7 +2,7 @@
   "mappings": {
     "services": {
       "_meta": {
-          "version": "2015-09-28"
+          "version": "2015-10-12"
       },
       "dynamic": "strict",
       "properties": {
@@ -22,7 +22,7 @@
           "type": "string"
         },
         "serviceSummary": {
-          "index_options" : "offsets",
+          "term_vector" : "with_positions_offsets",
           "type": "string"
         },
         "serviceBenefits": {
