@@ -14,7 +14,10 @@ def convert_es_status(index_name, status_response, info_response=None):
 
 
 def _convert_es_index_status(index_name, status_response, info_response):
-    index_status = status_response['indices'][index_name]
+    index_status = status_response['indices'].get(index_name, {})
+    if not index_status:
+        return index_status
+
     index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
     index_aliases = info_response.get(index_name, {}).get('aliases', {})
 

@@ -59,6 +59,20 @@ def create(index_name):
 
 @main.route('/<string:index_name>', methods=['DELETE'])
 def delete(index_name):
+    status, status_code = status_for_index(index_name)
+
+    if status_code != 200:
+        return api_response(status, status_code)
+
+    if not status:
+        return api_response("Cannot delete alias '{}'".format(index_name), 400)
+
+    if status.get('aliases'):
+        return api_response(
+            "Index '{}' is aliased as '{}' and cannot be deleted".format(
+                index_name, status['aliases'][0]
+            ), 400)
+
     result, status_code = delete_index(index_name)
 
     return api_response(result, status_code)
