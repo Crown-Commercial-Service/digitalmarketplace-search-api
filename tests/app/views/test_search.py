@@ -361,31 +361,10 @@ class TestSearchEndpoint(BaseApplicationTest):
             "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
         )
 
-    def test_highlight_service_summary_limited_if_search_string_matches(self):
-
-        # 200 words, 1000 characters
-        really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 20
-
-        service = default_service(
-            serviceSummary=really_long_service_summary
-        )
-
-        response = self._put_into_and_get_back_from_elasticsearch(
-            service=service,
-            query_string='q=characters'
-        )
-        assert_equal(response.status_code, 200)
-
-        search_results = get_json_from_response(response)["services"]
-        stripped_search_results = re.sub(
-            "<[^<]+?>", "", search_results[0]["highlight"]["serviceSummary"][0]
-        )
-        assert_true(390 < len(stripped_search_results) < 410)
-
     def test_highlight_service_summary_limited_if_no_matches(self):
 
-        # 200 words, 1000 characters
-        really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 20
+        # 120 words, 600 characters
+        really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 12
 
         service = default_service(
             serviceSummary=really_long_service_summary,
@@ -402,7 +381,7 @@ class TestSearchEndpoint(BaseApplicationTest):
         search_results = get_json_from_response(response)["services"]
         # Get the first with a matching value from a list
         search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
-        assert_true(390 < len(search_result["highlight"]["serviceSummary"][0]) < 410)
+        assert_true(490 < len(search_result["highlight"]["serviceSummary"][0]) < 510)
 
 
 class TestFetchById(BaseApplicationTest):

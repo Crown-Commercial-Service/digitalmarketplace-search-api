@@ -37,12 +37,11 @@ def highlight_clause():
     }
     highlights["fields"] = {}
 
+    # Get all fields searched and allow non-matches to a max of the searchSummary limit
     for field in TEXT_FIELDS:
-        # 400 characters is generally >= 50 words
         highlights["fields"][field] = {
-            "number_of_fragments": 1,
-            "fragment_size": 400,
-            "no_match_size": 400
+            "number_of_fragments": 0,
+            "no_match_size": 500
         }
 
     return highlights
