@@ -9,7 +9,7 @@ Install [elasticsearch](http://www.elasticsearch.org/)
 
 ```
 brew update
-brew install elasticsearch
+brew install homebrew/versions/elasticsearch17
 ```
 
 Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
