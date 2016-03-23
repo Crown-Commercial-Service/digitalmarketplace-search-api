@@ -5,7 +5,7 @@ API to handle interactions between the digitalmarketplace applications and searc
 
 ## Setup
 
-Install [elasticsearch](http://www.elasticsearch.org/)
+Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
 
 ```
 brew update
