@@ -3,9 +3,9 @@ python:
   - "2.7"
   - "3.4"
 install:
-  - pip install -r requirements_for_test.txt
+  - make requirements_for_test
 script:
-  - ./scripts/run_tests.sh
+  - PYTEST_ARGS='--cov=app --cov-report=term-missing' make test
 notifications:
   email: false
 
