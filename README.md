@@ -19,7 +19,7 @@ sudo easy_install virtualenv
 ```
 
 Create a virtual environment in the checked-out repository folder
- 
+
  ```
 cd digitalmarketplace-search-api
 virtualenv ./venv
@@ -63,8 +63,8 @@ export DM_ELASTICSEARCH_URL=http://localhost:9200
 
 ### Run the development server
 
-To run the Search API for local development you can use the convenient run 
-script, which sets the required environment variables for local development: 
+To run the Search API for local development you can use the convenient run
+script, which sets the required environment variables for local development:
 ```
 ./scripts/run_app.sh
 ```
@@ -76,8 +76,8 @@ python application.py runserver
 
 ### Using the Search API locally
 
-The Search API runs on port 5001. Calls to the API require a valid bearer 
-token. Tokens to be accepted can be set using the DM_SEARCH_API_AUTH_TOKENS 
+The Search API runs on port 5001. Calls to the API require a valid bearer
+token. Tokens to be accepted can be set using the DM_SEARCH_API_AUTH_TOKENS
 environment variable, e.g.:
 
 ```export DM_SEARCH_API_AUTH_TOKENS=myToken```
@@ -85,7 +85,7 @@ environment variable, e.g.:
 and then you can include this token in your request headers, e.g.:
 
 ```
-curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/search?q=email
+curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
 ```
 
 Alternatively there is an API explorer running on
