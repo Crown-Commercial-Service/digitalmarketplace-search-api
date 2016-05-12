@@ -34,10 +34,14 @@ class Test(Config):
     DEBUG = True
     DM_LOG_LEVEL = 'CRITICAL'
 
+    DM_SEARCH_API_AUTH_TOKENS = 'valid-token'
+
 
 class Development(Config):
     DEBUG = True
     DM_SEARCH_PAGE_SIZE = 5
+
+    DM_SEARCH_API_AUTH_TOKENS = 'myToken'
 
 
 class Live(Config):
