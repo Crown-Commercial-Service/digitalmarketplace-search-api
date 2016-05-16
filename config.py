@@ -14,6 +14,8 @@ class Config:
 
     ELASTICSEARCH_HOST = os.getenv('DM_ELASTICSEARCH_URL', 'localhost:9200')
 
+    DM_SEARCH_API_AUTH_TOKENS = None
+
     DM_SEARCH_PAGE_SIZE = 100
     # Logging
     DM_LOG_LEVEL = 'DEBUG'
