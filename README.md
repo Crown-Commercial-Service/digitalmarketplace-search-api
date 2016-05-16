@@ -20,10 +20,9 @@ sudo easy_install virtualenv
 
 Create a virtual environment in the checked-out repository folder
 
- ```
-cd digitalmarketplace-search-api
-virtualenv ./venv
- ```
+```
+make virtualenv
+```
 
 ### Activate the virtual environment
 
@@ -35,7 +34,9 @@ source ./venv/bin/activate
 
 Install Python dependencies with pip
 
-```pip install -r requirements_for_test.txt```
+```
+make requirements_for_test
+```
 
 ### Insert G6 services into elasticsearch index
 
@@ -58,7 +59,7 @@ export DM_ELASTICSEARCH_URL=http://localhost:9200
 ### Run the tests
 
 ```
-./scripts/run_tests.sh
+make test
 ```
 
 ### Run the development server
@@ -66,7 +67,7 @@ export DM_ELASTICSEARCH_URL=http://localhost:9200
 To run the Search API for local development you can use the convenient run
 script, which sets the required environment variables for local development:
 ```
-./scripts/run_app.sh
+make run_app
 ```
 
 More generally, the command to start the server is:

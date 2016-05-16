@@ -40,20 +40,13 @@ class BaseApplicationTest(object):
     def teardown(self):
         with self.app.app_context():
             elasticsearch_client.indices.delete('index-*')
-        teardown_authorization()
 
 
 def setup_authorization(app):
     """Set up bearer token and pass on all requests"""
-    valid_token = 'valid-token'
     app.wsgi_app = WSGIApplicationWithEnvironment(
         app.wsgi_app,
-        HTTP_AUTHORIZATION='Bearer {}'.format(valid_token))
-    os.environ['DM_SEARCH_API_AUTH_TOKENS'] = valid_token
-
-
-def teardown_authorization():
-    del os.environ['DM_SEARCH_API_AUTH_TOKENS']
+        HTTP_AUTHORIZATION='Bearer {}'.format(app.config['DM_SEARCH_API_AUTH_TOKENS']))
 
 
 def default_service(**kwargs):

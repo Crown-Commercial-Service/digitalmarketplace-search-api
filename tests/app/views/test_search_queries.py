@@ -3,7 +3,7 @@ from flask import json
 from nose.tools import assert_equal, ok_
 
 from app import create_app
-from ..helpers import setup_authorization, teardown_authorization
+from ..helpers import setup_authorization
 from ..helpers import default_service
 
 
@@ -178,7 +178,6 @@ def teardown_module():
     test_client = app.test_client()
 
     test_client.delete('/index-to-create')
-    teardown_authorization()
 
 
 # '/search' request helpers
