@@ -12,6 +12,8 @@ brew update
 brew install homebrew/versions/elasticsearch17
 ```
 
+**Debian users** might have to use elasticsearch 1.6 available in `jessie-backports` and uncomment `START_DAEMON=true` in `/etc/default/elasticsearch` before starting elasticsearch using `systemctl start elasticsearch`.
+
 Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
 
 ```
