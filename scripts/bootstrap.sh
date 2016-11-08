@@ -7,10 +7,5 @@
 
 set -o pipefail
 
-if [ ! $VIRTUAL_ENV ]; then
-  virtualenv ./venv
-  . ./venv/bin/activate
-fi
-
 # Install Python development dependencies
-pip install -r requirements_for_test.txt
+make requirements_for_test
