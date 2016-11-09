@@ -3,6 +3,24 @@ API to handle interactions between the digitalmarketplace applications and searc
 
 - Python app, based on the [Flask framework](http://flask.pocoo.org/)
 
+## Quickstart
+
+Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
+```
+brew update
+brew install homebrew/versions/elasticsearch17
+```
+
+Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
+```
+sudo easy_install virtualenv
+```
+
+Install dependencies and run the app
+```
+make run_all
+```
+
 ## Setup
 
 Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
