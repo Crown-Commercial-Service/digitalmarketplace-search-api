@@ -8,6 +8,7 @@ API to handle interactions between the digitalmarketplace applications and searc
 Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
 ```
 brew update
+brew tap homebrew/versions
 brew install homebrew/versions/elasticsearch17
 ```
 
@@ -27,6 +28,7 @@ Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x 
 
 ```
 brew update
+brew tap homebrew/versions
 brew install homebrew/versions/elasticsearch17
 ```
 
