@@ -7,9 +7,10 @@ API to handle interactions between the digitalmarketplace applications and searc
 
 Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
 ```
-brew update
-brew tap homebrew/versions
-brew install homebrew/versions/elasticsearch17
+cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
+git checkout 390173e90^ -- Formula/elasticsearch@1.7.rb
+git fetch --depth=10000
+HOMEBREW_NO_AUTO_UPDATE=1 brew install elasticsearch@1.7
 ```
 
 Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
