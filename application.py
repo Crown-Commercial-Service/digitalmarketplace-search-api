@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import os
+
+from dmutils import init_manager
+
 from app import create_app
-from flask.ext.script import Manager, Server
 
 application = create_app(os.getenv('DM_ENVIRONMENT') or 'development')
-manager = Manager(application)
-manager.add_command("runserver", Server(port=5001))
+manager = init_manager(application, 5000, ['./json_schemas'])
 
 
 @manager.command
