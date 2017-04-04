@@ -108,7 +108,16 @@
         "filter_elasticCloud": {
           "type": "boolean",
           "index": "not_analyzed"
+        },
+
+        "serviceCategories": {
+          "type": "string"
+        },
+        "filter_serviceCategories": {
+          "type": "string",
+          "index": "not_analyzed"
         }
+
       }
     }
   }
