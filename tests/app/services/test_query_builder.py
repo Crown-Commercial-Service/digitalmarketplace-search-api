@@ -46,7 +46,7 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     query_string_clause = query["query"]["simple_query_string"]
     assert_equal(query_string_clause["query"], keywords)
     assert_equal(query_string_clause["default_operator"], "and")
-    assert_equal(query_string_clause["fields"], [
+    assert_equal(set(query_string_clause["fields"]), set([
         "frameworkName",
         "id",
         "lot",
@@ -56,51 +56,50 @@ def test_should_make_multi_match_query_if_keywords_supplied():
         "serviceSummary",
         "serviceTypes",
         "supplierName",
-    ])
+        "serviceCategories"
+    ]))
 
 
 def test_should_identify_filter_search_from_query_params():
     cases = (
         (build_query_params(), False),
         (build_query_params(keywords="lot"), False),
-        (build_query_params(lot="lot"), True),
-        (build_query_params(keywords="something", lot="lot"), True),
-        (build_query_params(service_types=["serviceTypes"]), True)
+        (build_query_params(filters={'lot': "lot"}), True),
+        (build_query_params(keywords="something", filters={'lot': "lot"}), True),
+        (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
     )
 
     for query, expected in cases:
-        yield assert_equal, is_filtered(query), expected
+        yield assert_equal, is_filtered(query), expected, query
 
 
 def test_should_have_filtered_root_element_if_service_types_search():
-    query = construct_query(build_query_params(
-        service_types=["my serviceTypes"]))
+    query = construct_query(build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
     assert_equal("query" in query, True)
     assert_equal("filtered" in query["query"], True)
 
 
 def test_should_have_filtered_root_element_if_lot_search():
-    query = construct_query(build_query_params(lot="SaaS"))
+    query = construct_query(build_query_params(filters={'lot': "SaaS"}))
     assert_equal("query" in query, True)
     assert_equal("filtered" in query["query"], True)
 
 
 def test_should_have_filtered_root_element_and_match_all_if_no_keywords():
-    query = construct_query(build_query_params(
-        service_types=["my serviceTypes"]))
+    query = construct_query(build_query_params(filters={'serviceTypes': ["my serviceTypes"]}))
     assert_equal("match_all" in query["query"]["filtered"]["query"], True)
 
 
 def test_should_have_filtered_root_element_and_match_keywords():
     query = construct_query(
         build_query_params(keywords="some keywords",
-                           service_types=["my serviceTypes"])
+                           filters={'serviceTypes': ["my serviceTypes"]})
     )["query"]["filtered"]["query"]
     assert_in("simple_query_string", query)
     query_string_clause = query["simple_query_string"]
     assert_equal(query_string_clause["query"], "some keywords")
     assert_equal(query_string_clause["default_operator"], "and")
-    assert_equal(query_string_clause["fields"], [
+    assert_equal(set(query_string_clause["fields"]), set([
         "frameworkName",
         "id",
         "lot",
@@ -110,11 +109,12 @@ def test_should_have_filtered_root_element_and_match_keywords():
         "serviceSummary",
         "serviceTypes",
         "supplierName",
-    ])
+        "serviceCategories",
+    ]))
 
 
 def test_should_have_filtered_term_service_types_clause():
-    query = construct_query(build_query_params(service_types=["serviceTypes"]))
+    query = construct_query(build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
     assert_equal("term" in
                  query["query"]["filtered"]["filter"]["bool"]["must"][0], True)
     assert_equal(
@@ -124,7 +124,7 @@ def test_should_have_filtered_term_service_types_clause():
 
 
 def test_should_have_filtered_term_lot_clause():
-    query = construct_query(build_query_params(lot="SaaS"))
+    query = construct_query(build_query_params(filters={'lot': "SaaS"}))
     assert_equal(
         "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
         True)
@@ -136,14 +136,14 @@ def test_should_have_filtered_term_lot_clause():
 
 def test_should_have_filtered_term_for_lot_and_service_types_clause():
     query = construct_query(
-        build_query_params(lot="SaaS", service_types=["serviceTypes"]))
+        build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]}))
     terms = query["query"]["filtered"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
     assert_in({"term": {'filter_lot': 'saas'}}, terms)
 
 
 def test_should_not_filter_on_unknown_keys():
-    params = build_query_params(lot="SaaS", service_types=["serviceTypes"])
+    params = build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]})
     params.add("this", "that")
     query = construct_query(params)
     terms = query["query"]["filtered"]["filter"]["bool"]["must"]
@@ -155,7 +155,7 @@ def test_should_not_filter_on_unknown_keys():
 def test_should_have_filtered_term_for_multiple_service_types_clauses():
     query = construct_query(
         build_query_params(
-            service_types=["serviceTypes1", "serviceTypes2", "serviceTypes3"]))
+            filters={'serviceTypes': ["serviceTypes1", "serviceTypes2", "serviceTypes3"]}))
     terms = query["query"]["filtered"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes1'}}, terms)
     assert_in({"term": {'filter_serviceTypes': 'servicetypes2'}}, terms)
@@ -164,7 +164,7 @@ def test_should_have_filtered_term_for_multiple_service_types_clauses():
 
 def test_should_use_whitespace_stripped_lowercased_service_types():
     query = construct_query(build_query_params(
-        service_types=["My serviceTypes"]))
+        filters={'serviceTypes': ["My serviceTypes"]}))
     assert_equal(
         "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
         True)
@@ -176,7 +176,7 @@ def test_should_use_whitespace_stripped_lowercased_service_types():
 
 def test_should_use_no_non_alphanumeric_characters_in_service_types():
     query = construct_query(
-        build_query_params(service_types=["Mys Service TYPes"]))
+        build_query_params(filters={'serviceTypes': ["Mys Service TYPes"]}))
     assert_equal(
         "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
         True)
@@ -194,24 +194,21 @@ def test_should_have_highlight_block_on_keyword_search():
 
 def test_should_have_highlight_block_on_filtered_search():
     query = construct_query(
-        build_query_params(keywords="some keywords",
-                           service_types=["some serviceTypes"]))
+        build_query_params(keywords="some keywords"))
 
     assert_equal("highlight" in query, True)
 
 
 def test_highlight_block_sets_encoder_to_html():
     query = construct_query(
-        build_query_params(keywords="some keywords",
-                           service_types=["some serviceTypes"]))
+        build_query_params(keywords="some keywords"))
 
     assert_equal(query["highlight"]["encoder"], "html")
 
 
 def test_highlight_block_contains_correct_fields():
     query = construct_query(
-        build_query_params(keywords="some keywords",
-                           service_types=["some serviceTypes"]))
+        build_query_params(keywords="some keywords"))
 
     assert_equal("highlight" in query, True)
 
@@ -234,15 +231,18 @@ def test_highlight_block_contains_correct_fields():
             example
 
 
-def build_query_params(keywords=None, service_types=None, lot=None, page=None):
+def build_query_params(keywords=None, page=None, filters=None):
     query_params = MultiDict()
     if keywords:
         query_params["q"] = keywords
-    if service_types:
-        for service_type in service_types:
-            query_params.add("filter_serviceTypes", service_type)
-    if lot:
-        query_params["filter_lot"] = lot
+    if filters:
+        for filter_raw_name, filter_value in filters.items():
+            filter_name = "filter_{}".format(filter_raw_name)
+            if isinstance(filter_value, list):
+                for value in filter_value:
+                    query_params.add(filter_name, value)
+            else:
+                query_params[filter_name] = filter_value
     if page:
         query_params["page"] = page
     return query_params
