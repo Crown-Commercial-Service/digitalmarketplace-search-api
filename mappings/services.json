@@ -2,19 +2,7 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "2015-10-12",
-        "transformations": [
-          {
-            "field": "serviceCategories",
-            "any_of": [
-              "Accounts payable",
-              "Accounts receivable"
-            ],
-            "append_value": [
-              "Accounting and finance"
-            ]
-          }
-        ]
+          "version": "2015-10-12"
       },
       "dynamic": "strict",
       "properties": {
