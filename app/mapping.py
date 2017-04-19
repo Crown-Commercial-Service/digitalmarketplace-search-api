@@ -15,5 +15,3 @@ TEXT_FIELDS = sorted(
     for field in SERVICES_MAPPING['mappings']['services']['properties'].keys()
     if not field.startswith('filter_')
 )
-
-TRANSFORM_FIELDS = SERVICES_MAPPING['mappings']['services']['_meta']['transformations']
