@@ -2,11 +2,76 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "7.1.0",
+        "version": "8.1.0",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-04-28T12:26:19.567723",
+        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-05-03T12:08:03.637373",
         "transformations": [
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
+                "Accounts payable",
+                "Accounts receivable",
+                "Asset management",
+                "Billing and invoicing",
+                "Budgeting",
+                "Contract management",
+                "Debt collection",
+                "Enterprise resource planning (ERP)",
+                "Expense management, expense reporting",
+                "Farming and farm management",
+                "Financial compliance",
+                "Financial management",
+                "Financial risk management",
+                "Land management",
+                "Payment gateway",
+                "Payroll",
+                "Portfolio analysis",
+                "Procurement",
+                "Purchasing",
+                "Revenue cycle management",
+                "Tax management",
+                "Other accounting and finance services"
+              ],
+              "append_value": [
+                "Accounting and finance"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
+                "Analytics",
+                "Business intelligence",
+                "Data mining, analysis tools and analytics",
+                "Data visualisation",
+                "Reporting and dashboards"
+              ],
+              "append_value": [
+                "Analytics and business intelligence"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
+                "Anti-spam and CAPTCHA",
+                "Audit tools",
+                "Authentication, identity and access management",
+                "Encryption",
+                "Log management",
+                "Remote access",
+                "Secure content and threat management",
+                "Security risk management"
+              ],
+              "append_value": [
+                "Application security"
+              ]
+            }
+          },
           {
             "append_conditionally": {
               "field": "serviceCategories",
@@ -63,17 +128,21 @@
             "append_conditionally": {
               "field": "serviceCategories",
               "any_of": [
-                "Anti-spam and CAPTCHA",
-                "Audit tools",
-                "Authentication, identity and access management",
-                "Encryption",
-                "Log management",
-                "Remote access",
-                "Secure content and threat management",
-                "Security risk management"
+                "Call centre",
+                "Constituent engagement",
+                "Contact management",
+                "CRM system",
+                "Customer helpdesk (service desk)",
+                "Customer service and support",
+                "Feedback and reviews management",
+                "Forms and surveys",
+                "Live chat",
+                "Partner relationship management (PRM)",
+                "Virtual agents",
+                "Other CRM services"
               ],
               "append_value": [
-                "Application security"
+                "Customer relationship management (CRM)"
               ]
             }
           },
@@ -81,14 +150,17 @@
             "append_conditionally": {
               "field": "serviceCategories",
               "any_of": [
-                "Analytics",
-                "Business intelligence",
-                "Data mining, analysis tools and analytics",
-                "Data visualisation",
-                "Reporting and dashboards"
+                "Backup, recovery and archival",
+                "Content management system (CMS)",
+                "Document management",
+                "Electronic data interchange (EDI)",
+                "Electronic signatures",
+                "File sending and sharing",
+                "File storage",
+                "Image management and picture archiving"
               ],
               "append_value": [
-                "Analytics and business intelligence"
+                "Electronic document and records management (EDRM)"
               ]
             }
           },
@@ -127,136 +199,6 @@
             "append_conditionally": {
               "field": "serviceCategories",
               "any_of": [
-                "Academic",
-                "Alumni management",
-                "Asynchronous learning",
-                "Campus management",
-                "Classroom management",
-                "eLearning",
-                "Examination or applicant testing",
-                "Library automation",
-                "Library management",
-                "Online courses",
-                "Online grading",
-                "School accounting",
-                "School administration",
-                "Student management",
-                "Synchronous learning"
-              ],
-              "append_value": [
-                "Schools, education and libraries"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Backup, recovery and archival",
-                "Content management system (CMS)",
-                "Document management",
-                "Electronic data interchange (EDI)",
-                "Electronic signatures",
-                "File sending and sharing",
-                "File storage",
-                "Image management and picture archiving"
-              ],
-              "append_value": [
-                "Electronic document and records management (EDRM)"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Call centre",
-                "Constituent engagement",
-                "Contact management",
-                "CRM system",
-                "Customer helpdesk (service desk)",
-                "Customer service and support",
-                "Feedback and reviews management",
-                "Forms and surveys",
-                "Live chat",
-                "Partner relationship management (PRM)",
-                "Virtual agents",
-                "Other CRM services"
-              ],
-              "append_value": [
-                "Customer relationship management (CRM)"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Accounts payable",
-                "Accounts receivable",
-                "Asset management",
-                "Billing and invoicing",
-                "Budgeting",
-                "Contract management",
-                "Debt collection",
-                "Enterprise resource planning (ERP)",
-                "Expense management, expense reporting",
-                "Farming and farm management",
-                "Financial compliance",
-                "Financial management",
-                "Financial risk management",
-                "Land management",
-                "Payment gateway",
-                "Payroll",
-                "Portfolio analysis",
-                "Procurement",
-                "Purchasing",
-                "Revenue cycle management",
-                "Tax management",
-                "Other accounting and finance services"
-              ],
-              "append_value": [
-                "Accounting and finance"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Advertising",
-                "Affiliate marketing",
-                "Behavioural targeting",
-                "Brand management",
-                "Campaign management",
-                "Community management",
-                "Contextual marketing",
-                "Display advertising",
-                "Email marketing",
-                "Forms and surveys",
-                "Marketing analytics",
-                "Marketing automation",
-                "Marketing data",
-                "Mobile marketing",
-                "Online display advertising",
-                "Personalisation and behavioral targeting",
-                "Public relations",
-                "Search marketing",
-                "Social marketing",
-                "Social media marketing",
-                "Social media monitoring",
-                "Webinars",
-                "Other marketing services"
-              ],
-              "append_value": [
-                "Marketing"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
                 "Applicant tracking",
                 "Benefits administration",
                 "Culture management",
@@ -277,70 +219,6 @@
               ],
               "append_value": [
                 "Human resources and employee management"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Accessibility",
-                "Agile project management and issue tracking",
-                "Bug tracking",
-                "Build tools",
-                "Code generation",
-                "Development tools",
-                "Form building",
-                "Integrated development environment (IDE)",
-                "Mobile development",
-                "Search",
-                "Source code management",
-                "Testing and optimisation",
-                "Usability",
-                "Version control",
-                "Website builder"
-              ],
-              "append_value": [
-                "Software development tools"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Airport management",
-                "Aviation maintenance",
-                "Distribution",
-                "Fleet management",
-                "Fleet tracking",
-                "Freight management",
-                "Inventory management",
-                "Marine",
-                "Shipping",
-                "Transportation dispatch",
-                "Trucking solutions",
-                "Warehouse management",
-                "Other transport and logistics services"
-              ],
-              "append_value": [
-                "Transport and logistics"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Agile project management and issue tracking",
-                "Professional services automation (PSA)",
-                "Project management",
-                "Project portfolio management (PPM)",
-                "Task management",
-                "Time and expense tracking"
-              ],
-              "append_value": [
-                "Project management and planning"
               ]
             }
           },
@@ -400,6 +278,57 @@
             "append_conditionally": {
               "field": "serviceCategories",
               "any_of": [
+                "Electronic discovery (legal)",
+                "Law enforcement",
+                "Law practice management",
+                "Legal billing",
+                "Legal calendar",
+                "Legal case management",
+                "Legal document management",
+                "Trust accounting"
+              ],
+              "append_value": [
+                "Legal and enforcement"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
+                "Advertising",
+                "Affiliate marketing",
+                "Behavioural targeting",
+                "Brand management",
+                "Campaign management",
+                "Community management",
+                "Contextual marketing",
+                "Display advertising",
+                "Email marketing",
+                "Forms and surveys",
+                "Marketing analytics",
+                "Marketing automation",
+                "Marketing data",
+                "Mobile marketing",
+                "Online display advertising",
+                "Personalisation and behavioral targeting",
+                "Public relations",
+                "Search marketing",
+                "Social marketing",
+                "Social media marketing",
+                "Social media monitoring",
+                "Webinars",
+                "Other marketing services"
+              ],
+              "append_value": [
+                "Marketing"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
                 "Applications",
                 "Building information modelling (BIM)",
                 "Business management",
@@ -435,6 +364,22 @@
             "append_conditionally": {
               "field": "serviceCategories",
               "any_of": [
+                "Agile project management and issue tracking",
+                "Professional services automation (PSA)",
+                "Project management",
+                "Project portfolio management (PPM)",
+                "Task management",
+                "Time and expense tracking"
+              ],
+              "append_value": [
+                "Project management and planning"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
                 "Configure, price and quote (CPQ)",
                 "eCommerce and shopping cart",
                 "Payment gateway",
@@ -453,17 +398,144 @@
             "append_conditionally": {
               "field": "serviceCategories",
               "any_of": [
-                "Electronic discovery (legal)",
-                "Law enforcement",
-                "Law practice management",
-                "Legal billing",
-                "Legal calendar",
-                "Legal case management",
-                "Legal document management",
-                "Trust accounting"
+                "Academic",
+                "Alumni management",
+                "Asynchronous learning",
+                "Campus management",
+                "Classroom management",
+                "eLearning",
+                "Examination or applicant testing",
+                "Library automation",
+                "Library management",
+                "Online courses",
+                "Online grading",
+                "School accounting",
+                "School administration",
+                "Student management",
+                "Synchronous learning"
               ],
               "append_value": [
-                "Legal and enforcement"
+                "Schools, education and libraries"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
+                "Accessibility",
+                "Agile project management and issue tracking",
+                "Bug tracking",
+                "Build tools",
+                "Code generation",
+                "Development tools",
+                "Form building",
+                "Integrated development environment (IDE)",
+                "Mobile development",
+                "Search",
+                "Source code management",
+                "Testing and optimisation",
+                "Usability",
+                "Version control",
+                "Website builder"
+              ],
+              "append_value": [
+                "Software development tools"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "serviceCategories",
+              "any_of": [
+                "Airport management",
+                "Aviation maintenance",
+                "Distribution",
+                "Fleet management",
+                "Fleet tracking",
+                "Freight management",
+                "Inventory management",
+                "Marine",
+                "Shipping",
+                "Transportation dispatch",
+                "Trucking solutions",
+                "Warehouse management",
+                "Other transport and logistics services"
+              ],
+              "append_value": [
+                "Transport and logistics"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "setupAndMigrationService",
+              "target_field": "serviceCategories",
+              "any_of": [
+                true
+              ],
+              "append_value": [
+                "Planning"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "setupAndMigrationService",
+              "target_field": "serviceCategories",
+              "any_of": [
+                true
+              ],
+              "append_value": [
+                "Setup and migration"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "QAAndTesting",
+              "target_field": "serviceCategories",
+              "any_of": [
+                true
+              ],
+              "append_value": [
+                "Quality assurance and performance testing"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "securityTesting",
+              "target_field": "serviceCategories",
+              "any_of": [
+                true
+              ],
+              "append_value": [
+                "Security testing"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "training",
+              "target_field": "serviceCategories",
+              "any_of": [
+                true
+              ],
+              "append_value": [
+                "Training"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "ongoingSupport",
+              "target_field": "serviceCategories",
+              "any_of": [
+                true
+              ],
+              "append_value": [
+                "Ongoing support"
               ]
             }
           }
