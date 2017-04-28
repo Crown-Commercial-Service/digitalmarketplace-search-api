@@ -1,3 +1,5 @@
+import mock
+
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 from nose.tools import assert_equal
@@ -58,3 +60,142 @@ def test_should_remove_raw_filter_fields_that_are_non_text():
     assert_equal(result["filter_lot"], "saas")
     assert_equal(result["filter_freeOption"], False)
     assert_equal("freeOption" in result, False)
+
+
+def test_should_add_parent_category():
+    request = {
+        "serviceCategories": ["Accounts payable"],
+    }
+
+    result = convert_request_json_into_index_json(request)
+
+    assert result["serviceCategories"] == [
+        "Accounts payable",
+        "Accounting and finance",
+    ]
+
+    assert result["filter_serviceCategories"] == [
+        "accountspayable",
+        "accountingandfinance",
+    ]
+
+
+def test_append_conditionally_does_not_duplicate_values():
+    with mock.patch('app.main.services.process_request_json.TRANSFORM_FIELDS', new=[
+        {
+            "append_conditionally": {
+                "field": "serviceCategories",
+                "any_of": [
+                    "Crops",
+                    "Animals",
+                ],
+                "append_value": [
+                    "Agriculture",
+                ]
+            }
+        }
+    ]):
+        request = {
+            "serviceCategories": ["Crops", "Animals"],
+        }
+
+        result = convert_request_json_into_index_json(request)
+
+        assert result["serviceCategories"] == [
+            "Crops", "Animals", "Agriculture",
+        ]  # not ["Crops", "Animals", "Agriculture", "Agriculture"]
+
+
+def test_duplicative_transformations_do_duplicate_values():
+    # Transformations generated from the frameworks script DO NOT attempt to generate duplicate
+    # values in the way that this test does, but in principle some set of transformations might.
+    # We might decide in future that we want to change the append_conditionally implementation
+    # to remove this duplication, but its current behaviour (i.e. ignoring whether values
+    # are already in the destination field) seems consistent with the documented behaviour
+    # of Elasticsearch's "Append" processor
+    # <https://www.elastic.co/guide/en/elasticsearch/reference/current/append-processor.html>.
+    with mock.patch('app.main.services.process_request_json.TRANSFORM_FIELDS', new=[
+        {
+            "append_conditionally": {
+                "field": "serviceCategories",
+                "any_of": [
+                    "Crops",
+                ],
+                "append_value": [
+                    "Agriculture"
+                ]
+            }
+        },
+        {
+            "append_conditionally": {
+                "field": "serviceCategories",
+                "any_of": [
+                    "Animals",
+                ],
+                "append_value": [
+                    "Agriculture"
+                ]
+            }
+        },
+    ]):
+        request = {
+            "serviceCategories": ["Crops", "Animals"],
+        }
+
+        result = convert_request_json_into_index_json(request)
+
+        assert result["serviceCategories"] == [
+            "Crops", "Animals", "Agriculture", "Agriculture",
+        ]
+
+
+def test_missing_field_in_transformation():
+    with mock.patch.multiple('app.main.services.process_request_json', TRANSFORM_FIELDS=[
+        {
+            "append_conditionally": {
+                "field": "someField",
+                "any_of": [
+                    "foo",
+                ],
+                "append_value": [
+                    "bar"
+                ]
+            }
+        },
+    ], TEXT_FIELDS_SET=set(['someField', 'otherField'])):
+        request = {
+            "otherField": ["wibble"],
+        }
+
+        result = convert_request_json_into_index_json(request)
+        # really just checking this case doesn't throw!
+
+        assert result == {
+            "otherField": ["wibble"],
+        }
+
+
+def test_create_new_field_in_transformation():
+    with mock.patch.multiple('app.main.services.process_request_json', TRANSFORM_FIELDS=[
+        {
+            "append_conditionally": {
+                "field": "someField",
+                "any_of": [
+                    "foo",
+                ],
+                "target_field": "newField",
+                "append_value": [
+                    "bar"
+                ]
+            }
+        },
+    ], TEXT_FIELDS_SET=set(['someField', 'newField'])):
+        request = {
+            "someField": ["foo"],
+        }
+
+        result = convert_request_json_into_index_json(request)
+
+        assert result["newField"] == [
+            "bar",
+        ]
