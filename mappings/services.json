@@ -5,7 +5,7 @@
         "version": "8.1.0",
         "generated_from_framework": "g-cloud-9",
         "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-05-03T12:08:03.637373",
+        "generated_time": "2017-05-05T07:09:52.089090",
         "transformations": [
           {
             "append_conditionally": {
@@ -559,6 +559,10 @@
           "type": "string"
         },
         "serviceSummary": {
+          "term_vector": "with_positions_offsets",
+          "type": "string"
+        },
+        "serviceDescription": {
           "term_vector": "with_positions_offsets",
           "type": "string"
         },
