@@ -23,4 +23,14 @@ test_pep8: virtualenv
 test_unit: virtualenv
 	${VIRTUALENV_ROOT}/bin/py.test ${PYTEST_ARGS}
 
-.PHONY: virtualenv requirements requirements_for_test test_pep8 test_unit test run_app run_all
+docker-build:
+	$(if ${RELEASE_NAME},,$(eval export RELEASE_NAME=$(shell git describe)))
+	@echo "Building a docker image for ${RELEASE_NAME}..."
+	docker build --pull -t digitalmarketplace/search-api --build-arg release_name=${RELEASE_NAME} .
+	docker tag digitalmarketplace/search-api digitalmarketplace/search-api:${RELEASE_NAME}
+
+docker-push:
+	$(if ${RELEASE_NAME},,$(eval export RELEASE_NAME=$(shell git describe)))
+	docker push digitalmarketplace/search-api:${RELEASE_NAME}
+
+.PHONY: virtualenv requirements requirements_for_test test_pep8 test_unit test run_app run_all docker-build docker-push
