@@ -20,6 +20,7 @@ class Config:
     # Logging
     DM_LOG_LEVEL = 'DEBUG'
     DM_APP_NAME = 'search-api'
+    DM_PLAIN_TEXT_LOGS = False
     DM_LOG_PATH = None
     DM_REQUEST_ID_HEADER = 'DM-Request-ID'
     DM_DOWNSTREAM_REQUEST_ID_HEADER = 'X-Amz-Cf-Id'
@@ -34,6 +35,7 @@ class Config:
 
 class Test(Config):
     DEBUG = True
+    DM_PLAIN_TEXT_LOGS = True
     DM_LOG_LEVEL = 'CRITICAL'
 
     DM_SEARCH_API_AUTH_TOKENS = 'valid-token'
@@ -41,6 +43,7 @@ class Test(Config):
 
 class Development(Config):
     DEBUG = True
+    DM_PLAIN_TEXT_LOGS = True
     DM_SEARCH_PAGE_SIZE = 5
 
     DM_SEARCH_API_AUTH_TOKENS = 'myToken'
