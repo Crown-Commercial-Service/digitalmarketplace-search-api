@@ -2,6 +2,10 @@
   "mappings": {
     "services": {
       "_meta": {
+        "version": "8.4.1",
+        "generated_from_framework": "g-cloud-9",
+        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-05-17T16:16:17.421332",
         "transformations": [
           {
             "append_conditionally": {
@@ -551,6 +555,18 @@
             "append_conditionally": {
               "field": "webChatSupport",
               "target_field": "webChatSupport",
+              "any_of": [
+                "yes_extra_cost"
+              ],
+              "append_value": [
+                "Yes"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "onsiteSupport",
+              "target_field": "onsiteSupport",
               "any_of": [
                 "yes_extra_cost"
               ],
