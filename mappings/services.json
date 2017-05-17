@@ -2,10 +2,10 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "8.2.0",
+        "version": "8.3.2",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-05-05T15:41:10.082132",
+        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-05-17T10:52:25.795920",
         "transformations": [
           {
             "append_conditionally": {
@@ -536,6 +536,30 @@
               ],
               "append_value": [
                 "Ongoing support"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "emailOrTicketingSupport",
+              "target_field": "emailOrTicketingSupport",
+              "any_of": [
+                "yes_extra_cost"
+              ],
+              "append_value": [
+                "Yes"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "webChatSupport",
+              "target_field": "webChatSupport",
+              "any_of": [
+                "yes_extra_cost"
+              ],
+              "append_value": [
+                "Yes"
               ]
             }
           }
