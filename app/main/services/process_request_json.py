@@ -64,11 +64,13 @@ def convert_request_json_into_index_json(request_json):
             TRANSFORMATION_PROCESSORS[transformation_type](transformation_arguments, request_json)
 
     for field in request_json:
-        if field in FILTER_FIELDS_SET:
-            index_json["filter_" + field] = process_values_for_matching(
-                request_json[field]
-            )
-        if field in TEXT_FIELDS_SET:
-            index_json[field] = request_json[field]
+        # TODO G9 breaking change, remove once G7/G8 does not need to be indexed
+        if not (field == "cloudDeploymentModel" and request_json['frameworkSlug'] in ('g-cloud-7', 'g-cloud-8')):
+            if field in FILTER_FIELDS_SET:
+                index_json["filter_" + field] = process_values_for_matching(
+                    request_json[field]
+                )
+            if field in TEXT_FIELDS_SET:
+                index_json[field] = request_json[field]
 
     return index_json
