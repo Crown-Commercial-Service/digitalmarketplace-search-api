@@ -2,10 +2,10 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "8.4.1",
+        "version": "8.4.3",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-05-17T16:16:17.421332",
+        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-05-18T07:47:58.482181",
         "transformations": [
           {
             "append_conditionally": {
@@ -547,7 +547,7 @@
                 "yes_extra_cost"
               ],
               "append_value": [
-                "Yes"
+                "yes"
               ]
             }
           },
@@ -559,7 +559,7 @@
                 "yes_extra_cost"
               ],
               "append_value": [
-                "Yes"
+                "yes"
               ]
             }
           },
@@ -571,7 +571,57 @@
                 "yes_extra_cost"
               ],
               "append_value": [
-                "Yes"
+                "yes"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "dataStorageAndProcessingLocations",
+              "target_field": "dataStorageAndProcessingLocations",
+              "any_of": [
+                "uk"
+              ],
+              "append_value": [
+                "eea"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "dataStorageAndProcessingLocations",
+              "target_field": "dataStorageAndProcessingLocations",
+              "any_of": [
+                "uk",
+                "eea"
+              ],
+              "append_value": [
+                "privacy_shield"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "governmentSecurityClearances",
+              "target_field": "governmentSecurityClearances",
+              "any_of": [
+                "dv"
+              ],
+              "append_value": [
+                "sc"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "governmentSecurityClearances",
+              "target_field": "governmentSecurityClearances",
+              "any_of": [
+                "dv",
+                "sc"
+              ],
+              "append_value": [
+                "bpss"
               ]
             }
           }
