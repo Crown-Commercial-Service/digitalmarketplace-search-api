@@ -8,6 +8,7 @@ from app.main.services.query_builder import (
     or_field_filters, and_field_filters,
     filter_clause
 )
+from app.mapping import TEXT_FIELDS
 from werkzeug.datastructures import MultiDict
 
 
@@ -46,19 +47,7 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     query_string_clause = query["query"]["simple_query_string"]
     assert_equal(query_string_clause["query"], keywords)
     assert_equal(query_string_clause["default_operator"], "and")
-    assert_equal(set(query_string_clause["fields"]), set([
-        "frameworkName",
-        "id",
-        "lot",
-        "serviceBenefits",
-        "serviceFeatures",
-        "serviceName",
-        "serviceSummary",
-        "serviceDescription",
-        "serviceTypes",
-        "supplierName",
-        "serviceCategories"
-    ]))
+    assert_equal(set(query_string_clause["fields"]), set(TEXT_FIELDS))
 
 
 def test_should_identify_filter_search_from_query_params():
@@ -100,19 +89,7 @@ def test_should_have_filtered_root_element_and_match_keywords():
     query_string_clause = query["simple_query_string"]
     assert_equal(query_string_clause["query"], "some keywords")
     assert_equal(query_string_clause["default_operator"], "and")
-    assert_equal(set(query_string_clause["fields"]), set([
-        "frameworkName",
-        "id",
-        "lot",
-        "serviceBenefits",
-        "serviceFeatures",
-        "serviceName",
-        "serviceSummary",
-        "serviceDescription",
-        "serviceTypes",
-        "supplierName",
-        "serviceCategories",
-    ]))
+    assert_equal(set(query_string_clause["fields"]), set(TEXT_FIELDS))
 
 
 def test_should_have_filtered_term_service_types_clause():
