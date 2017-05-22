@@ -2,10 +2,10 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "8.4.4",
+        "version": "8.4.11",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-05-18T12:47:05.064079",
+        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-05-22T12:14:49.974655",
         "transformations": [
           {
             "append_conditionally": {
@@ -636,6 +636,10 @@
         "lot": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "lotName": {
+          "type": "string",
+          "index": "analyzed"
         },
         "frameworkName": {
           "type": "string",
