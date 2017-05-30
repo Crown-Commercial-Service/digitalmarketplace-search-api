@@ -16,6 +16,17 @@ def test_single_filter_queries():
     yield check_query, 'filter_openSource=true', 60, {'id': odd}
 
 
+def test_basic_aggregations():
+    yield check_aggregations_query, '', 120, {'PaaS': matches(30), 'SaaS': matches(30), 'IaaS': matches(30),
+                                              'SCS': matches(30)}
+    yield check_aggregations_query, 'filter_lot=SaaS', 30, {'SaaS': matches(30)}
+    yield check_aggregations_query, 'filter_minimumContractPeriod=Hour,Day', 80, {'PaaS': matches(20),
+                                                                                  'SaaS': matches(20),
+                                                                                  'IaaS': matches(20),
+                                                                                  'SCS': matches(20)}
+    yield check_aggregations_query, 'filter_lot=SaaS&filter_minimumContractPeriod=Hour,Day', 20, {'SaaS': matches(20)}
+
+
 def test_or_filters():
     yield (check_query, 'filter_lot=SaaS,PaaS',
            60, {'lot': one_of(['SaaS', 'PaaS'])})
@@ -210,44 +221,56 @@ def search_results(query):
     return json.loads(response.get_data())
 
 
-def search_or_results(query_or_results):
-    if isinstance(query_or_results, dict):
-        return query_or_results
-    else:
-        return search_results(query_or_results)
+def aggregations_results(query):
+    app = create_app('test')
+    test_client = app.test_client()
+    setup_authorization(app)
+
+    response = test_client.get('/index-to-create/services/aggregations?{}&aggregations=lot'.format(query))
+    return json.loads(response.get_data())
 
 
 # Result checker functions
 
 def count_for_query(query, expected_count):
-    results = search_or_results(query)
     assert_equal(
-        results['meta']['total'], expected_count,
+        query['meta']['total'], expected_count,
         "Unexpected number of results. Expected {}, received {}:\n{}".format(
-            expected_count, results['meta']['total'],
-            json.dumps(results, indent=2)
+            expected_count, query['meta']['total'],
+            json.dumps(query, indent=2)
         )
     )
 
-    return results
-
 
 def result_fields_check(query, check_fns):
-    results = search_or_results(query)
-    services = results['services']
+    services = query['services']
     for field in check_fns:
         ok_(all(check_fns[field](service[field]) for service in services),
             "Field '{}' check '{}' failed for search results:\n{}".format(
                 field, check_fns[field].__doc__,
-                json.dumps(results, indent=2)))
+                json.dumps(query, indent=2)))
 
-    return results
+
+def aggregation_fields_check(query, check_fns):
+    aggregations = query['aggregations']
+    for field in check_fns:
+        ok_(all(check_fns[field](aggregations[agg][field]) for agg in aggregations),
+            "Field '{}' check '{}' failed for aggregation results:\n{}".format(
+                field, check_fns[field].__doc__,
+                json.dumps(query, indent=2)))
 
 
 def check_query(query, expected_result_count, match_fields):
-    results = search_or_results(query)
+    results = search_results(query)
     count_for_query(results, expected_result_count)
     result_fields_check(results, match_fields)
+
+
+def check_aggregations_query(query, expected_result_count, match_fields):
+    results = aggregations_results(query)
+    count_for_query(results, expected_result_count)
+
+    aggregation_fields_check(results, match_fields)
 
 
 # Helpers for 'result_fields_check'

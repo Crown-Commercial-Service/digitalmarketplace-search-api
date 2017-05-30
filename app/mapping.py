@@ -16,4 +16,10 @@ TEXT_FIELDS = sorted(
     if not field.startswith('filter_')
 )
 
+AGGREGATABLE_FIELDS = sorted(
+    k
+    for k, v in SERVICES_MAPPING['mappings']['services']['properties'].items()
+    if v.get('fields', {}).get('raw', False)
+)
+
 TRANSFORM_FIELDS = SERVICES_MAPPING['mappings']['services']['_meta']['transformations']

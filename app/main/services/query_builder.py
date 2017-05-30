@@ -1,13 +1,18 @@
 from .conversions import strip_and_lowercase
-from ...mapping import TEXT_FIELDS, FILTER_FIELDS
+from ...mapping import TEXT_FIELDS, FILTER_FIELDS, AGGREGATABLE_FIELDS
 
 
-def construct_query(query_args, page_size=100):
+def construct_query(query_args, aggregations=[], page_size=100):
     if not is_filtered(query_args):
         query = {
             "query": build_keywords_query(query_args)
         }
     else:
+        query_filters = []
+        for field, values in query_args.lists():
+            if field.startswith("filter"):
+                query_filters.extend(field_filters(field, values))
+
         query = {
             "query": {
                 "filtered": {
@@ -15,9 +20,16 @@ def construct_query(query_args, page_size=100):
                     "filter": filter_clause(query_args)
                 }
             }
-
         }
     query["highlight"] = highlight_clause()
+
+    aggregations = set(aggregations)
+    if aggregations:
+        missing_aggregations = aggregations.difference(AGGREGATABLE_FIELDS)
+        if missing_aggregations:
+            raise ValueError("Aggregations for `{}` are not supported.".format(', '.join(missing_aggregations)))
+
+        query['aggregations'] = {x: {"terms": {"field": "{}.raw".format(x), "size": 0}} for x in aggregations}
 
     query["size"] = page_size
     if "page" in query_args:

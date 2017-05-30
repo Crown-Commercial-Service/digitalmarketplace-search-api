@@ -1,6 +1,6 @@
 from flask import jsonify, url_for, request, abort
 from app.main import main
-from app.main.services.search_service import keyword_search, \
+from app.main.services.search_service import search_with_keywords_and_filters, aggregations_with_keywords_and_filters, \
     index, status_for_index, create_index, delete_index, \
     fetch_by_id, delete_by_id, create_alias
 from app.main.services.process_request_json import \
@@ -23,11 +23,24 @@ def root():
 
 @main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])
 def search(index_name, doc_type):
-    result, status_code = keyword_search(index_name, doc_type, request.args)
+    result, status_code = search_with_keywords_and_filters(index_name, doc_type, request.args)
 
     if status_code == 200:
         return jsonify(meta=result['meta'],
                        services=result['services'],
+                       links=result['links']), status_code
+    else:
+        return api_response(result, status_code)
+
+
+@main.route('/<string:index_name>/<string:doc_type>/aggregations', methods=['GET'])
+def aggregations(index_name, doc_type):
+    result, status_code = aggregations_with_keywords_and_filters(index_name, doc_type, request.args,
+                                                                 request.args.getlist('aggregations'))
+
+    if status_code == 200:
+        return jsonify(meta=result['meta'],
+                       aggregations=result['aggregations'],
                        links=result['links']), status_code
     else:
         return api_response(result, status_code)
