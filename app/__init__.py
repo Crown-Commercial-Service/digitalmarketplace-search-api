@@ -19,7 +19,10 @@ def create_app(config_name):
         feature_flags=feature_flags
     )
 
-    elasticsearch_client.init_app(application)
+    elasticsearch_client.init_app(
+        application,
+        verify_certs=True
+    )
 
     from .main import main as main_blueprint
     from .status import status as status_blueprint
