@@ -2,6 +2,7 @@ from nose.tools import (
     assert_equal, assert_in, assert_not_in,
     assert_false, assert_true
 )
+import pytest
 from app.main.services.query_builder import construct_query, is_filtered
 from app.main.services.query_builder import (
     field_is_or_filter, field_filters,
@@ -21,7 +22,7 @@ def test_should_have_page_size_set():
 
 
 def test_should_be_able_to_override_pagesize():
-    assert_equal(construct_query(build_query_params(), 10)["size"], 10)
+    assert_equal(construct_query(build_query_params(), page_size=10)["size"], 10)
 
 
 def test_page_should_set_from_parameter():
@@ -37,6 +38,26 @@ def test_should_have_match_all_query_if_no_params():
     assert_equal("query" in construct_query(build_query_params()), True)
     assert_equal("match_all" in
                  construct_query(build_query_params())["query"], True)
+
+
+@pytest.mark.parametrize('aggregations, equality', (([], False), (['lot'], True)))
+def test_aggregations_root_element_present_if_appropriate(aggregations, equality):
+    assert_equal('aggregations' in construct_query(build_query_params(), aggregations=aggregations), equality)
+    assert_equal('aggregations' in construct_query(build_query_params(), aggregations=aggregations), equality)
+
+
+@pytest.mark.parametrize('aggregations', ((['lot']), (['lot', 'serviceCategories'])))
+def test_aggregations_terms_added_for_each_param(aggregations):
+    query = construct_query(build_query_params(), aggregations=aggregations)
+
+    assert_equal(set(aggregations), {x for x in query['aggregations']})
+    assert_equal({'{}.raw'.format(x) for x in aggregations}, {v['terms']['field'] for k, v in
+                                                              query['aggregations'].items()})
+
+
+def test_aggregation_throws_error_if_not_implemented():
+    with pytest.raises(ValueError):
+        construct_query(build_query_params(), aggregations=['missing'])
 
 
 def test_should_make_multi_match_query_if_keywords_supplied():

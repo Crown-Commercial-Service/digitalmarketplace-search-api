@@ -120,34 +120,52 @@ def status_for_all_indexes():
         return _get_an_error_message(e), e.status_code
 
 
-def keyword_search(index_name, doc_type, query_args):
+def core_search_and_aggregate(index_name, doc_type, query_args, search=False, aggregations=[]):
     try:
         page_size = int(current_app.config['DM_SEARCH_PAGE_SIZE'])
+        es_search_kwargs = {'search_type': 'count'} if aggregations and not search else {}
         res = es.search(
             index=index_name,
             doc_type=doc_type,
-            body=construct_query(query_args, page_size)
+            body=construct_query(query_args, aggregations, page_size),
+            **es_search_kwargs
         )
 
         results = convert_es_results(res, query_args)
 
-        url_for_search = lambda **kwargs: \
-            url_for('.search', index_name=index_name, doc_type=doc_type,
-                    _external=True, **kwargs)
+        def url_for_search(**kwargs):
+            return url_for('.search', index_name=index_name, doc_type=doc_type, _external=True, **kwargs)
+
         response = {
             "meta": results['meta'],
             "services": results['services'],
             "links": generate_pagination_links(
                 query_args, results['meta']['total'],
                 page_size, url_for_search
-            )
+            ),
         }
 
+        if aggregations:
+            response['aggregations'] = {}
+            # Return aggregations in a slightly cleaner format.
+            for k, v in res.get('aggregations', {}).items():
+                response['aggregations'][k] = {d['key']: d['doc_count'] for d in v['buckets']}
+
         return response, 200
+
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
+
     except ValueError as e:
         return str(e), 400
+
+
+def search_with_keywords_and_filters(index_name, doc_type, query_args):
+    return core_search_and_aggregate(index_name, doc_type, query_args, search=True)
+
+
+def aggregations_with_keywords_and_filters(index_name, doc_type, query_args, aggregations=[]):
+    return core_search_and_aggregate(index_name, doc_type, query_args, aggregations=aggregations)
 
 
 def _get_an_error_message(exception):
