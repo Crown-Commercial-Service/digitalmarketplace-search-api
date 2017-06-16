@@ -29,8 +29,5 @@ def create_app(config_name):
 
     application.register_blueprint(status_blueprint)
     application.register_blueprint(main_blueprint)
-    if configs[config_name].ALLOW_EXPLORER:
-        from .explorer import explorer as explorer_blueprint
 
-        application.register_blueprint(explorer_blueprint)
     return application

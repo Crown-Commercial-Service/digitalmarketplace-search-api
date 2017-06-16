@@ -10,7 +10,6 @@ class Config:
         os.path.abspath(os.path.dirname(__file__))
     )
     AUTH_REQUIRED = True
-    ALLOW_EXPLORER = True
 
     ELASTICSEARCH_HOST = os.getenv('DM_ELASTICSEARCH_URL', 'localhost:9200')
 
@@ -51,7 +50,6 @@ class Development(Config):
 
 class Live(Config):
     DEBUG = False
-    ALLOW_EXPLORER = False
 
     DM_LOG_PATH = '/var/log/digitalmarketplace/application.log'
 
