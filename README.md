@@ -61,24 +61,6 @@ Install Python dependencies with pip
 make requirements_for_test
 ```
 
-### Insert G6 services into elasticsearch index
-
-Start elasticsearch (in a new console window/tab)
-
-```
-elasticsearch
-```
-
-The process for indexing of services is changing and this documentation will be updated shortly. In the meantime the explorer (see below) can be used to insert documents.
-
-
-Set the required environment variable (in production this will point to the
-load balancer in front of the Elasticsearch cluster).
-
-```
-export DM_ELASTICSEARCH_URL=http://localhost:9200
-```
-
 ### Run the tests
 
 ```
@@ -100,6 +82,18 @@ python application.py runserver
 
 ### Using the Search API locally
 
+Start elasticsearch (in a new console window/tab):
+
+```
+elasticsearch
+```
+
+Set the required environment variable:
+
+```
+export DM_ELASTICSEARCH_URL=http://localhost:9200
+```
+
 The Search API runs on port 5001. Calls to the API require a valid bearer
 token. Tokens to be accepted can be set using the DM_SEARCH_API_AUTH_TOKENS
 environment variable, e.g.:
@@ -111,12 +105,6 @@ and then you can include this token in your request headers, e.g.:
 ```
 curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
 ```
-
-Alternatively there is an API explorer running on
-
-    [http://localhost:5001/_explorer](http://localhost:5001/_explorer)
-
-Which provides a UI over the API calls.
 
 ### Using FeatureFlags
 
