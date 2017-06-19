@@ -1,10 +1,8 @@
 from flask import Flask
 from config import config as configs
-from flask.ext.bootstrap import Bootstrap
 from flask.ext.elasticsearch import FlaskElasticsearch
 from dmutils import init_app, flask_featureflags
 
-bootstrap = Bootstrap()
 feature_flags = flask_featureflags.FeatureFlag()
 elasticsearch_client = FlaskElasticsearch()
 
@@ -15,7 +13,6 @@ def create_app(config_name):
     init_app(
         application,
         configs[config_name],
-        bootstrap=bootstrap,
         feature_flags=feature_flags
     )
 
