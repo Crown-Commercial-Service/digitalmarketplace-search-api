@@ -14,13 +14,52 @@ import contextlib
 pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
-def test_single_filter_queries():
-    yield check_query, '', 120, {}
-    yield check_query, 'filter_lot=SaaS', 30, {'lot': matches("SaaS")}
-    yield (check_query, 'filter_serviceTypes=Implementation',
-           48, {'serviceTypes': contains('Implementation')})
-    yield check_query, 'filter_minimumContractPeriod=Hour', 40, {}
-    yield check_query, 'filter_openSource=true', 60, {'id': odd}
+# Helpers for 'result_fields_check'
+
+def matches(expected_field):
+    check = lambda result_field: result_field == expected_field
+    check.__doc__ = "Should match '%s'" % expected_field
+    check.__name__ = "matches %s" % expected_field
+
+    return check
+
+
+def contains(expected_field):
+    check = lambda result_field: expected_field in result_field
+    check.__doc__ = "Should contain '%s'" % expected_field
+    check.__name__ = "contains %s" % expected_field
+
+    return check
+
+
+def one_of(expected_fields):
+    check = lambda result_field: result_field in expected_fields
+    check.__doc__ = "Should be in %s" % expected_fields
+    check.__name__ = "one_of %s" % expected_fields
+
+    return check
+
+
+def odd(result_field):
+    "Should be odd."
+    return int(result_field) % 2 == 1
+
+
+def even(result_field):
+    "Should be event."
+    return int(result_field) % 2 == 0
+
+
+@pytest.mark.parametrize('query, expected_result_count, match_fields', (
+    ('', 120, {}),
+    ('filter_lot=SaaS', 30, {'lot': matches("SaaS")}),
+    ('filter_serviceTypes=Implementation',
+     48, {'serviceTypes': contains('Implementation')}),
+    ('filter_minimumContractPeriod=Hour', 40, {}),
+    ('filter_openSource=true', 60, {'id': odd}),
+))
+def test_single_filter_queries(query, expected_result_count, match_fields):
+    check_query(query, expected_result_count, match_fields)
 
 
 def test_basic_aggregations():
@@ -286,39 +325,3 @@ def check_aggregations_query(query, expected_result_count, match_fields):
     count_for_query(results, expected_result_count)
 
     aggregation_fields_check(results, match_fields)
-
-
-# Helpers for 'result_fields_check'
-
-def matches(expected_field):
-    check = lambda result_field: result_field == expected_field
-    check.__doc__ = "Should match '%s'" % expected_field
-    check.__name__ = "matches %s" % expected_field
-
-    return check
-
-
-def contains(expected_field):
-    check = lambda result_field: expected_field in result_field
-    check.__doc__ = "Should contain '%s'" % expected_field
-    check.__name__ = "contains %s" % expected_field
-
-    return check
-
-
-def one_of(expected_fields):
-    check = lambda result_field: result_field in expected_fields
-    check.__doc__ = "Should be in %s" % expected_fields
-    check.__name__ = "one_of %s" % expected_fields
-
-    return check
-
-
-def odd(result_field):
-    "Should be odd."
-    return int(result_field) % 2 == 1
-
-
-def even(result_field):
-    "Should be event."
-    return int(result_field) % 2 == 0
