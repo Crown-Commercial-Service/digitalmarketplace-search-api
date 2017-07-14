@@ -20,7 +20,7 @@ sudo easy_install virtualenv
 
 Install dependencies and run the app
 ```
-make run_all
+make run-all
 ```
 
 ## Setup
@@ -58,7 +58,7 @@ source ./venv/bin/activate
 Install Python dependencies with pip
 
 ```
-make requirements_for_test
+make requirements-dev
 ```
 
 ### Run the tests
@@ -72,7 +72,7 @@ make test
 To run the Search API for local development you can use the convenient run
 script, which sets the required environment variables for local development:
 ```
-make run_app
+make run-app
 ```
 
 More generally, the command to start the server is:
@@ -105,6 +105,19 @@ and then you can include this token in your request headers, e.g.:
 ```
 curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
 ```
+
+### Updating application dependencies
+
+`requirements.txt` file is generated from the `requirements-app.txt` in order to pin
+versions of all nested dependecies. If `requirements-app.txt` has been changed (or
+we want to update the unpinned nested dependencies) `requirements.txt` should be
+regenerated with
+
+```
+make freeze-requirements
+```
+
+`requirements.txt` should be commited alongside `requirements-app.txt` changes.
 
 ### Using FeatureFlags
 
