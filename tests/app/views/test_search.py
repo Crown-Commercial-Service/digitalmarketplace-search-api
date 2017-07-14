@@ -1,5 +1,6 @@
 import mock
-import re
+import pytest
+
 
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
@@ -7,6 +8,9 @@ from flask import json
 from nose.tools import assert_equal, assert_in, assert_true
 
 from ..helpers import BaseApplicationTest, default_service
+
+
+pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 class TestSearchIndexes(BaseApplicationTest):

@@ -1,10 +1,17 @@
 from app.main.services import search_service
 from flask import json
 from nose.tools import assert_equal, ok_
+import pytest
 
 from app import create_app
 from ..helpers import setup_authorization
 from ..helpers import default_service
+
+import tests.conftest
+import contextlib
+
+
+pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 def test_single_filter_queries():
@@ -162,32 +169,40 @@ def test_escaped_characters():
     yield (check_query, 'q=Service \| 12', 0, {})
 
 
-# Module setup and teardown
-def setup_module():
-    app = create_app('test')
-    test_client = app.test_client()
+@pytest.fixture(scope='module', autouse=True)
+def dummy_services():
+    """Fixture that indexes a bunch of fake G-Cloud services so that searching can be tested."""
 
-    setup_authorization(app)
+    # Create a context where get_services_mapping has been patched, despite that fixture being function-
+    # scoped - see commentary below.
+    with contextlib.contextmanager(tests.conftest.services_mapping)():
+        app = create_app('test')
+        test_client = app.test_client()
 
-    with app.app_context():
-        test_client.put(
-            '/index-to-create',
-            data=json.dumps({"type": "index"}),
-            content_type="application/json",
-        )
-        services = list(create_services(120))
-        for service in services:
+        setup_authorization(app)
+
+        with app.app_context():
             test_client.put(
-                '/index-to-create/services/%s' % service["service"]["id"],
-                data=json.dumps(service), content_type='application/json'
+                '/index-to-create',
+                data=json.dumps({"type": "index"}),
+                content_type="application/json",
             )
-            search_service.refresh('index-to-create')
-
-
-def teardown_module():
-    app = create_app('test')
-    test_client = app.test_client()
-
+            services = list(create_services(120))
+            for service in services:
+                test_client.put(
+                    '/index-to-create/services/%s' % service["service"]["id"],
+                    data=json.dumps(service), content_type='application/json'
+                )
+                search_service.refresh('index-to-create')
+        # `yield` is within the services_mapping contextmanager (created above).
+        # This has the effect of making the services_mapping fixture module-scoped, for this module only.
+        # This is safe, because none of the tests here actually modify the mapping. It is necessary,
+        # because many of the tests use the (deprecated) nosetests `yield` format. These do not support
+        # function-scoped fixtures, and would therefore fail to use the services_mapping fixture, despite
+        # the pytestmark at the top of this file.
+        # Once all of the yield-style tests have been converted to use pytest.mark.parametrize, then the
+        # line below can move back outside the services_mapping contextmanager.
+        yield
     test_client.delete('/index-to-create')
 
 
