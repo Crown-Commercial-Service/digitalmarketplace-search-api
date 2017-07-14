@@ -91,12 +91,12 @@ def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
 
 
 @pytest.mark.parametrize("query,expected", (
-        (build_query_params(), False),
-        (build_query_params(keywords="lot"), False),
-        (build_query_params(filters={'lot': "lot"}), True),
-        (build_query_params(keywords="something", filters={'lot': "lot"}), True),
-        (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
-    ))
+    (build_query_params(), False),
+    (build_query_params(keywords="lot"), False),
+    (build_query_params(filters={'lot': "lot"}), True),
+    (build_query_params(keywords="something", filters={'lot': "lot"}), True),
+    (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
+))
 def test_should_identify_filter_search_from_query_params(query, expected):
     return assert_equal, is_filtered(query), expected, query
 
@@ -223,29 +223,26 @@ def test_highlight_block_sets_encoder_to_html():
     assert_equal(query["highlight"]["encoder"], "html")
 
 
-def test_highlight_block_contains_correct_fields():
+@pytest.mark.parametrize('example, expected', (
+    ("id", True),
+    ("lot", True),
+    ("serviceName", True),
+    ("serviceSummary", True),
+    ("serviceFeatures", True),
+    ("serviceBenefits", True),
+    ("serviceTypes", True),
+    ("supplierName", True)
+))
+def test_highlight_block_contains_correct_fields(example, expected):
     query = construct_query(
         build_query_params(keywords="some keywords"))
 
     assert_equal("highlight" in query, True)
 
-    cases = [
-        ("id", True),
-        ("lot", True),
-        ("serviceName", True),
-        ("serviceSummary", True),
-        ("serviceFeatures", True),
-        ("serviceBenefits", True),
-        ("serviceTypes", True),
-        ("supplierName", True)
-    ]
-
-    for example, expected in cases:
-        yield \
-            assert_equal, \
-            example in query["highlight"]["fields"], \
-            expected, \
-            example
+    assert_equal, \
+        example in query["highlight"]["fields"], \
+        expected, \
+        example
 
 
 class TestFieldFilters(object):
