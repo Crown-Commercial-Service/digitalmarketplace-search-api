@@ -1,25 +1,38 @@
 from flask import json
 
 
-with open("mappings/services.json") as services:
-    SERVICES_MAPPING = json.load(services)
+SERVICES_MAPPING_FILE_SPEC = "mappings/services.json"
 
-FILTER_FIELDS = sorted(
-    field.replace('filter_', '')
-    for field in SERVICES_MAPPING['mappings']['services']['properties'].keys()
-    if field.startswith('filter_')
-)
+_services = None
 
-TEXT_FIELDS = sorted(
-    field
-    for field in SERVICES_MAPPING['mappings']['services']['properties'].keys()
-    if not field.startswith('filter_')
-)
 
-AGGREGATABLE_FIELDS = sorted(
-    k
-    for k, v in SERVICES_MAPPING['mappings']['services']['properties'].items()
-    if v.get('fields', {}).get('raw', False)
-)
+class Mapping(object):
+    def __init__(self, mapping_definition, mapping_type):
+        self.definition = mapping_definition
+        self.filter_fields = sorted(
+            field.replace('filter_', '')
+            for field in self.definition['mappings'][mapping_type]['properties'].keys()
+            if field.startswith('filter_')
+        )
+        self.filter_fields_set = set(self.filter_fields)
+        self.text_fields = sorted(
+            field
+            for field in self.definition['mappings'][mapping_type]['properties'].keys()
+            if not field.startswith('filter_')
+        )
+        self.text_fields_set = set(self.text_fields)
+        self.aggregatable_fields = sorted(
+            k
+            for k, v in self.definition['mappings'][mapping_type]['properties'].items()
+            if v.get('fields', {}).get('raw', False)
+        )
+        self.transform_fields = self.definition['mappings'][mapping_type]['_meta']['transformations']
 
-TRANSFORM_FIELDS = SERVICES_MAPPING['mappings']['services']['_meta']['transformations']
+
+def get_services_mapping():
+    # mockable singleton - see conftest.py
+    global _services
+    if _services is None:
+        with open(SERVICES_MAPPING_FILE_SPEC) as services_file:
+            _services = Mapping(json.load(services_file), 'services')
+    return _services

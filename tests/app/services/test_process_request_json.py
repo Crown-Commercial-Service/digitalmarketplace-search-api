@@ -1,8 +1,12 @@
 import mock
+import pytest
 
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 from nose.tools import assert_equal
+
+
+pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 def test_should_add_filter_fields_to_index_json():
@@ -80,8 +84,8 @@ def test_should_add_parent_category():
     ]
 
 
-def test_append_conditionally_does_not_duplicate_values():
-    with mock.patch('app.main.services.process_request_json.TRANSFORM_FIELDS', new=[
+def test_append_conditionally_does_not_duplicate_values(services_mapping):
+    services_mapping.transform_fields = [
         {
             "append_conditionally": {
                 "field": "serviceCategories",
@@ -94,19 +98,20 @@ def test_append_conditionally_does_not_duplicate_values():
                 ]
             }
         }
-    ]):
-        request = {
-            "serviceCategories": ["Crops", "Animals"],
-        }
+    ]
 
-        result = convert_request_json_into_index_json(request)
+    request = {
+        "serviceCategories": ["Crops", "Animals"],
+    }
 
-        assert result["serviceCategories"] == [
-            "Crops", "Animals", "Agriculture",
-        ]  # not ["Crops", "Animals", "Agriculture", "Agriculture"]
+    result = convert_request_json_into_index_json(request)
+
+    assert result["serviceCategories"] == [
+        "Crops", "Animals", "Agriculture",
+    ]  # not ["Crops", "Animals", "Agriculture", "Agriculture"]
 
 
-def test_duplicative_transformations_do_duplicate_values():
+def test_duplicative_transformations_do_duplicate_values(services_mapping):
     # Transformations generated from the frameworks script DO NOT attempt to generate duplicate
     # values in the way that this test does, but in principle some set of transformations might.
     # We might decide in future that we want to change the append_conditionally implementation
@@ -114,7 +119,7 @@ def test_duplicative_transformations_do_duplicate_values():
     # are already in the destination field) seems consistent with the documented behaviour
     # of Elasticsearch's "Append" processor
     # <https://www.elastic.co/guide/en/elasticsearch/reference/current/append-processor.html>.
-    with mock.patch('app.main.services.process_request_json.TRANSFORM_FIELDS', new=[
+    services_mapping.transform_fields = [
         {
             "append_conditionally": {
                 "field": "serviceCategories",
@@ -137,20 +142,21 @@ def test_duplicative_transformations_do_duplicate_values():
                 ]
             }
         },
-    ]):
-        request = {
-            "serviceCategories": ["Crops", "Animals"],
-        }
+    ]
 
-        result = convert_request_json_into_index_json(request)
+    request = {
+        "serviceCategories": ["Crops", "Animals"],
+    }
 
-        assert result["serviceCategories"] == [
-            "Crops", "Animals", "Agriculture", "Agriculture",
-        ]
+    result = convert_request_json_into_index_json(request)
+
+    assert result["serviceCategories"] == [
+        "Crops", "Animals", "Agriculture", "Agriculture",
+    ]
 
 
-def test_missing_field_in_transformation():
-    with mock.patch.multiple('app.main.services.process_request_json', TRANSFORM_FIELDS=[
+def test_missing_field_in_transformation(services_mapping):
+    services_mapping.transform_fields = [
         {
             "append_conditionally": {
                 "field": "someField",
@@ -162,21 +168,22 @@ def test_missing_field_in_transformation():
                 ]
             }
         },
-    ], TEXT_FIELDS_SET=set(['someField', 'otherField'])):
-        request = {
-            "otherField": ["wibble"],
-        }
+    ]
+    services_mapping.text_fields_set = set(['someField', 'otherField'])
+    request = {
+        "otherField": ["wibble"],
+    }
 
-        result = convert_request_json_into_index_json(request)
-        # really just checking this case doesn't throw!
+    result = convert_request_json_into_index_json(request)
+    # really just checking this case doesn't throw!
 
-        assert result == {
-            "otherField": ["wibble"],
-        }
+    assert result == {
+        "otherField": ["wibble"],
+    }
 
 
-def test_create_new_field_in_transformation():
-    with mock.patch.multiple('app.main.services.process_request_json', TRANSFORM_FIELDS=[
+def test_create_new_field_in_transformation(services_mapping):
+    services_mapping.transform_fields = [
         {
             "append_conditionally": {
                 "field": "someField",
@@ -188,14 +195,15 @@ def test_create_new_field_in_transformation():
                     "bar"
                 ]
             }
-        },
-    ], TEXT_FIELDS_SET=set(['someField', 'newField'])):
-        request = {
-            "someField": ["foo"],
         }
+    ]
+    services_mapping.text_fields_set = set(['someField', 'newField'])
+    request = {
+        "someField": ["foo"],
+    }
 
-        result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(request)
 
-        assert result["newField"] == [
-            "bar",
-        ]
+    assert result["newField"] == [
+        "bar",
+    ]

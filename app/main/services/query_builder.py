@@ -1,5 +1,5 @@
 from .conversions import strip_and_lowercase
-from ...mapping import TEXT_FIELDS, FILTER_FIELDS, AGGREGATABLE_FIELDS
+import app.mapping
 
 
 def construct_query(query_args, aggregations=[], page_size=100):
@@ -25,7 +25,7 @@ def construct_query(query_args, aggregations=[], page_size=100):
 
     aggregations = set(aggregations)
     if aggregations:
-        missing_aggregations = aggregations.difference(AGGREGATABLE_FIELDS)
+        missing_aggregations = aggregations.difference(app.mapping.get_services_mapping().aggregatable_fields)
         if missing_aggregations:
             raise ValueError("Aggregations for `{}` are not supported.".format(', '.join(missing_aggregations)))
 
@@ -50,7 +50,7 @@ def highlight_clause():
     highlights["fields"] = {}
 
     # Get all fields searched and allow non-matches to a max of the searchSummary limit
-    for field in TEXT_FIELDS:
+    for field in app.mapping.get_services_mapping().text_fields:
         highlights["fields"][field] = {
             "number_of_fragments": 0,
             "no_match_size": 500
@@ -61,7 +61,7 @@ def highlight_clause():
 
 def is_filtered(query_args):
     return len(set(query_args.keys()).intersection(
-        ["filter_" + field for field in FILTER_FIELDS])) > 0
+        ["filter_" + field for field in app.mapping.get_services_mapping().filter_fields])) > 0
 
 
 def build_keywords_query(query_args):
@@ -99,7 +99,7 @@ def multi_match_clause(keywords):
     return {
         "simple_query_string": {
             "query": keywords,
-            "fields": TEXT_FIELDS,
+            "fields": app.mapping.get_services_mapping().text_fields,
             "default_operator": "and",
             "flags": "OR|AND|NOT|PHRASE|ESCAPE|WHITESPACE"
         }

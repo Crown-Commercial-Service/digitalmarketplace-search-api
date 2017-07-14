@@ -9,8 +9,27 @@ from app.main.services.query_builder import (
     or_field_filters, and_field_filters,
     filter_clause
 )
-from app.mapping import TEXT_FIELDS
 from werkzeug.datastructures import MultiDict
+
+
+pytestmark = pytest.mark.usefixtures("services_mapping")
+
+
+def build_query_params(keywords=None, page=None, filters=None):
+    query_params = MultiDict()
+    if keywords:
+        query_params["q"] = keywords
+    if filters:
+        for filter_raw_name, filter_value in filters.items():
+            filter_name = "filter_{}".format(filter_raw_name)
+            if isinstance(filter_value, list):
+                for value in filter_value:
+                    query_params.add(filter_name, value)
+            else:
+                query_params[filter_name] = filter_value
+    if page:
+        query_params["page"] = page
+    return query_params
 
 
 def test_should_have_correct_root_element():
@@ -60,7 +79,7 @@ def test_aggregation_throws_error_if_not_implemented():
         construct_query(build_query_params(), aggregations=['missing'])
 
 
-def test_should_make_multi_match_query_if_keywords_supplied():
+def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
     keywords = "these are my keywords"
     query = construct_query(build_query_params(keywords))
     assert_equal("query" in query, True)
@@ -68,20 +87,18 @@ def test_should_make_multi_match_query_if_keywords_supplied():
     query_string_clause = query["query"]["simple_query_string"]
     assert_equal(query_string_clause["query"], keywords)
     assert_equal(query_string_clause["default_operator"], "and")
-    assert_equal(set(query_string_clause["fields"]), set(TEXT_FIELDS))
+    assert_equal(set(query_string_clause["fields"]), services_mapping.text_fields_set)
 
 
-def test_should_identify_filter_search_from_query_params():
-    cases = (
+@pytest.mark.parametrize("query,expected", (
         (build_query_params(), False),
         (build_query_params(keywords="lot"), False),
         (build_query_params(filters={'lot': "lot"}), True),
         (build_query_params(keywords="something", filters={'lot': "lot"}), True),
         (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
-    )
-
-    for query, expected in cases:
-        yield assert_equal, is_filtered(query), expected, query
+    ))
+def test_should_identify_filter_search_from_query_params(query, expected):
+    return assert_equal, is_filtered(query), expected, query
 
 
 def test_should_have_filtered_root_element_if_service_types_search():
@@ -101,7 +118,7 @@ def test_should_have_filtered_root_element_and_match_all_if_no_keywords():
     assert_equal("match_all" in query["query"]["filtered"]["query"], True)
 
 
-def test_should_have_filtered_root_element_and_match_keywords():
+def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
     query = construct_query(
         build_query_params(keywords="some keywords",
                            filters={'serviceTypes': ["my serviceTypes"]})
@@ -110,7 +127,7 @@ def test_should_have_filtered_root_element_and_match_keywords():
     query_string_clause = query["simple_query_string"]
     assert_equal(query_string_clause["query"], "some keywords")
     assert_equal(query_string_clause["default_operator"], "and")
-    assert_equal(set(query_string_clause["fields"]), set(TEXT_FIELDS))
+    assert_equal(set(query_string_clause["fields"]), services_mapping.text_fields_set)
 
 
 def test_should_have_filtered_term_service_types_clause():
@@ -229,23 +246,6 @@ def test_highlight_block_contains_correct_fields():
             example in query["highlight"]["fields"], \
             expected, \
             example
-
-
-def build_query_params(keywords=None, page=None, filters=None):
-    query_params = MultiDict()
-    if keywords:
-        query_params["q"] = keywords
-    if filters:
-        for filter_raw_name, filter_value in filters.items():
-            filter_name = "filter_{}".format(filter_raw_name)
-            if isinstance(filter_value, list):
-                for value in filter_value:
-                    query_params.add(filter_name, value)
-            else:
-                query_params[filter_name] = filter_value
-    if page:
-        query_params["page"] = page
-    return query_params
 
 
 class TestFieldFilters(object):

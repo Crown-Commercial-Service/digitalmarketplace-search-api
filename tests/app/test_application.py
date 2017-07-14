@@ -1,10 +1,14 @@
 """
 Tests for the application infrastructure
 """
+import pytest
 from flask import json
 from nose.tools import assert_equal
 
 from .helpers import BaseApplicationTest
+
+
+pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 class TestApplication(BaseApplicationTest):
