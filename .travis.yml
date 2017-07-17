@@ -3,7 +3,7 @@ python:
   - "2.7"
   - "3.4"
 install:
-  - make requirements_for_test
+  - make requirements-dev
 script:
   - PYTEST_ARGS='--cov=app --cov-report=term-missing' make test
 notifications:
