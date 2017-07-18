@@ -50,7 +50,7 @@ def highlight_clause():
     highlights["fields"] = {}
 
     # Get all fields searched and allow non-matches to a max of the searchSummary limit
-    for field in app.mapping.get_services_mapping().text_fields:
+    for field in app.mapping.get_services_mapping().text_fields_set:
         highlights["fields"][field] = {
             "number_of_fragments": 0,
             "no_match_size": 500
@@ -61,7 +61,7 @@ def highlight_clause():
 
 def is_filtered(query_args):
     return len(set(query_args.keys()).intersection(
-        ["filter_" + field for field in app.mapping.get_services_mapping().filter_fields])) > 0
+        ["filter_" + field for field in app.mapping.get_services_mapping().filter_fields_set])) > 0
 
 
 def build_keywords_query(query_args):

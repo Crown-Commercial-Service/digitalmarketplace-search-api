@@ -9,24 +9,24 @@ _services = None
 class Mapping(object):
     def __init__(self, mapping_definition, mapping_type):
         self.definition = mapping_definition
-        self.filter_fields = sorted(
+        self._filter_fields = tuple(sorted(
             field.replace('filter_', '')
             for field in self.definition['mappings'][mapping_type]['properties'].keys()
-            if field.startswith('filter_')
+            if field.startswith('filter_'))
         )
-        self.filter_fields_set = set(self.filter_fields)
-        self.text_fields = sorted(
+        self.filter_fields_set = frozenset(self._filter_fields)
+        self.text_fields = tuple(sorted(
             field
             for field in self.definition['mappings'][mapping_type]['properties'].keys()
             if not field.startswith('filter_')
-        )
-        self.text_fields_set = set(self.text_fields)
-        self.aggregatable_fields = sorted(
+        ))
+        self.text_fields_set = frozenset(self.text_fields)
+        self.aggregatable_fields = tuple(sorted(
             k
             for k, v in self.definition['mappings'][mapping_type]['properties'].items()
             if v.get('fields', {}).get('raw', False)
-        )
-        self.transform_fields = self.definition['mappings'][mapping_type]['_meta']['transformations']
+        ))
+        self.transform_fields = tuple(self.definition['mappings'][mapping_type]['_meta']['transformations'])
 
 
 def get_services_mapping():
