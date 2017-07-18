@@ -46,7 +46,7 @@ def odd(result_field):
 
 
 def even(result_field):
-    "Should be event."
+    "Should be even."
     return int(result_field) % 2 == 0
 
 
