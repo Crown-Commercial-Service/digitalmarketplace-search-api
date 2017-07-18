@@ -8,4 +8,4 @@
 set -o pipefail
 
 # Install Python development dependencies
-make requirements_for_test
+make requirements-dev
