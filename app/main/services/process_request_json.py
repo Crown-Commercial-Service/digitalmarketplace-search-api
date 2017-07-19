@@ -1,10 +1,7 @@
 import six
 
-from ...mapping import FILTER_FIELDS, TEXT_FIELDS, TRANSFORM_FIELDS
+import app.mapping
 from .conversions import strip_and_lowercase
-
-FILTER_FIELDS_SET = set(FILTER_FIELDS)
-TEXT_FIELDS_SET = set(TEXT_FIELDS)
 
 
 def process_values_for_matching(values):
@@ -52,9 +49,9 @@ TRANSFORMATION_PROCESSORS = {
 
 
 def convert_request_json_into_index_json(request_json):
+    mapping = app.mapping.get_services_mapping()
     index_json = {}
-
-    for transformation in TRANSFORM_FIELDS:
+    for transformation in mapping.transform_fields:
         # Each transformation is a dictionary, with a type mapping to the arguments pertaining to
         # that type. We anticipate only one type per transformation (consistent with how 'ingest
         # processors' are specified for Elasticsearch - see
@@ -66,11 +63,11 @@ def convert_request_json_into_index_json(request_json):
     for field in request_json:
         # TODO G9 breaking change, remove once G7/G8 does not need to be indexed
         if not (field == "cloudDeploymentModel" and request_json['frameworkSlug'] in ('g-cloud-7', 'g-cloud-8')):
-            if field in FILTER_FIELDS_SET:
+            if field in mapping.filter_fields_set:
                 index_json["filter_" + field] = process_values_for_matching(
                     request_json[field]
                 )
-            if field in TEXT_FIELDS_SET:
+            if field in mapping.text_fields_set:
                 index_json[field] = request_json[field]
 
     return index_json

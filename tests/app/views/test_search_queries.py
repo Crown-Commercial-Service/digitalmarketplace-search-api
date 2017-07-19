@@ -1,19 +1,65 @@
 from app.main.services import search_service
 from flask import json
 from nose.tools import assert_equal, ok_
+import pytest
 
 from app import create_app
 from ..helpers import setup_authorization
 from ..helpers import default_service
 
+import tests.conftest
+import contextlib
 
-def test_single_filter_queries():
-    yield check_query, '', 120, {}
-    yield check_query, 'filter_lot=SaaS', 30, {'lot': matches("SaaS")}
-    yield (check_query, 'filter_serviceTypes=Implementation',
-           48, {'serviceTypes': contains('Implementation')})
-    yield check_query, 'filter_minimumContractPeriod=Hour', 40, {}
-    yield check_query, 'filter_openSource=true', 60, {'id': odd}
+
+pytestmark = pytest.mark.usefixtures("services_mapping")
+
+
+# Helpers for 'result_fields_check'
+
+def matches(expected_field):
+    check = lambda result_field: result_field == expected_field
+    check.__doc__ = "Should match '%s'" % expected_field
+    check.__name__ = "matches %s" % expected_field
+
+    return check
+
+
+def contains(expected_field):
+    check = lambda result_field: expected_field in result_field
+    check.__doc__ = "Should contain '%s'" % expected_field
+    check.__name__ = "contains %s" % expected_field
+
+    return check
+
+
+def one_of(expected_fields):
+    check = lambda result_field: result_field in expected_fields
+    check.__doc__ = "Should be in %s" % expected_fields
+    check.__name__ = "one_of %s" % expected_fields
+
+    return check
+
+
+def odd(result_field):
+    "Should be odd."
+    return int(result_field) % 2 == 1
+
+
+def even(result_field):
+    "Should be even."
+    return int(result_field) % 2 == 0
+
+
+@pytest.mark.parametrize('query, expected_result_count, match_fields', (
+    ('', 120, {}),
+    ('filter_lot=SaaS', 30, {'lot': matches("SaaS")}),
+    ('filter_serviceTypes=Implementation',
+     48, {'serviceTypes': contains('Implementation')}),
+    ('filter_minimumContractPeriod=Hour', 40, {}),
+    ('filter_openSource=true', 60, {'id': odd}),
+))
+def test_single_filter_queries(query, expected_result_count, match_fields):
+    check_query(query, expected_result_count, match_fields)
 
 
 def test_basic_aggregations():
@@ -162,32 +208,40 @@ def test_escaped_characters():
     yield (check_query, 'q=Service \| 12', 0, {})
 
 
-# Module setup and teardown
-def setup_module():
-    app = create_app('test')
-    test_client = app.test_client()
+@pytest.fixture(scope='module', autouse=True)
+def dummy_services():
+    """Fixture that indexes a bunch of fake G-Cloud services so that searching can be tested."""
 
-    setup_authorization(app)
+    # Create a context where get_services_mapping has been patched, despite that fixture being function-
+    # scoped - see commentary below.
+    with contextlib.contextmanager(tests.conftest.services_mapping)():
+        app = create_app('test')
+        test_client = app.test_client()
 
-    with app.app_context():
-        test_client.put(
-            '/index-to-create',
-            data=json.dumps({"type": "index"}),
-            content_type="application/json",
-        )
-        services = list(create_services(120))
-        for service in services:
+        setup_authorization(app)
+
+        with app.app_context():
             test_client.put(
-                '/index-to-create/services/%s' % service["service"]["id"],
-                data=json.dumps(service), content_type='application/json'
+                '/index-to-create',
+                data=json.dumps({"type": "index"}),
+                content_type="application/json",
             )
-            search_service.refresh('index-to-create')
-
-
-def teardown_module():
-    app = create_app('test')
-    test_client = app.test_client()
-
+            services = list(create_services(120))
+            for service in services:
+                test_client.put(
+                    '/index-to-create/services/%s' % service["service"]["id"],
+                    data=json.dumps(service), content_type='application/json'
+                )
+                search_service.refresh('index-to-create')
+        # `yield` is within the services_mapping contextmanager (created above).
+        # This has the effect of making the services_mapping fixture module-scoped, for this module only.
+        # This is safe, because none of the tests here actually modify the mapping. It is necessary,
+        # because many of the tests use the (deprecated) nosetests `yield` format. These do not support
+        # function-scoped fixtures, and would therefore fail to use the services_mapping fixture, despite
+        # the pytestmark at the top of this file.
+        # Once all of the yield-style tests have been converted to use pytest.mark.parametrize, then the
+        # line below can move back outside the services_mapping contextmanager.
+        yield
     test_client.delete('/index-to-create')
 
 
@@ -271,39 +325,3 @@ def check_aggregations_query(query, expected_result_count, match_fields):
     count_for_query(results, expected_result_count)
 
     aggregation_fields_check(results, match_fields)
-
-
-# Helpers for 'result_fields_check'
-
-def matches(expected_field):
-    check = lambda result_field: result_field == expected_field
-    check.__doc__ = "Should match '%s'" % expected_field
-    check.__name__ = "matches %s" % expected_field
-
-    return check
-
-
-def contains(expected_field):
-    check = lambda result_field: expected_field in result_field
-    check.__doc__ = "Should contain '%s'" % expected_field
-    check.__name__ = "contains %s" % expected_field
-
-    return check
-
-
-def one_of(expected_fields):
-    check = lambda result_field: result_field in expected_fields
-    check.__doc__ = "Should be in %s" % expected_fields
-    check.__name__ = "one_of %s" % expected_fields
-
-    return check
-
-
-def odd(result_field):
-    "Should be odd."
-    return int(result_field) % 2 == 1
-
-
-def even(result_field):
-    "Should be event."
-    return int(result_field) % 2 == 0

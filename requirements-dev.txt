@@ -1,8 +1,8 @@
 -r requirements.txt
-pytest==2.9.1
+pytest==3.1.3
+pytest-cov==2.5.1
 nose==1.3.4  # nose.tools is still imported by tests
 pep8==1.5.7
 mock==2.0.0
 coverage==3.7.1
-pytest-cov==2.2.0
 python-coveralls==2.5.0

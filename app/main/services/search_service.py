@@ -2,7 +2,7 @@ from flask import current_app, url_for
 from elasticsearch import TransportError
 
 from ... import elasticsearch_client as es
-from app.mapping import SERVICES_MAPPING
+import app.mapping
 from app.main.services.response_formatters import \
     convert_es_status, convert_es_results, generate_pagination_links
 from app.main.services.query_builder import construct_query
@@ -18,7 +18,7 @@ def refresh(index_name):
 
 def create_index(index_name):
     try:
-        es.indices.create(index=index_name, body=SERVICES_MAPPING)
+        es.indices.create(index=index_name, body=app.mapping.get_services_mapping().definition)
         return "acknowledged", 200
     except TransportError as e:
         if u'IndexAlreadyExistsException' in _get_an_error_message(e):
@@ -52,7 +52,7 @@ def put_index_mapping(index_name):
         es.indices.put_mapping(
             index=index_name,
             doc_type="services",
-            body=SERVICES_MAPPING["mappings"]["services"]
+            body=app.mapping.get_services_mapping().definition["mappings"]["services"]
         )
         return "acknowledged", 200
     except TransportError as e:

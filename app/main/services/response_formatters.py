@@ -1,6 +1,6 @@
 import math
 
-from .query_builder import TEXT_FIELDS
+import app.mapping
 
 
 def convert_es_status(index_name, status_response, info_response=None):
@@ -36,7 +36,7 @@ def convert_es_results(results, query_args):
 
     for service in results["hits"]["hits"]:
         result = {}
-        for field in TEXT_FIELDS:
+        for field in app.mapping.get_services_mapping().text_fields:
             append_field_if_present(result, service["_source"], field)
 
         append_field_if_present(result, service, "highlight")
