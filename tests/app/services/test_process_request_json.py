@@ -169,7 +169,7 @@ def test_missing_field_in_transformation(services_mapping):
             }
         },
     ]
-    services_mapping.text_fields_set = set(['someField', 'otherField'])
+    services_mapping.text_fields_set = {'someField', 'otherField'}
     request = {
         "otherField": ["wibble"],
     }
@@ -197,7 +197,7 @@ def test_create_new_field_in_transformation(services_mapping):
             }
         }
     ]
-    services_mapping.text_fields_set = set(['someField', 'newField'])
+    services_mapping.text_fields_set = {'someField', 'newField'}
     request = {
         "someField": ["foo"],
     }

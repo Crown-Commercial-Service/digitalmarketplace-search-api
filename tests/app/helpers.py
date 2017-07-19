@@ -1,10 +1,28 @@
 from __future__ import absolute_import
 
-import os
 import json
+
+from werkzeug.datastructures import MultiDict
 
 from app import create_app
 from app import elasticsearch_client
+
+
+def build_query_params(keywords=None, page=None, filters=None):
+    query_params = MultiDict()
+    if keywords:
+        query_params["q"] = keywords
+    if filters:
+        for filter_raw_name, filter_value in filters.items():
+            filter_name = "filter_{}".format(filter_raw_name)
+            if isinstance(filter_value, list):
+                for value in filter_value:
+                    query_params.add(filter_name, value)
+            else:
+                query_params[filter_name] = filter_value
+    if page:
+        query_params["page"] = page
+    return query_params
 
 
 class WSGIApplicationWithEnvironment(object):
