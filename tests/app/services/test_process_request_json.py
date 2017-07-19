@@ -207,3 +207,5 @@ def test_create_new_field_in_transformation(services_mapping):
     assert result["newField"] == [
         "bar",
     ]
+
+    assert result["someField"] == ["foo"]
