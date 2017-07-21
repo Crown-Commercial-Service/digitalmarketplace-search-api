@@ -2,10 +2,10 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "8.6.1",
+        "version": "8.8.0",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-06-12T06:12:12.322505",
+        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-07-18T12:31:42.229610",
         "transformations": [
           {
             "append_conditionally": {
@@ -605,7 +605,8 @@
               "field": "governmentSecurityClearances",
               "target_field": "governmentSecurityClearances",
               "any_of": [
-                "dv"
+                "dv",
+                "sc"
               ],
               "append_value": [
                 "sc"
@@ -618,7 +619,8 @@
               "target_field": "governmentSecurityClearances",
               "any_of": [
                 "dv",
-                "sc"
+                "sc",
+                "bpss"
               ],
               "append_value": [
                 "bpss"
