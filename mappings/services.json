@@ -2,10 +2,10 @@
   "mappings": {
     "services": {
       "_meta": {
-        "version": "8.6.1",
+        "version": "8.10.0",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-06-12T06:12:12.322505",
+        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-07-21T12:42:27.834967",
         "transformations": [
           {
             "append_conditionally": {
@@ -605,7 +605,8 @@
               "field": "governmentSecurityClearances",
               "target_field": "governmentSecurityClearances",
               "any_of": [
-                "dv"
+                "dv",
+                "sc"
               ],
               "append_value": [
                 "sc"
@@ -618,7 +619,8 @@
               "target_field": "governmentSecurityClearances",
               "any_of": [
                 "dv",
-                "sc"
+                "sc",
+                "bpss"
               ],
               "append_value": [
                 "bpss"
@@ -654,10 +656,6 @@
         "serviceName": {
           "type": "string"
         },
-        "serviceSummary": {
-          "term_vector": "with_positions_offsets",
-          "type": "string"
-        },
         "serviceDescription": {
           "term_vector": "with_positions_offsets",
           "type": "string"
@@ -671,79 +669,8 @@
         "supplierName": {
           "type": "string"
         },
-        "serviceTypes": {
-          "type": "string"
-        },
         "filter_lot": {
           "type": "string",
-          "index": "not_analyzed"
-        },
-        "filter_serviceTypes": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "filter_freeOption": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_trialOption": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_minimumContractPeriod": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "filter_supportForThirdParties": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_selfServiceProvisioning": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_datacentresEUCode": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_datacentreTier": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "filter_dataBackupRecovery": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_dataExtractionRemoval": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_networksConnected": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "filter_apiAccess": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_openStandardsSupported": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_openSource": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_persistentStorage": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_guaranteedResources": {
-          "type": "boolean",
-          "index": "not_analyzed"
-        },
-        "filter_elasticCloud": {
-          "type": "boolean",
           "index": "not_analyzed"
         },
         "serviceCategories": {
@@ -780,10 +707,6 @@
           "index": "not_analyzed"
         },
         "filter_onsiteSupport": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "filter_supportAvailableToThirdParty": {
           "type": "string",
           "index": "not_analyzed"
         },
