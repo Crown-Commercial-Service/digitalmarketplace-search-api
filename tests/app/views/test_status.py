@@ -21,7 +21,7 @@ class TestStatus(BaseApplicationTest):
     @mock.patch('app.main.services.search_service.es.indices')
     def test_status_when_elasticsearch_is_down(self, indices):
         with self.app.app_context():
-            indices.status.side_effect = TransportError(500, "BARR", "FOO")
+            indices.stats.side_effect = TransportError(500, "BARR", "FOO")
             response = self.client.get('/_status')
 
             assert_equal(response.status_code, 500)

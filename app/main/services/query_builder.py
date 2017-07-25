@@ -15,29 +15,32 @@ def construct_query(query_args, aggregations=[], page_size=100):
 
         query = {
             "query": {
-                "filtered": {
-                    "query": build_keywords_query(query_args),
+                "bool": {
+                    "must": build_keywords_query(query_args),
                     "filter": filter_clause(query_args)
                 }
             }
         }
 
-    if 'idOnly' in query_args:
-        query['_source'] = ['id']
-    else:
-        query["highlight"] = highlight_clause()
+    query["size"] = page_size
 
-    query['sort'] = ['_score', {app.mapping.SERVICE_ID_HASH_FIELD_NAME: 'desc'}]
-
-    aggregations = set(aggregations)
     if aggregations:
+        aggregations = set(aggregations)
         missing_aggregations = aggregations.difference(app.mapping.get_services_mapping().aggregatable_fields)
         if missing_aggregations:
             raise ValueError("Aggregations for `{}` are not supported.".format(', '.join(missing_aggregations)))
 
-        query['aggregations'] = {x: {"terms": {"field": "{}.raw".format(x), "size": 0}} for x in aggregations}
+        query["size"] = 0  # We don't want any services returned, just aggregations
+        query['aggregations'] = {x: {"terms": {"field": "{}.raw".format(x), "size": 999999}} for x in aggregations}
 
-    query["size"] = page_size
+    else:
+        if 'idOnly' in query_args:
+            query['_source'] = ['id']
+
+        else:
+            query["highlight"] = highlight_clause()
+            query['sort'] = ['_score', {app.mapping.SERVICE_ID_HASH_FIELD_NAME: 'desc'}]
+
     if "page" in query_args:
         try:
             query["from"] = (int(query_args.get("page")) - 1) * page_size
@@ -148,8 +151,7 @@ def or_field_filters(field_name, field_values):
     terms = [strip_and_lowercase(value) for value in field_values]
     return [{
         "terms": {
-            field_name: terms,
-            "execution": "bool"
+            field_name: terms
         }
     }]
 
