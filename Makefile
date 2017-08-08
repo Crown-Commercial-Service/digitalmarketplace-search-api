@@ -10,7 +10,7 @@ run-app: virtualenv
 
 .PHONY: virtualenv
 virtualenv:
-	[ -z $$VIRTUAL_ENV ] && [ ! -d venv ] && virtualenv venv || true
+	[ -z $$VIRTUAL_ENV ] && [ ! -d venv ] && virtualenv -p python3 venv || true
 
 .PHONY: requirements
 requirements: virtualenv test-requirements requirements.txt
