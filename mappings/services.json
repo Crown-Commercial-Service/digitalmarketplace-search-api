@@ -1,11 +1,37 @@
 {
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "stemming_analyzer": {
+          "tokenizer": "standard",
+          "filter": [
+            "standard",
+            "lowercase",
+            "possessive_english_stemmer",
+            "light_english_stemmer"
+          ]
+        }
+      },
+      "filter": {
+        "light_english_stemmer": {
+          "type": "stemmer",
+          "name": "light_english"
+        },
+        "possessive_english_stemmer": {
+          "type": "stemmer",
+          "name": "possessive_english"
+        }
+      }
+    }
+  },
   "mappings": {
     "services": {
       "_meta": {
-        "version": "8.10.0",
+        "_": "DO NOT UPDATE BY HAND",
+        "version": "8.11.0",
         "generated_from_framework": "g-cloud-9",
-        "generated_by": "/Users/georgelund/dev/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-07-21T12:42:27.834967",
+        "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2017-07-28T13:32:52.823730",
         "transformations": [
           {
             "append_conditionally": {
@@ -658,13 +684,16 @@
         },
         "serviceDescription": {
           "term_vector": "with_positions_offsets",
-          "type": "string"
+          "type": "string",
+          "analyzer": "stemming_analyzer"
         },
         "serviceBenefits": {
-          "type": "string"
+          "type": "string",
+          "analyzer": "stemming_analyzer"
         },
         "serviceFeatures": {
-          "type": "string"
+          "type": "string",
+          "analyzer": "stemming_analyzer"
         },
         "supplierName": {
           "type": "string"
@@ -675,6 +704,7 @@
         },
         "serviceCategories": {
           "type": "string",
+          "analyzer": "stemming_analyzer",
           "fields": {
             "raw": {
               "type": "string",
