@@ -123,6 +123,9 @@ def status_for_all_indexes():
 def core_search_and_aggregate(index_name, doc_type, query_args, search=False, aggregations=[]):
     try:
         page_size = int(current_app.config['DM_SEARCH_PAGE_SIZE'])
+        if 'idOnly' in query_args:
+            page_size *= int(current_app.config['DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER'])
+
         es_search_kwargs = {'search_type': 'count'} if aggregations and not search else {}
         res = es.search(
             index=index_name,

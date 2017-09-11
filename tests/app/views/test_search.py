@@ -387,6 +387,33 @@ class TestSearchEndpoint(BaseApplicationTest):
         search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
         assert_true(490 < len(search_result["highlight"]["serviceSummary"][0]) < 510)
 
+    @pytest.mark.parametrize('page_size, multiplier, expected_count',
+                             (
+                                 ('1', '5', 5),
+                                 ('2', '2', 4),
+                                 ('1', '10', 10)
+                             ))
+    def test_id_only_request_has_multiplied_page_size(self, page_size, multiplier, expected_count):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = page_size
+            self.app.config['DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER'] = multiplier
+
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&idOnly=True')
+            response_json = get_json_from_response(response)
+
+            assert_equal(response.status_code, 200)
+            assert_equal(len(response_json['services']), expected_count)
+
+    def test_only_ids_returned_for_id_only_request(self):
+        with self.app.app_context():
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&idOnly=True')
+            response_json = get_json_from_response(response)
+
+            assert_equal(response.status_code, 200)
+            assert_equal(set(response_json['services'][0].keys()), {'id'})
+
 
 class TestFetchById(BaseApplicationTest):
     def test_should_return_404_if_no_service(self):
