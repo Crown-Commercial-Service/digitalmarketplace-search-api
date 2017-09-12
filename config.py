@@ -16,6 +16,7 @@ class Config:
     DM_SEARCH_API_AUTH_TOKENS = None
 
     DM_SEARCH_PAGE_SIZE = 100
+    DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER = 10
     # Logging
     DM_LOG_LEVEL = 'DEBUG'
     DM_APP_NAME = 'search-api'

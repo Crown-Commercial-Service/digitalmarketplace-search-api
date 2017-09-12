@@ -21,7 +21,11 @@ def construct_query(query_args, aggregations=[], page_size=100):
                 }
             }
         }
-    query["highlight"] = highlight_clause()
+
+    if 'idOnly' in query_args:
+        query['_source'] = ['id']
+    else:
+        query["highlight"] = highlight_clause()
 
     aggregations = set(aggregations)
     if aggregations:
