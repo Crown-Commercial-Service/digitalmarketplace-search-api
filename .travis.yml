@@ -1,15 +1,14 @@
 language: python
 python:
   - "3.6"
+env:
+  - ES_VERSION=1.7.6 ES_DOWNLOAD_URL=https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 install:
+  - wget ${ES_DOWNLOAD_URL}
+  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
+  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch > /dev/null &
   - make requirements-dev
 script:
   - PYTEST_ARGS='--cov=app --cov-report=term-missing' make test
 notifications:
   email: false
-
-services:
-  - elasticsearch
-
-before_script:
-  - sleep 10
