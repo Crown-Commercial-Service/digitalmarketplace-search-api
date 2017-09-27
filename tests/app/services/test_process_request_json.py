@@ -1,4 +1,3 @@
-import mock
 import pytest
 
 from app.main.services.process_request_json import \

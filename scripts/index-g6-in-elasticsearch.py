@@ -29,21 +29,21 @@ def post_to_es(es_endpoint, json_data):
                               data=json.dumps(json_data))
     request.add_header("Content-Type", 'application/json')
 
-    print request.get_full_url()
+    print(request.get_full_url())
     # print request.get_data()
 
     try:
         connection = opener.open(request)
-    except urllib2.HTTPError, e:
+    except urllib2.HTTPError as e:
         connection = e
-        print connection
+        print(connection)
 
     # check. Substitute with appropriate HTTP code.
     if connection.code == 200:
         data = connection.read()
-        print str(connection.code) + " " + data
+        print(str(connection.code) + " " + data)
     else:
-        print "connection.code = " + str(connection.code)
+        print("connection.code = " + str(connection.code))
 
 
 def request_services(endpoint, token):
@@ -52,7 +52,7 @@ def request_services(endpoint, token):
 
     page_url = endpoint
     while page_url:
-        print "requesting {}".format(page_url)
+        print("requesting {}".format(page_url))
 
         request = urllib2.Request(page_url)
         request.add_header("Authorization", "Bearer {}".format(token))
@@ -71,7 +71,7 @@ def process_json_files_in_directory(dirname):
     for filename in os.listdir(dirname):
         with open(os.path.join(dirname, filename)) as f:
             data = json.loads(f.read())
-            print "doing " + filename
+            print("doing " + filename)
             yield data
 
 
@@ -85,7 +85,7 @@ def main():
         for data in process_json_files_in_directory(listing_dir):
             post_to_es(es_endpoint, data)
     else:
-        print __doc__
+        print(__doc__)
 
 if __name__ == '__main__':
     main()
