@@ -1,5 +1,5 @@
 import os
-from dmutils.status import enabled_since, get_version_label
+from dmutils.status import get_version_label
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

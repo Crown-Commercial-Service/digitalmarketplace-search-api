@@ -60,9 +60,9 @@ def generate_pagination_links(query_args, total, page_size, url_for_search):
 
     links = dict()
     if page > 1:
-        links['prev'] = url_for_search(page=page-1, **args_no_page)
+        links['prev'] = url_for_search(page=page - 1, **args_no_page)
     if page < max_page:
-        links['next'] = url_for_search(page=page+1, **args_no_page)
+        links['next'] = url_for_search(page=page + 1, **args_no_page)
     return links
 
 

@@ -16,30 +16,6 @@ pytestmark = pytest.mark.usefixtures("services_mapping")
 
 # Helpers for 'result_fields_check'
 
-def matches(expected_field):
-    check = lambda result_field: result_field == expected_field
-    check.__doc__ = "Should match '%s'" % expected_field
-    check.__name__ = "matches %s" % expected_field
-
-    return check
-
-
-def contains(expected_field):
-    check = lambda result_field: expected_field in result_field
-    check.__doc__ = "Should contain '%s'" % expected_field
-    check.__name__ = "contains %s" % expected_field
-
-    return check
-
-
-def one_of(expected_fields):
-    check = lambda result_field: result_field in expected_fields
-    check.__doc__ = "Should be in %s" % expected_fields
-    check.__name__ = "one_of %s" % expected_fields
-
-    return check
-
-
 def odd(result_field):
     "Should be odd."
     return int(result_field) % 2 == 1
@@ -52,9 +28,8 @@ def even(result_field):
 
 @pytest.mark.parametrize('query, expected_result_count, match_fields', (
     ('', 120, {}),
-    ('filter_lot=SaaS', 30, {'lot': matches("SaaS")}),
-    ('filter_serviceTypes=Implementation',
-     48, {'serviceTypes': contains('Implementation')}),
+    ('filter_lot=SaaS', 30, {'lot': "SaaS".__eq__}),
+    ('filter_serviceTypes=Implementation', 48, {'serviceTypes': lambda i: 'Implementation' in i}),
     ('filter_minimumContractPeriod=Hour', 40, {}),
     ('filter_openSource=true', 60, {'id': odd}),
 ))
@@ -63,19 +38,19 @@ def test_single_filter_queries(query, expected_result_count, match_fields):
 
 
 def test_basic_aggregations():
-    yield check_aggregations_query, '', 120, {'PaaS': matches(30), 'SaaS': matches(30), 'IaaS': matches(30),
-                                              'SCS': matches(30)}
-    yield check_aggregations_query, 'filter_lot=SaaS', 30, {'SaaS': matches(30)}
-    yield check_aggregations_query, 'filter_minimumContractPeriod=Hour,Day', 80, {'PaaS': matches(20),
-                                                                                  'SaaS': matches(20),
-                                                                                  'IaaS': matches(20),
-                                                                                  'SCS': matches(20)}
-    yield check_aggregations_query, 'filter_lot=SaaS&filter_minimumContractPeriod=Hour,Day', 20, {'SaaS': matches(20)}
+    yield check_aggregations_query, '', 120, {'PaaS': (30).__eq__, 'SaaS': (30).__eq__, 'IaaS': (30).__eq__,
+                                              'SCS': (30).__eq__}
+    yield check_aggregations_query, 'filter_lot=SaaS', 30, {'SaaS': (30).__eq__}
+    yield check_aggregations_query, 'filter_minimumContractPeriod=Hour,Day', 80, {'PaaS': (20).__eq__,
+                                                                                  'SaaS': (20).__eq__,
+                                                                                  'IaaS': (20).__eq__,
+                                                                                  'SCS': (20).__eq__}
+    yield check_aggregations_query, 'filter_lot=SaaS&filter_minimumContractPeriod=Hour,Day', 20, {'SaaS': (20).__eq__}
 
 
 def test_or_filters():
     yield (check_query, 'filter_lot=SaaS,PaaS',
-           60, {'lot': one_of(['SaaS', 'PaaS'])})
+           60, {'lot': ['SaaS', 'PaaS'].__contains__})
     yield check_query, 'filter_minimumContractPeriod=Hour,Day', 80, {}
     yield (check_query, 'filter_datacentreTier=tia-942 tier 1,tia-942 tier 2',
            120, {})
@@ -89,7 +64,7 @@ def test_or_filters():
 def test_and_filters():
     yield (check_query,
            'filter_serviceTypes=Planning&filter_serviceTypes=Testing',
-           24, {'serviceTypes': matches(['Planning', 'Testing'])})
+           24, {'serviceTypes': ['Planning', 'Testing'].__eq__})
 
     yield (check_query,
            'filter_serviceTypes=Planning&filter_serviceTypes=Implementation',
@@ -113,11 +88,11 @@ def test_filter_combinations():
 
     yield (check_query,
            'filter_minimumContractPeriod=Hour&filter_lot=SaaS',
-           10, {'lot': matches('SaaS')})
+           10, {'lot': 'SaaS'.__eq__})
 
     yield (check_query,
            'q=12&filter_minimumContractPeriod=Hour&filter_lot=SaaS',
-           1, {'lot': matches('SaaS'), 'id': matches('12')})
+           1, {'lot': 'SaaS'.__eq__, 'id': '12'.__eq__})
 
     yield (check_query,
            'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {})
