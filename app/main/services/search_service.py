@@ -126,7 +126,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         if 'idOnly' in query_args:
             page_size *= int(current_app.config['DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER'])
 
-        es_search_kwargs = {'search_type': 'count'} if aggregations and not search else {}
+        es_search_kwargs = {'search_type': 'count' if aggregations and not search else 'dfs_query_then_fetch'}
         res = es.search(
             index=index_name,
             doc_type=doc_type,
