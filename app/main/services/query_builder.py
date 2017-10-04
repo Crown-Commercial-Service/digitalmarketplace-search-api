@@ -27,6 +27,8 @@ def construct_query(query_args, aggregations=[], page_size=100):
     else:
         query["highlight"] = highlight_clause()
 
+    query['sort'] = ['_score', {app.mapping.SERVICE_ID_HASH_FIELD_NAME: 'desc'}]
+
     aggregations = set(aggregations)
     if aggregations:
         missing_aggregations = aggregations.difference(app.mapping.get_services_mapping().aggregatable_fields)
