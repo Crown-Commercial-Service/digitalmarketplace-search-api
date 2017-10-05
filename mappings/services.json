@@ -28,10 +28,10 @@
     "services": {
       "_meta": {
         "_": "DO NOT UPDATE BY HAND",
-        "version": "8.11.0",
+        "version": "8.17.0",
         "generated_from_framework": "g-cloud-9",
         "generated_by": "/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-07-28T13:32:52.823730",
+        "generated_time": "2017-10-05T07:36:24.346137",
         "transformations": [
           {
             "append_conditionally": {
@@ -660,6 +660,11 @@
         "id": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "service_id_hash": {
+          "type": "string",
+          "index": "not_analyzed",
+          "include_in_all": false
         },
         "lot": {
           "type": "string",

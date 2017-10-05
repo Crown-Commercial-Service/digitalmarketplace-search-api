@@ -2,6 +2,7 @@ from flask import json
 
 
 SERVICES_MAPPING_FILE_SPEC = "mappings/services.json"
+SERVICE_ID_HASH_FIELD_NAME = "service_id_hash"
 
 _services = None
 
@@ -18,7 +19,7 @@ class Mapping(object):
         self.text_fields = tuple(sorted(
             field
             for field in self.definition['mappings'][mapping_type]['properties'].keys()
-            if not field.startswith('filter_')
+            if not field.startswith('filter_') and field != SERVICE_ID_HASH_FIELD_NAME
         ))
         self.text_fields_set = frozenset(self.text_fields)
         self.aggregatable_fields = tuple(sorted(

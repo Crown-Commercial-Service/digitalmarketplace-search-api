@@ -1,5 +1,6 @@
 import pytest
 
+import app.mapping
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 from nose.tools import assert_equal
@@ -208,3 +209,15 @@ def test_create_new_field_in_transformation(services_mapping):
     ]
 
     assert result["someField"] == ["foo"]
+
+
+def test_service_id_hash_added_if_id_present():
+    request = {
+        "id": "999999999",
+    }
+
+    result = convert_request_json_into_index_json(request)
+
+    assert result["id"] == "999999999"
+
+    assert app.mapping.SERVICE_ID_HASH_FIELD_NAME in result

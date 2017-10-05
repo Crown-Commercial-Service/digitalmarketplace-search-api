@@ -1,3 +1,4 @@
+import hashlib
 import six
 
 import app.mapping
@@ -69,5 +70,9 @@ def convert_request_json_into_index_json(request_json):
                 )
             if field in mapping.text_fields_set:
                 index_json[field] = request_json[field]
+
+    if request_json.get('id'):
+        index_json[app.mapping.SERVICE_ID_HASH_FIELD_NAME] = \
+            hashlib.sha256(request_json['id'].encode('utf-8')).hexdigest()
 
     return index_json

@@ -3,6 +3,7 @@ from nose.tools import (
     assert_false, assert_true
 )
 import pytest
+import app.mapping
 from app.main.services.query_builder import construct_query, is_filtered
 from app.main.services.query_builder import (
     field_is_or_filter, field_filters,
@@ -205,6 +206,17 @@ def test_highlight_block_sets_encoder_to_html():
         build_query_params(keywords="some keywords"))
 
     assert_equal(query["highlight"]["encoder"], "html")
+
+
+def test_service_id_hash_not_in_searched_fields():
+    query = construct_query(build_query_params(keywords="some keywords"))
+
+    assert app.mapping.SERVICE_ID_HASH_FIELD_NAME not in query['query']['simple_query_string']['fields']
+
+    query = construct_query(
+        build_query_params(filters={'serviceTypes': ["serviceType1"]}))
+
+    assert app.mapping.SERVICE_ID_HASH_FIELD_NAME not in query['highlight']['fields']
 
 
 @pytest.mark.parametrize('example, expected', (

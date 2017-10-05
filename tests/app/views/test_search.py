@@ -1,7 +1,10 @@
 import mock
 import pytest
+from werkzeug import MultiDict
 
 
+from app import elasticsearch_client as es
+from app.main.services.search_service import core_search_and_aggregate
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 from flask import json
@@ -556,6 +559,20 @@ class TestDeleteById(BaseApplicationTest):
         data = get_json_from_response(response)
         assert_equal(response.status_code, 404)
         assert_equal(data['error']['found'], False)
+
+
+class TestSearchType(BaseApplicationTest):
+    def test_core_search_and_aggregate_does_dfs_query_for_searches(self):
+        with self.app.app_context(), mock.patch.object(es, 'search') as es_search_mock:
+            core_search_and_aggregate('index-to-create', 'services', MultiDict(), search=True)
+
+        assert es_search_mock.call_args[1]['search_type'] == 'dfs_query_then_fetch'
+
+    def test_core_search_and_aggregate_does_count_query_for_aggregations(self):
+        with self.app.app_context(), mock.patch.object(es, 'search') as es_search_mock:
+            core_search_and_aggregate('index-to-create', 'services', MultiDict(), aggregations=['serviceCategories'])
+
+        assert es_search_mock.call_args[1]['search_type'] == 'count'
 
 
 def create_services(number_of_services):
