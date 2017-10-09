@@ -219,6 +219,11 @@ def test_service_id_hash_not_in_searched_fields():
     assert app.mapping.SERVICE_ID_HASH_FIELD_NAME not in query['highlight']['fields']
 
 
+def test_sort_results_by_score_and_service_id_hash():
+    query = construct_query(build_query_params(keywords="some keywords"))
+    assert query['sort'] == ['_score', {app.mapping.SERVICE_ID_HASH_FIELD_NAME: 'desc'}]
+
+
 @pytest.mark.parametrize('example, expected', (
     ("id", True),
     ("lot", True),
