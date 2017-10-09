@@ -575,6 +575,30 @@ class TestSearchType(BaseApplicationTest):
         assert es_search_mock.call_args[1]['search_type'] == 'count'
 
 
+class TestSearchResultsOrdering(BaseApplicationTest):
+    def setup(self):
+        super(TestSearchResultsOrdering, self).setup()
+        self.create_index()
+        with self.app.app_context():
+            services = create_services(10)
+            for service in services:
+                self.client.put(
+                    '/index-to-create/services/'
+                    + str(service["service"]["id"]),
+                    data=json.dumps(service),
+                    content_type='application/json')
+            search_service.refresh('index-to-create')
+
+    def test_should_order_services_by_service_id_sha256(self):
+        with self.app.app_context():
+            response = self.client.get('/index-to-create/services/search')
+            assert_equal(response.status_code, 200)
+            assert_equal(get_json_from_response(response)["meta"]["total"], 10)
+
+        ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['services']]
+        assert ordered_service_ids == ['5', '6', '2', '7', '1', '0', '3', '4', '8', '9']  # fixture for sha256 ordering
+
+
 def create_services(number_of_services):
     services = []
     for i in range(number_of_services):
