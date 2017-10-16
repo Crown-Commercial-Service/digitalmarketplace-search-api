@@ -78,7 +78,7 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 404)
-        assert_in("IndexMissingException", get_json_from_response(response)["error"])
+        assert_equal(get_json_from_response(response)["error"]["type"], 'index_not_found_exception')
 
     def test_cant_replace_index_with_alias(self):
         self.create_index()
@@ -88,7 +88,7 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 400)
-        assert_in("InvalidAliasNameException", get_json_from_response(response)["error"])
+        assert_equal(get_json_from_response(response)["error"]["type"], 'invalid_alias_name_exception')
 
     def test_can_update_alias(self):
         self.create_index()
@@ -130,16 +130,16 @@ class TestSearchIndexes(BaseApplicationTest):
         self.client.delete('/index-to-create')
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
-        assert_equal("IndexMissingException[[index-to-create] missing]"
-                     in get_json_from_response(response)["error"], True)
+        assert_equal(get_json_from_response(response)["error"]["type"], 'index_not_found_exception')
+        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['index'], 'index-to-create')
+        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['reason'], 'no such index')
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist')
         assert_equal(response.status_code, 404)
-        assert_equal(
-            "IndexMissingException[[index-does-not-exist] missing]" in
-            get_json_from_response(response)["error"],
-            True)
+        assert_equal(get_json_from_response(response)["error"]["type"], 'index_not_found_exception')
+        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['index'], 'index-does-not-exist')
+        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['reason'], 'no such index')
 
 
 class TestIndexingDocuments(BaseApplicationTest):
@@ -568,11 +568,11 @@ class TestSearchType(BaseApplicationTest):
 
         assert es_search_mock.call_args[1]['search_type'] == 'dfs_query_then_fetch'
 
-    def test_core_search_and_aggregate_does_count_query_for_aggregations(self):
+    def test_core_search_and_aggregate_does_size_0_query_for_aggregations(self):
         with self.app.app_context(), mock.patch.object(es, 'search') as es_search_mock:
             core_search_and_aggregate('index-to-create', 'services', MultiDict(), aggregations=['serviceCategories'])
 
-        assert es_search_mock.call_args[1]['search_type'] == 'count'
+        assert es_search_mock.call_args[1]['body']['size'] == 0
 
 
 class TestSearchResultsOrdering(BaseApplicationTest):

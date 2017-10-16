@@ -21,7 +21,7 @@ def create_index(index_name):
         es.indices.create(index=index_name, body=app.mapping.get_services_mapping().definition)
         return "acknowledged", 200
     except TransportError as e:
-        if u'IndexAlreadyExistsException' in _get_an_error_message(e):
+        if _get_an_error_message(e)["type"] == 'index_already_exists_exception':
             return put_index_mapping(index_name)
         current_app.logger.error(
             "Failed to create the index %s: %s",
@@ -105,7 +105,7 @@ def index(index_name, doc_type, document, document_id):
 
 def status_for_index(index_name):
     try:
-        res = es.indices.status(index=index_name, human=True)
+        res = es.indices.stats(index=index_name, human=True)
         info = es.indices.get(index_name)
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -126,7 +126,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         if 'idOnly' in query_args:
             page_size *= int(current_app.config['DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER'])
 
-        es_search_kwargs = {'search_type': 'count' if aggregations and not search else 'dfs_query_then_fetch'}
+        es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
         res = es.search(
             index=index_name,
             doc_type=doc_type,

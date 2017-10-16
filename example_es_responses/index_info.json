@@ -1,52 +1,56 @@
 {
-  "g-cloud": {
-    "aliases": {
-      "galias": {}
-    },
-    "mappings": {
-      "services": {
-        "dynamic": "strict",
-        "_meta": {
-          "version": "2015-09-28"
+    "g-cloud-9":{
+        "aliases":{
+            "galias":{}
         },
-        "properties": {}
-      }
-    },
-    "settings": {
-      "index": {
-        "creation_date": "1443534824067",
-        "number_of_shards": "5",
-        "number_of_replicas": "1",
-        "version": {
-          "created": "1070199"
+        "mappings":{
+            "services":{
+                "dynamic":"strict",
+                "_meta":{
+                    "generated_by":"/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+                    "transformations":[],
+                    "version":"9.0.0",
+                    "generated_from_framework":"g-cloud-9",
+                    "generated_time":"2017-10-11T14:42:51.645474",
+                    "_":"DO NOT UPDATE BY HAND"
+                },
+                "properties":{}
+            }
         },
-        "uuid": "uEDxiMU5SaGCMMsXAmMepg"
-      }
-    },
-    "warmers": {}
-  },
-  "g-cloud-new": {
-    "aliases": {},
-    "mappings": {
-      "services": {
-        "dynamic": "strict",
-        "_meta": {
-          "version": "2015-09-28"
-        },
-        "properties": {}
-      }
-    },
-    "settings": {
-      "index": {
-        "creation_date": "1443534817736",
-        "number_of_shards": "5",
-        "number_of_replicas": "1",
-        "version": {
-          "created": "1070199"
-        },
-        "uuid": "EF3FQS0YSTmrLuxYuUJNSA"
-      }
-    },
-    "warmers": {}
-  }
+        "settings":{
+            "index":{
+                "number_of_shards":"5",
+                "provided_name":"g-cloud-9",
+                "creation_date":"1507755616736",
+                "analysis":{
+                    "filter":{
+                        "light_english_stemmer":{
+                            "name":"light_english",
+                            "type":"stemmer"
+                        },
+                        "possessive_english_stemmer":{
+                            "name":"possessive_english",
+                            "type":"stemmer"
+                        }
+                    },
+                    "analyzer":{
+                        "stemming_analyzer":{
+                            "filter":[
+                                "standard",
+                                "lowercase",
+                                "possessive_english_stemmer",
+                                "light_english_stemmer"
+                            ],
+                            "tokenizer":"standard"
+                        }
+                    }
+                },
+                "number_of_replicas":"1",
+                "uuid":"43EW0rFoQgmaX21firVUhg",
+                "version":{
+                    "created":"5060399"
+                }
+            }
+        }
+    }
 }

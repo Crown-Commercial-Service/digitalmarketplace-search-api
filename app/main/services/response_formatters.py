@@ -22,8 +22,8 @@ def _convert_es_index_status(index_name, status_response, info_response):
     index_aliases = info_response.get(index_name, {}).get('aliases', {})
 
     return {
-        'num_docs': index_status.get('docs', {}).get('num_docs'),
-        'primary_size': index_status["index"]["primary_size"],
+        'num_docs': index_status["primaries"].get("docs", {}).get("count"),
+        'primary_size': index_status["primaries"]["store"]["size"],
         'mapping_version': index_mapping.get('_meta', {}).get('version'),
         'aliases': list(index_aliases.keys()),
     }

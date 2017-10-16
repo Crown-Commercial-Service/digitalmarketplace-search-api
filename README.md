@@ -91,7 +91,7 @@ elasticsearch
 Set the required environment variable:
 
 ```
-export DM_ELASTICSEARCH_URL=http://localhost:9200
+export ELASTICSEARCH_HOST=http://localhost:9200
 ```
 
 The Search API runs on port 5001. Calls to the API require a valid bearer

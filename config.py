@@ -11,7 +11,9 @@ class Config:
     )
     AUTH_REQUIRED = True
 
-    ELASTICSEARCH_HOST = os.getenv('DM_ELASTICSEARCH_URL', 'localhost:9200')
+    ELASTICSEARCH_HOST = 'localhost:9200'
+
+    DM_ELASTICSEARCH_CERT_PATH = None
 
     DM_SEARCH_API_AUTH_TOKENS = None
 
@@ -27,6 +29,8 @@ class Config:
 
     # Feature Flags
     RAISE_ERROR_ON_MISSING_FEATURES = True
+
+    VCAP_SERVICES = None
 
     @staticmethod
     def init_app(app):
@@ -53,6 +57,7 @@ class Live(Config):
     DEBUG = False
 
     DM_LOG_PATH = '/var/log/digitalmarketplace/application.log'
+    DM_ELASTICSEARCH_CERT_PATH = '/tmp/elasticsearch-certificate'
 
 
 config = {

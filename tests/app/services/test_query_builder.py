@@ -89,25 +89,27 @@ def test_should_identify_filter_search_from_query_params(query, expected):
 def test_should_have_filtered_root_element_if_service_types_search():
     query = construct_query(build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
     assert_equal("query" in query, True)
-    assert_equal("filtered" in query["query"], True)
+    assert_equal("bool" in query["query"], True)
+    assert_equal("must" in query["query"]["bool"], True)
 
 
 def test_should_have_filtered_root_element_if_lot_search():
     query = construct_query(build_query_params(filters={'lot': "SaaS"}))
     assert_equal("query" in query, True)
-    assert_equal("filtered" in query["query"], True)
+    assert_equal("bool" in query["query"], True)
+    assert_equal("must" in query["query"]["bool"], True)
 
 
 def test_should_have_filtered_root_element_and_match_all_if_no_keywords():
     query = construct_query(build_query_params(filters={'serviceTypes': ["my serviceTypes"]}))
-    assert_equal("match_all" in query["query"]["filtered"]["query"], True)
+    assert_equal("match_all" in query["query"]["bool"]["must"], True)
 
 
 def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
     query = construct_query(
         build_query_params(keywords="some keywords",
                            filters={'serviceTypes': ["my serviceTypes"]})
-    )["query"]["filtered"]["query"]
+    )["query"]["bool"]["must"]
     assert_in("simple_query_string", query)
     query_string_clause = query["simple_query_string"]
     assert_equal(query_string_clause["query"], "some keywords")
@@ -118,9 +120,9 @@ def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
 def test_should_have_filtered_term_service_types_clause():
     query = construct_query(build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
     assert_equal("term" in
-                 query["query"]["filtered"]["filter"]["bool"]["must"][0], True)
+                 query["query"]["bool"]["filter"]["bool"]["must"][0], True)
     assert_equal(
-        query["query"]["filtered"]["filter"]
+        query["query"]["bool"]["filter"]
         ["bool"]["must"][0]["term"]["filter_serviceTypes"],
         "servicetypes")
 
@@ -128,10 +130,10 @@ def test_should_have_filtered_term_service_types_clause():
 def test_should_have_filtered_term_lot_clause():
     query = construct_query(build_query_params(filters={'lot': "SaaS"}))
     assert_equal(
-        "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
+        "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
         True)
     assert_equal(
-        query["query"]["filtered"]["filter"]
+        query["query"]["bool"]["filter"]
         ["bool"]["must"][0]["term"]["filter_lot"],
         "saas")
 
@@ -139,7 +141,7 @@ def test_should_have_filtered_term_lot_clause():
 def test_should_have_filtered_term_for_lot_and_service_types_clause():
     query = construct_query(
         build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]}))
-    terms = query["query"]["filtered"]["filter"]["bool"]["must"]
+    terms = query["query"]["bool"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
     assert_in({"term": {'filter_lot': 'saas'}}, terms)
 
@@ -148,7 +150,7 @@ def test_should_not_filter_on_unknown_keys():
     params = build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]})
     params.add("this", "that")
     query = construct_query(params)
-    terms = query["query"]["filtered"]["filter"]["bool"]["must"]
+    terms = query["query"]["bool"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
     assert_in({"term": {'filter_lot': 'saas'}}, terms)
     assert_not_in({"term": {'unknown': 'something to ignore'}}, terms)
@@ -158,7 +160,7 @@ def test_should_have_filtered_term_for_multiple_service_types_clauses():
     query = construct_query(
         build_query_params(
             filters={'serviceTypes': ["serviceTypes1", "serviceTypes2", "serviceTypes3"]}))
-    terms = query["query"]["filtered"]["filter"]["bool"]["must"]
+    terms = query["query"]["bool"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes1'}}, terms)
     assert_in({"term": {'filter_serviceTypes': 'servicetypes2'}}, terms)
     assert_in({"term": {'filter_serviceTypes': 'servicetypes3'}}, terms)
@@ -168,10 +170,10 @@ def test_should_use_whitespace_stripped_lowercased_service_types():
     query = construct_query(build_query_params(
         filters={'serviceTypes': ["My serviceTypes"]}))
     assert_equal(
-        "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
+        "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
         True)
     assert_equal(
-        query["query"]["filtered"]["filter"]
+        query["query"]["bool"]["filter"]
         ["bool"]["must"][0]["term"]["filter_serviceTypes"],
         "myservicetypes")
 
@@ -180,10 +182,10 @@ def test_should_use_no_non_alphanumeric_characters_in_service_types():
     query = construct_query(
         build_query_params(filters={'serviceTypes': ["Mys Service TYPes"]}))
     assert_equal(
-        "term" in query["query"]["filtered"]["filter"]["bool"]["must"][0],
+        "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
         True)
     assert_equal(
-        query["query"]["filtered"]["filter"]["bool"]["must"][0]
+        query["query"]["bool"]["filter"]["bool"]["must"][0]
         ["term"]["filter_serviceTypes"],
         "mysservicetypes")
 
@@ -262,13 +264,13 @@ class TestFieldFilters(object):
     def test_or_field_filters(self):
         assert_equal(
             or_field_filters('filterName', ['Aa bb', 'Bb cc']),
-            [{"terms": {"filterName": ['aabb', 'bbcc'], "execution": "bool"}}]
+            [{"terms": {"filterName": ['aabb', 'bbcc']}}]
         )
 
     def test_or_field_filters_single_value(self):
         assert_equal(
             or_field_filters('filterName', ['Aa bb']),
-            [{"terms": {"filterName": ['aabb'], "execution": "bool"}}]
+            [{"terms": {"filterName": ['aabb']}}]
         )
 
     def test_and_field_filters(self):
@@ -304,7 +306,7 @@ class TestFieldFilters(object):
     def test_field_filters_or_value(self):
         assert_equal(
             field_filters('filterName', ['Aa,Bb']),
-            [{"terms": {"filterName": ['aa', 'bb'], "execution": "bool"}}]
+            [{"terms": {"filterName": ['aa', 'bb']}}]
         )
 
 
@@ -334,7 +336,7 @@ class TestFilterClause(object):
             filter_clause(MultiDict({'filter_fieldName': ['Aa,Bb']})),
             {'bool': {
                 'must': [
-                    {"terms": {"filter_fieldName": ['aa', 'bb'], "execution": "bool"}},
+                    {"terms": {"filter_fieldName": ['aa', 'bb']}},
                 ]
             }}
         )
@@ -346,7 +348,7 @@ class TestFilterClause(object):
         }))
 
         assert_in(
-            {"terms": {"filter_orFieldName": ['aa', 'bb'], "execution": "bool"}},
+            {"terms": {"filter_orFieldName": ['aa', 'bb']}},
             bool_filter['bool']['must']
         )
 
