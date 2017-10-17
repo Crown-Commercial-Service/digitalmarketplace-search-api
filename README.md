@@ -5,12 +5,12 @@ API to handle interactions between the digitalmarketplace applications and searc
 
 ## Quickstart
 
-Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
+Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 5.x series; ideally 5.4 which is what we run on live systems.
 ```
 cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-git checkout 390173e90^ -- Formula/elasticsearch@1.7.rb
-git fetch --depth=10000
-HOMEBREW_NO_AUTO_UPDATE=1 brew install elasticsearch@1.7
+git checkout d8c57e111f1990c0a33b0d73af818eb8d442b33b -- Formula/elasticsearch.rb (version: 5.4.2)
+HOMEBREW_NO_AUTO_UPDATE=1 brew install elasticsearch
+git checkout master
 ```
 
 Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
@@ -25,15 +25,12 @@ make run-all
 
 ## Setup
 
-Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 1.x series not the 2.x series.
+Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 5.x series; ideally 5.4 which is what we run on live systems.
 
 ```
 brew update
-brew tap homebrew/versions
-brew install homebrew/versions/elasticsearch17
+brew install homebrew/versions/elasticsearch
 ```
-
-**Debian users** might have to use elasticsearch 1.6 available in `jessie-backports` and uncomment `START_DAEMON=true` in `/etc/default/elasticsearch` before starting elasticsearch using `systemctl start elasticsearch`.
 
 Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
 
@@ -82,25 +79,17 @@ python application.py runserver
 
 ### Using the Search API locally
 
-Start elasticsearch (in a new console window/tab):
+Start elasticsearch if not already running via brew (in a new console window/tab):
 
-```
+```bash
+brew services start elasticsearch
+< OR >
 elasticsearch
 ```
 
-Set the required environment variable:
-
-```
-export ELASTICSEARCH_HOST=http://localhost:9200
-```
-
-The Search API runs on port 5001. Calls to the API require a valid bearer
-token. Tokens to be accepted can be set using the DM_SEARCH_API_AUTH_TOKENS
-environment variable, e.g.:
-
-```export DM_SEARCH_API_AUTH_TOKENS=myToken```
-
-and then you can include this token in your request headers, e.g.:
+The Search API runs on port 5001. Calls to the Search API require a valid bearer
+token. For development environments, this defaults to `myToken`. An example request to your local search API
+would therefore be:
 
 ```
 curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
