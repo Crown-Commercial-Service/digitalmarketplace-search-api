@@ -78,7 +78,8 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["error"]["type"], 'index_not_found_exception')
+        assert_equal(get_json_from_response(response)["error"],
+                     'index_not_found_exception: no such index (<no index>)')
 
     def test_cant_replace_index_with_alias(self):
         self.create_index()
@@ -88,7 +89,9 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 400)
-        assert_equal(get_json_from_response(response)["error"]["type"], 'invalid_alias_name_exception')
+        assert_equal(get_json_from_response(response)["error"],
+                     'invalid_alias_name_exception: Invalid alias name [index-to-create], an index exists with the '
+                     'same name as the alias (index-to-create)')
 
     def test_can_update_alias(self):
         self.create_index()
@@ -130,16 +133,14 @@ class TestSearchIndexes(BaseApplicationTest):
         self.client.delete('/index-to-create')
         response = self.client.delete('/index-to-create')
         assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["error"]["type"], 'index_not_found_exception')
-        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['index'], 'index-to-create')
-        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['reason'], 'no such index')
+        assert_equal(get_json_from_response(response)["error"],
+                     'index_not_found_exception: no such index (index-to-create)')
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist')
         assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["error"]["type"], 'index_not_found_exception')
-        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['index'], 'index-does-not-exist')
-        assert_equal(get_json_from_response(response)["error"]["root_cause"][0]['reason'], 'no such index')
+        assert_equal(get_json_from_response(response)["error"],
+                     "index_not_found_exception: no such index (index-does-not-exist)")
 
 
 class TestIndexingDocuments(BaseApplicationTest):

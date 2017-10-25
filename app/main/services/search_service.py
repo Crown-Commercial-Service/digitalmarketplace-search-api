@@ -21,9 +21,9 @@ def create_index(index_name):
         es.indices.create(index=index_name, body=app.mapping.get_services_mapping().definition)
         return "acknowledged", 200
     except TransportError as e:
-        if _get_an_error_message(e)["type"] == 'index_already_exists_exception':
+        if 'index_already_exists_exception' in _get_an_error_message(e):
             return put_index_mapping(index_name)
-        current_app.logger.error(
+        current_app.logger.warning(
             "Failed to create the index %s: %s",
             index, _get_an_error_message(e)
         )
@@ -180,5 +180,15 @@ def _get_an_error_message(exception):
         error = info['error']
     except (KeyError, TypeError):
         return info
+    try:  # ES5 errors are dicts; get the reason for the error so that the log formatter only gets a string.
+        root_cause = error['root_cause'][0]
+        type = root_cause.get('type', '<unknown type>')
+        reason = root_cause.get('reason', '<unknown reason>')
+        index = root_cause.get('index', '<no index>')
+
+        return '{}: {} ({})'.format(type, reason, index)
+
+    except (KeyError, IndexError):
+        pass
 
     return error
