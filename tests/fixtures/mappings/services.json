@@ -38,6 +38,12 @@
                 "Accounting and finance"
               ]
             }
+          },
+          {
+            "copyhash_to": {
+              "field": "id",
+              "target_field": "service_id_hash"
+            }
           }
         ]
       },

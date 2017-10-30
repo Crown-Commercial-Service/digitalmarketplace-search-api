@@ -44,8 +44,24 @@ def _append_conditionally(arguments, document):
             document[target_field] = target_values
 
 
+def _copyhash_to(arguments, document):
+    """
+    A transformation processor that performs a sha256 on the (utf8) string representation of the "field" and stores
+    the (lowercase hex string) result on the document under a key specified by "target_field". If "target_field" is not
+    specified, the source field will be overwritten with the result.
+    :param arguments: dict -- the parameters to the processor as specified in configuration
+    :param document: dict -- the Elasticsearch document that we are transforming
+    """
+    source_field = arguments['field']
+    target_field = arguments.get('target_field') or source_field
+
+    if source_field in document:
+        document[target_field] = hashlib.sha256((six.text_type(document[source_field])).encode('utf-8')).hexdigest()
+
+
 TRANSFORMATION_PROCESSORS = {
-    'append_conditionally': _append_conditionally
+    'append_conditionally': _append_conditionally,
+    'copyhash_to': _copyhash_to,
 }
 
 
@@ -61,17 +77,11 @@ def convert_request_json_into_index_json(mapping, request_json):
             TRANSFORMATION_PROCESSORS[transformation_type](transformation_arguments, request_json)
 
     for field in request_json:
-        # TODO G9 breaking change, remove once G7/G8 does not need to be indexed
-        if not (field == "cloudDeploymentModel" and request_json['frameworkSlug'] in ('g-cloud-7', 'g-cloud-8')):
-            if field in mapping.filter_fields_set:
-                index_json["filter_" + field] = process_values_for_matching(
-                    request_json[field]
-                )
-            if field in mapping.text_fields_set:
-                index_json[field] = request_json[field]
-
-    if request_json.get('id'):
-        index_json[app.mapping.SERVICE_ID_HASH_FIELD_NAME] = \
-            hashlib.sha256(request_json['id'].encode('utf-8')).hexdigest()
+        if field in mapping.filter_fields_set:
+            index_json["filter_" + field] = process_values_for_matching(
+                request_json[field]
+            )
+        if field in mapping.non_filter_fields_set:
+            index_json[field] = request_json[field]
 
     return index_json
