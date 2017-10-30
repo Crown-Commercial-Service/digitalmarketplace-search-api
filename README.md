@@ -7,10 +7,12 @@ API to handle interactions between the digitalmarketplace applications and searc
 
 Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 5.x series; ideally 5.4 which is what we run on live systems.
 ```
+brew cask install java
 cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-git checkout d8c57e111f1990c0a33b0d73af818eb8d442b33b -- Formula/elasticsearch.rb (version: 5.4.2)
+git fetch --unshallow
+git checkout d8c57e111f1990c0a33b0d73af818eb8d442b33b Formula/elasticsearch.rb # (version: 5.4.2)
 HOMEBREW_NO_AUTO_UPDATE=1 brew install elasticsearch
-git checkout master
+git reset --hard master
 ```
 
 Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
