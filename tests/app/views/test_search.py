@@ -1,14 +1,14 @@
 import mock
 import pytest
+from flask import json
 from werkzeug import MultiDict
-
+from nose.tools import assert_equal, assert_in, assert_true
+from urllib3.exceptions import NewConnectionError
 
 from app import elasticsearch_client as es
 from app.main.services.search_service import core_search_and_aggregate
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
-from flask import json
-from nose.tools import assert_equal, assert_in, assert_true
 
 from ..helpers import BaseApplicationTest, default_service
 
@@ -144,6 +144,12 @@ class TestSearchIndexes(BaseApplicationTest):
 
 
 class TestIndexingDocuments(BaseApplicationTest):
+
+    EXAMPLE_CONNECTION_ERROR = (
+        '<urllib3.connection.HTTPConnection object at 0x107626588>: '
+        'Failed to establish a new connection: [Errno 61] Connection refused'
+    )
+
     def setup(self):
         super(TestIndexingDocuments, self).setup()
         self.create_index()
@@ -165,6 +171,30 @@ class TestIndexingDocuments(BaseApplicationTest):
         assert_equal(
             get_json_from_response(response)["status"]["num_docs"],
             1)
+
+    @mock.patch('app.main.views.search.index', return_value=(NewConnectionError('', EXAMPLE_CONNECTION_ERROR), 'N/A'))
+    def test_index_document_handles_connection_error(self, ind):
+        service = default_service()
+
+        response = self.client.put(
+            '/index-to-create/services/' + str(service["service"]["id"]),
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+        assert response.status_code == 500
+
+    @mock.patch(
+        'app.main.views.search.index',
+        return_value=(NewConnectionError('', EXAMPLE_CONNECTION_ERROR), 'something_other_than_N/A')
+    )
+    def test_index_document_does_not_pass_on_non_NA_status_code(self, ind):
+        service = default_service()
+        with pytest.raises(TypeError):
+            self.client.put(
+                '/index-to-create/services/' + str(service["service"]["id"]),
+                data=json.dumps(service),
+                content_type='application/json'
+            )
 
     def test_should_index_a_document_with_missing_fields(self):
         service = default_service()
