@@ -118,10 +118,20 @@ def delete_service(index_name, doc_type, service_id):
 
 
 def api_response(data, status_code, key='message'):
-    if status_code // 100 == 2:
-        return jsonify({key: data}), status_code
-    else:
-        return jsonify(error=data), status_code
+    """Handle error codes.
+
+    See http://elasticsearch-py.readthedocs.io/en/master/exceptions.html#elasticsearch.TransportError.status_code for
+    an explaination of 'N/A' status code. elasticsearch-py client returns 'N/A' as status code if ES server cannot be
+    reached
+    """
+    try:
+        if status_code // 100 == 2:
+            return jsonify({key: data}), status_code
+    except TypeError as e:
+        if status_code == 'N/A':
+            return jsonify(error=str(data)), 500
+        raise e
+    return jsonify(error=data), status_code
 
 
 def check_json_from_request(request):
