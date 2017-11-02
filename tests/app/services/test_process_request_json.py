@@ -9,13 +9,13 @@ from nose.tools import assert_equal
 pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
-def test_should_add_filter_fields_to_index_json():
+def test_should_add_filter_fields_to_index_json(services_mapping):
     request = {
         "lot": "SaaS",
         "freeOption": True,
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
         "lot": "SaaS",
         "filter_lot": "saas",
@@ -23,14 +23,14 @@ def test_should_add_filter_fields_to_index_json():
     })
 
 
-def test_should_make__match_array_fields():
+def test_should_make__match_array_fields(services_mapping):
     request = {
         "lot": "SaaS",
         "serviceTypes": ["One", "Two", "Three"],
         "networksConnected": ["Internet", "PSN"],
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
         "lot": "SaaS",
         "filter_lot": "saas",
@@ -40,38 +40,38 @@ def test_should_make__match_array_fields():
     })
 
 
-def test_should_ignore_non_filter_and_non_text_fields():
+def test_should_ignore_non_filter_and_non_text_fields(services_mapping):
     request = {
         "lot": "SaaS",
         "ignore": "Unchanged",
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
         "lot": "SaaS",
         "filter_lot": "saas",
     })
 
 
-def test_should_remove_raw_filter_fields_that_are_non_text():
+def test_should_remove_raw_filter_fields_that_are_non_text(services_mapping):
     request = {
         "lot": "SaaS",
         "freeOption": False,
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result["lot"], "SaaS")
     assert_equal(result["filter_lot"], "saas")
     assert_equal(result["filter_freeOption"], False)
     assert_equal("freeOption" in result, False)
 
 
-def test_should_add_parent_category():
+def test_should_add_parent_category(services_mapping):
     request = {
         "serviceCategories": ["Accounts payable"],
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
 
     assert result["serviceCategories"] == [
         "Accounts payable",
@@ -104,7 +104,7 @@ def test_append_conditionally_does_not_duplicate_values(services_mapping):
         "serviceCategories": ["Crops", "Animals"],
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
 
     assert result["serviceCategories"] == [
         "Crops", "Animals", "Agriculture",
@@ -148,7 +148,7 @@ def test_duplicative_transformations_do_duplicate_values(services_mapping):
         "serviceCategories": ["Crops", "Animals"],
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
 
     assert result["serviceCategories"] == [
         "Crops", "Animals", "Agriculture", "Agriculture",
@@ -174,7 +174,7 @@ def test_missing_field_in_transformation(services_mapping):
         "otherField": ["wibble"],
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
     # really just checking this case doesn't throw!
 
     assert result == {
@@ -202,7 +202,7 @@ def test_create_new_field_in_transformation(services_mapping):
         "someField": ["foo"],
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
 
     assert result["newField"] == [
         "bar",
@@ -211,12 +211,12 @@ def test_create_new_field_in_transformation(services_mapping):
     assert result["someField"] == ["foo"]
 
 
-def test_service_id_hash_added_if_id_present():
+def test_service_id_hash_added_if_id_present(services_mapping):
     request = {
         "id": "999999999",
     }
 
-    result = convert_request_json_into_index_json(request)
+    result = convert_request_json_into_index_json(services_mapping, request)
 
     assert result["id"] == "999999999"
 

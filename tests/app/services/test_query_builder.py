@@ -17,56 +17,58 @@ from tests.app.helpers import build_query_params
 pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
-def test_should_have_correct_root_element():
-    assert_equal("query" in construct_query(build_query_params()), True)
+def test_should_have_correct_root_element(services_mapping):
+    assert_equal("query" in construct_query(services_mapping, build_query_params()), True)
 
 
-def test_should_have_page_size_set():
-    assert_equal(construct_query(build_query_params())["size"], 100)
+def test_should_have_page_size_set(services_mapping):
+    assert_equal(construct_query(services_mapping, build_query_params())["size"], 100)
 
 
-def test_should_be_able_to_override_pagesize():
-    assert_equal(construct_query(build_query_params(), page_size=10)["size"], 10)
+def test_should_be_able_to_override_pagesize(services_mapping):
+    assert_equal(construct_query(services_mapping, build_query_params(), page_size=10)["size"], 10)
 
 
-def test_page_should_set_from_parameter():
+def test_page_should_set_from_parameter(services_mapping):
     assert_equal(
-        construct_query(build_query_params(page=2))["from"], 100)
+        construct_query(services_mapping, build_query_params(page=2))["from"], 100)
 
 
-def test_should_have_no_from_by_default():
-    assert_false("from" in construct_query(build_query_params()))
+def test_should_have_no_from_by_default(services_mapping):
+    assert_false("from" in construct_query(services_mapping, build_query_params()))
 
 
-def test_should_have_match_all_query_if_no_params():
-    assert_equal("query" in construct_query(build_query_params()), True)
+def test_should_have_match_all_query_if_no_params(services_mapping):
+    assert_equal("query" in construct_query(services_mapping, build_query_params()), True)
     assert_equal("match_all" in
-                 construct_query(build_query_params())["query"], True)
+                 construct_query(services_mapping, build_query_params())["query"], True)
 
 
 @pytest.mark.parametrize('aggregations, equality', (([], False), (['lot'], True)))
-def test_aggregations_root_element_present_if_appropriate(aggregations, equality):
-    assert_equal('aggregations' in construct_query(build_query_params(), aggregations=aggregations), equality)
-    assert_equal('aggregations' in construct_query(build_query_params(), aggregations=aggregations), equality)
+def test_aggregations_root_element_present_if_appropriate(services_mapping, aggregations, equality):
+    assert_equal('aggregations' in construct_query(services_mapping, build_query_params(), aggregations=aggregations),
+                 equality)
+    assert_equal('aggregations' in construct_query(services_mapping, build_query_params(), aggregations=aggregations),
+                 equality)
 
 
 @pytest.mark.parametrize('aggregations', ((['lot']), (['lot', 'serviceCategories'])))
-def test_aggregations_terms_added_for_each_param(aggregations):
-    query = construct_query(build_query_params(), aggregations=aggregations)
+def test_aggregations_terms_added_for_each_param(services_mapping, aggregations):
+    query = construct_query(services_mapping, build_query_params(), aggregations=aggregations)
 
     assert_equal(set(aggregations), {x for x in query['aggregations']})
     assert_equal({'{}.raw'.format(x) for x in aggregations}, {v['terms']['field'] for k, v in
                                                               query['aggregations'].items()})
 
 
-def test_aggregation_throws_error_if_not_implemented():
+def test_aggregation_throws_error_if_not_implemented(services_mapping):
     with pytest.raises(ValueError):
-        construct_query(build_query_params(), aggregations=['missing'])
+        construct_query(services_mapping, build_query_params(), aggregations=['missing'])
 
 
 def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
     keywords = "these are my keywords"
-    query = construct_query(build_query_params(keywords))
+    query = construct_query(services_mapping, build_query_params(keywords))
     assert_equal("query" in query, True)
     assert_in("simple_query_string", query["query"])
     query_string_clause = query["query"]["simple_query_string"]
@@ -82,34 +84,33 @@ def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
     (build_query_params(keywords="something", filters={'lot': "lot"}), True),
     (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
 ))
-def test_should_identify_filter_search_from_query_params(query, expected):
-    return assert_equal, is_filtered(query), expected, query
+def test_should_identify_filter_search_from_query_params(services_mapping, query, expected):
+    return assert_equal, is_filtered(services_mapping, query), expected, query
 
 
-def test_should_have_filtered_root_element_if_service_types_search():
-    query = construct_query(build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
+def test_should_have_filtered_root_element_if_service_types_search(services_mapping):
+    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
     assert_equal("query" in query, True)
     assert_equal("bool" in query["query"], True)
     assert_equal("must" in query["query"]["bool"], True)
 
 
-def test_should_have_filtered_root_element_if_lot_search():
-    query = construct_query(build_query_params(filters={'lot': "SaaS"}))
+def test_should_have_filtered_root_element_if_lot_search(services_mapping):
+    query = construct_query(services_mapping, build_query_params(filters={'lot': "SaaS"}))
     assert_equal("query" in query, True)
     assert_equal("bool" in query["query"], True)
     assert_equal("must" in query["query"]["bool"], True)
 
 
-def test_should_have_filtered_root_element_and_match_all_if_no_keywords():
-    query = construct_query(build_query_params(filters={'serviceTypes': ["my serviceTypes"]}))
+def test_should_have_filtered_root_element_and_match_all_if_no_keywords(services_mapping):
+    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["my serviceTypes"]}))
     assert_equal("match_all" in query["query"]["bool"]["must"], True)
 
 
 def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
-    query = construct_query(
-        build_query_params(keywords="some keywords",
-                           filters={'serviceTypes': ["my serviceTypes"]})
-    )["query"]["bool"]["must"]
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords",
+                                                                 filters={'serviceTypes': ["my serviceTypes"]})
+                            )["query"]["bool"]["must"]
     assert_in("simple_query_string", query)
     query_string_clause = query["simple_query_string"]
     assert_equal(query_string_clause["query"], "some keywords")
@@ -117,8 +118,8 @@ def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
     assert_equal(set(query_string_clause["fields"]), services_mapping.text_fields_set)
 
 
-def test_should_have_filtered_term_service_types_clause():
-    query = construct_query(build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
+def test_should_have_filtered_term_service_types_clause(services_mapping):
+    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
     assert_equal("term" in
                  query["query"]["bool"]["filter"]["bool"]["must"][0], True)
     assert_equal(
@@ -127,8 +128,8 @@ def test_should_have_filtered_term_service_types_clause():
         "servicetypes")
 
 
-def test_should_have_filtered_term_lot_clause():
-    query = construct_query(build_query_params(filters={'lot': "SaaS"}))
+def test_should_have_filtered_term_lot_clause(services_mapping):
+    query = construct_query(services_mapping, build_query_params(filters={'lot': "SaaS"}))
     assert_equal(
         "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
         True)
@@ -138,36 +139,36 @@ def test_should_have_filtered_term_lot_clause():
         "saas")
 
 
-def test_should_have_filtered_term_for_lot_and_service_types_clause():
-    query = construct_query(
-        build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]}))
+def test_should_have_filtered_term_for_lot_and_service_types_clause(services_mapping):
+    query = construct_query(services_mapping,
+                            build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]}))
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
     assert_in({"term": {'filter_lot': 'saas'}}, terms)
 
 
-def test_should_not_filter_on_unknown_keys():
+def test_should_not_filter_on_unknown_keys(services_mapping):
     params = build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]})
     params.add("this", "that")
-    query = construct_query(params)
+    query = construct_query(services_mapping, params)
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes'}}, terms)
     assert_in({"term": {'filter_lot': 'saas'}}, terms)
     assert_not_in({"term": {'unknown': 'something to ignore'}}, terms)
 
 
-def test_should_have_filtered_term_for_multiple_service_types_clauses():
-    query = construct_query(
-        build_query_params(
-            filters={'serviceTypes': ["serviceTypes1", "serviceTypes2", "serviceTypes3"]}))
+def test_should_have_filtered_term_for_multiple_service_types_clauses(services_mapping):
+    query = construct_query(services_mapping,
+                            build_query_params(filters={
+                                'serviceTypes': ["serviceTypes1", "serviceTypes2", "serviceTypes3"]}))
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
     assert_in({"term": {'filter_serviceTypes': 'servicetypes1'}}, terms)
     assert_in({"term": {'filter_serviceTypes': 'servicetypes2'}}, terms)
     assert_in({"term": {'filter_serviceTypes': 'servicetypes3'}}, terms)
 
 
-def test_should_use_whitespace_stripped_lowercased_service_types():
-    query = construct_query(build_query_params(
+def test_should_use_whitespace_stripped_lowercased_service_types(services_mapping):
+    query = construct_query(services_mapping, build_query_params(
         filters={'serviceTypes': ["My serviceTypes"]}))
     assert_equal(
         "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
@@ -178,9 +179,9 @@ def test_should_use_whitespace_stripped_lowercased_service_types():
         "myservicetypes")
 
 
-def test_should_use_no_non_alphanumeric_characters_in_service_types():
-    query = construct_query(
-        build_query_params(filters={'serviceTypes': ["Mys Service TYPes"]}))
+def test_should_use_no_non_alphanumeric_characters_in_service_types(services_mapping):
+    query = construct_query(services_mapping,
+                            build_query_params(filters={'serviceTypes': ["Mys Service TYPes"]}))
     assert_equal(
         "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
         True)
@@ -190,39 +191,36 @@ def test_should_use_no_non_alphanumeric_characters_in_service_types():
         "mysservicetypes")
 
 
-def test_should_have_highlight_block_on_keyword_search():
-    query = construct_query(build_query_params(keywords="some keywords"))
+def test_should_have_highlight_block_on_keyword_search(services_mapping):
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
     assert_equal("highlight" in query, True)
 
 
-def test_should_have_highlight_block_on_filtered_search():
-    query = construct_query(
-        build_query_params(keywords="some keywords"))
+def test_should_have_highlight_block_on_filtered_search(services_mapping):
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
     assert_equal("highlight" in query, True)
 
 
-def test_highlight_block_sets_encoder_to_html():
-    query = construct_query(
-        build_query_params(keywords="some keywords"))
+def test_highlight_block_sets_encoder_to_html(services_mapping):
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
     assert_equal(query["highlight"]["encoder"], "html")
 
 
-def test_service_id_hash_not_in_searched_fields():
-    query = construct_query(build_query_params(keywords="some keywords"))
+def test_service_id_hash_not_in_searched_fields(services_mapping):
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
     assert app.mapping.SERVICE_ID_HASH_FIELD_NAME not in query['query']['simple_query_string']['fields']
 
-    query = construct_query(
-        build_query_params(filters={'serviceTypes': ["serviceType1"]}))
+    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceType1"]}))
 
     assert app.mapping.SERVICE_ID_HASH_FIELD_NAME not in query['highlight']['fields']
 
 
-def test_sort_results_by_score_and_service_id_hash():
-    query = construct_query(build_query_params(keywords="some keywords"))
+def test_sort_results_by_score_and_service_id_hash(services_mapping):
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
     assert query['sort'] == ['_score', {app.mapping.SERVICE_ID_HASH_FIELD_NAME: 'desc'}]
 
 
@@ -236,9 +234,8 @@ def test_sort_results_by_score_and_service_id_hash():
     ("serviceTypes", True),
     ("supplierName", True)
 ))
-def test_highlight_block_contains_correct_fields(example, expected):
-    query = construct_query(
-        build_query_params(keywords="some keywords"))
+def test_highlight_block_contains_correct_fields(services_mapping, example, expected):
+    query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
     assert_equal("highlight" in query, True)
 

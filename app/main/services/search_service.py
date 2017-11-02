@@ -16,13 +16,14 @@ def refresh(index_name):
         return _get_an_error_message(e), e.status_code
 
 
-def create_index(index_name):
+def create_index(index_name, mapping_name):
+    mapping_definition = app.mapping.load_mapping_definition(mapping_name)
     try:
-        es.indices.create(index=index_name, body=app.mapping.get_services_mapping().definition)
-        return "acknowledged", 200
+        es.indices.create(index=index_name, body=mapping_definition)
+        return "acknowledged", 200  # TODO should be 201 Created surely
     except TransportError as e:
         if 'index_already_exists_exception' in _get_an_error_message(e):
-            return put_index_mapping(index_name)
+            return put_index_mapping(index_name, mapping_definition)
         current_app.logger.warning(
             "Failed to create the index %s: %s",
             index, _get_an_error_message(e)
@@ -47,20 +48,22 @@ def create_alias(alias_name, target_index):
         return _get_an_error_message(e), e.status_code
 
 
-def put_index_mapping(index_name):
-    try:
-        es.indices.put_mapping(
-            index=index_name,
-            doc_type="services",
-            body=app.mapping.get_services_mapping().definition["mappings"]["services"]
-        )
-        return "acknowledged", 200
-    except TransportError as e:
-        current_app.logger.error(
-            "Failed to update the index mapping for %s: %s",
-            index, _get_an_error_message(e)
-        )
-        return _get_an_error_message(e), e.status_code
+def put_index_mapping(index_name, definition):
+    for doc_type, mapping_for_type in definition["mappings"].items():
+        try:
+            es.indices.put_mapping(
+                index=index_name,
+                doc_type=doc_type,
+                body=mapping_for_type
+            )
+
+        except TransportError as e:
+            current_app.logger.error(
+                "Failed to update the index mapping for %s/%s: %s",
+                index, _get_an_error_message(e)
+            )
+            return _get_an_error_message(e), e.status_code
+    return "acknowledged", 200
 
 
 def delete_index(index_name):
@@ -122,19 +125,21 @@ def status_for_all_indexes():
 
 def core_search_and_aggregate(index_name, doc_type, query_args, search=False, aggregations=[]):
     try:
+        mapping = app.mapping.get_mapping(index_name, doc_type)
         page_size = int(current_app.config['DM_SEARCH_PAGE_SIZE'])
         if 'idOnly' in query_args:
             page_size *= int(current_app.config['DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER'])
 
         es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
+        q = construct_query(mapping, query_args, aggregations, page_size)
         res = es.search(
             index=index_name,
             doc_type=doc_type,
-            body=construct_query(query_args, aggregations, page_size),
+            body=q,
             **es_search_kwargs
         )
 
-        results = convert_es_results(res, query_args)
+        results = convert_es_results(mapping, res, query_args)
 
         def url_for_search(**kwargs):
             return url_for('.search', index_name=index_name, doc_type=doc_type, _external=True, **kwargs)

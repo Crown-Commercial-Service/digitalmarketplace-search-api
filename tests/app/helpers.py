@@ -42,6 +42,7 @@ class BaseApplicationTest(object):
         self.app = create_app('test')
         self.client = self.app.test_client()
         self.default_index_name = "index-to-create"
+        self.default_mapping_name = "services"
 
         setup_authorization(self.app)
 
@@ -51,13 +52,23 @@ class BaseApplicationTest(object):
     def create_index(self, index_name=None):
         if index_name is None:
             index_name = self.default_index_name
-        return self.client.put('/{}'.format(index_name), data=json.dumps({
-            "type": "index"
+
+        response = self.client.put('/{}'.format(index_name), data=json.dumps({
+            "type": "index",
+            "mapping": "services",
         }), content_type="application/json")
+        assert response.status_code in (200, 201)
+        return response
 
     def teardown(self):
         with self.app.app_context():
             elasticsearch_client.indices.delete('index-*')
+
+
+class BaseApplicationTestWithIndex(BaseApplicationTest):
+    def setup(self):
+        super().setup()
+        self.create_index()
 
 
 def setup_authorization(app):
@@ -100,3 +111,9 @@ def default_service(**kwargs):
     return {
         "service": service
     }
+
+
+def assert_response_status(response, expected_status):
+    assert response.status_code == expected_status, "Expected {} response; got {}. {}".format(
+        expected_status, response.status_code, response.get_data()
+    )

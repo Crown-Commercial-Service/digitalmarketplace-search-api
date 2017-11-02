@@ -5,6 +5,7 @@ from app.main.services.search_service import search_with_keywords_and_filters, a
     fetch_by_id, delete_by_id, create_alias
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
+import app
 
 
 @main.route('/')
@@ -50,7 +51,8 @@ def aggregations(index_name, doc_type):
             methods=['PUT'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
-    index_json = convert_request_json_into_index_json(json_payload)
+    mapping = app.mapping.get_mapping(index_name, doc_type)
+    index_json = convert_request_json_into_index_json(mapping, json_payload)
     result, status_code = index(index_name, doc_type, index_json, service_id)
 
     return api_response(result, status_code)
@@ -60,7 +62,8 @@ def index_document(index_name, doc_type, service_id):
 def create(index_name):
     create_type = get_json_from_request('type')
     if create_type == 'index':
-        result, status_code = create_index(index_name)
+        mapping_name = get_json_from_request('mapping')
+        result, status_code = create_index(index_name, mapping_name)
     elif create_type == 'alias':
         alias_target = get_json_from_request('target')
         result, status_code = create_alias(index_name, alias_target)

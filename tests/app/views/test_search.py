@@ -10,7 +10,7 @@ from app.main.services.search_service import core_search_and_aggregate
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 
-from ..helpers import BaseApplicationTest, default_service
+from ..helpers import BaseApplicationTest, BaseApplicationTestWithIndex, default_service, assert_response_status
 
 
 pytestmark = pytest.mark.usefixtures("services_mapping")
@@ -78,8 +78,8 @@ class TestSearchIndexes(BaseApplicationTest):
         }), content_type="application/json")
 
         assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["error"],
-                     'index_not_found_exception: no such index (<no index>)')
+        assert get_json_from_response(response)["error"].startswith(
+            'index_not_found_exception: no such index')
 
     def test_cant_replace_index_with_alias(self):
         self.create_index()
@@ -143,7 +143,7 @@ class TestSearchIndexes(BaseApplicationTest):
                      "index_not_found_exception: no such index (index-does-not-exist)")
 
 
-class TestIndexingDocuments(BaseApplicationTest):
+class TestIndexingDocuments(BaseApplicationTestWithIndex):
 
     EXAMPLE_CONNECTION_ERROR = (
         '<urllib3.connection.HTTPConnection object at 0x107626588>: '
@@ -162,7 +162,7 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
         with self.app.app_context():
             search_service.refresh('index-to-create')
@@ -242,10 +242,9 @@ class TestIndexingDocuments(BaseApplicationTest):
         assert_equal(response.status_code, 200)
 
 
-class TestSearchEndpoint(BaseApplicationTest):
+class TestSearchEndpoint(BaseApplicationTestWithIndex):
     def setup(self):
         super(TestSearchEndpoint, self).setup()
-        self.create_index()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -449,7 +448,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             assert_equal(set(response_json['services'][0].keys()), {'id'})
 
 
-class TestFetchById(BaseApplicationTest):
+class TestFetchById(BaseApplicationTestWithIndex):
     def test_should_return_404_if_no_service(self):
         response = self.client.get(
             '/index-to-create/services/100')
@@ -557,7 +556,7 @@ class TestFetchById(BaseApplicationTest):
                 process_values_for_matching(service["service"][key]))
 
 
-class TestDeleteById(BaseApplicationTest):
+class TestDeleteById(BaseApplicationTestWithIndex):
     def test_should_delete_service_by_id(self):
         service = default_service()
         self.client.put(
@@ -592,7 +591,7 @@ class TestDeleteById(BaseApplicationTest):
         assert_equal(data['error']['found'], False)
 
 
-class TestSearchType(BaseApplicationTest):
+class TestSearchType(BaseApplicationTestWithIndex):
     def test_core_search_and_aggregate_does_dfs_query_for_searches(self):
         with self.app.app_context(), mock.patch.object(es, 'search') as es_search_mock:
             core_search_and_aggregate('index-to-create', 'services', MultiDict(), search=True)
@@ -606,10 +605,9 @@ class TestSearchType(BaseApplicationTest):
         assert es_search_mock.call_args[1]['body']['size'] == 0
 
 
-class TestSearchResultsOrdering(BaseApplicationTest):
+class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
     def setup(self):
         super(TestSearchResultsOrdering, self).setup()
-        self.create_index()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
