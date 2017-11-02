@@ -656,7 +656,7 @@
           {
             "hash_to": {
               "field": "id",
-              "target_field": "service_id_hash"
+              "target_field": "serviceIdHash"
             }
           }
         ]
@@ -666,7 +666,7 @@
         "id": {
           "type": "keyword"
         },
-        "service_id_hash": {
+        "serviceIdHash": {
           "type": "keyword",
           "include_in_all": false
         },

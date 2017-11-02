@@ -6,7 +6,7 @@ from app import elasticsearch_client as es
 
 
 SERVICES_MAPPING_FILE_SPEC = "mappings/services.json"
-SERVICE_ID_HASH_FIELD_NAME = "service_id_hash"
+SERVICE_ID_HASH_FIELD_NAME = "serviceIdHash"
 
 _mapping_files = None  # dict(name: filespec)
 
