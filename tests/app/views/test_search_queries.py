@@ -25,7 +25,7 @@ def even(result_field):
     ('filter_lot=SaaS', 30, {'lot': "SaaS".__eq__}),
     ('filter_serviceTypes=Implementation', 48, {'serviceTypes': lambda i: 'Implementation' in i}),
     ('filter_minimumContractPeriod=Hour', 40, {}),
-    ('filter_openSource=true', 60, {'id': odd}),
+    ('filter_phoneSupport=True', 60, {'id': odd}),
 ))
 def test_single_filter_queries(query, expected_result_count, match_fields):
     check_query(query, expected_result_count, match_fields)
@@ -69,15 +69,15 @@ def test_and_filters():
 
 def test_filter_combinations():
     yield (check_query,
-           'filter_minimumContractPeriod=Hour&filter_openSource=false',
+           'filter_minimumContractPeriod=Hour&filter_phoneSupport=false',
            20, {'id': even})
 
     yield (check_query,
-           'filter_minimumContractPeriod=Hour,Day&filter_openSource=false',
+           'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false',
            40, {'id': even})
 
     yield (check_query,
-           'filter_minimumContractPeriod=Hour,Day&filter_openSource=false&filter_lot=SaaS',
+           'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false&filter_lot=SaaS',
            20, {'id': even})
 
     yield (check_query,
@@ -210,7 +210,7 @@ def create_services(number_of_services):
         yield default_service(
             id=str(i),
             serviceName="Service {}".format(i),
-            openSource=bool(i % 2),
+            phoneSupport=bool(i % 2),
             minimumContractPeriod=["Hour", "Day", "Month"][i % 3],
             lot=["SaaS", "PaaS", "IaaS", "SCS"][i % 4],
             serviceTypes=[

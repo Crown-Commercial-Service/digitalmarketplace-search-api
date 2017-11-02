@@ -12,14 +12,14 @@ pytestmark = pytest.mark.usefixtures("services_mapping")
 def test_should_add_filter_fields_to_index_json(services_mapping):
     request = {
         "lot": "SaaS",
-        "freeOption": True,
+        "phoneSupport": True,
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
         "lot": "SaaS",
         "filter_lot": "saas",
-        "filter_freeOption": True,
+        "filter_phoneSupport": True,
     })
 
 
@@ -56,13 +56,13 @@ def test_should_ignore_non_filter_and_non_text_fields(services_mapping):
 def test_should_remove_raw_filter_fields_that_are_non_text(services_mapping):
     request = {
         "lot": "SaaS",
-        "freeOption": False,
+        "phoneSupport": False,
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result["lot"], "SaaS")
     assert_equal(result["filter_lot"], "saas")
-    assert_equal(result["filter_freeOption"], False)
+    assert_equal(result["filter_phoneSupport"], False)
     assert_equal("freeOption" in result, False)
 
 

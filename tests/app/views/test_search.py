@@ -510,21 +510,8 @@ class TestFetchById(BaseApplicationTestWithIndex):
             ("serviceTypes", "serviceTypes"),
             ("filter_serviceTypes", "serviceTypes"),
             ("supplierName", "supplierName"),
-            ("filter_freeOption", "freeOption"),
-            ("filter_trialOption", "trialOption"),
             ("filter_minimumContractPeriod", "minimumContractPeriod"),
-            ("filter_supportForThirdParties", "supportForThirdParties"),
-            ("filter_selfServiceProvisioning", "selfServiceProvisioning"),
-            ("filter_datacentresEUCode", "datacentresEUCode"),
-            ("filter_dataBackupRecovery", "dataBackupRecovery"),
-            ("filter_dataExtractionRemoval", "dataExtractionRemoval"),
             ("filter_networksConnected", "networksConnected"),
-            ("filter_apiAccess", "apiAccess"),
-            ("filter_openStandardsSupported", "openStandardsSupported"),
-            ("filter_openSource", "openSource"),
-            ("filter_persistentStorage", "persistentStorage"),
-            ("filter_guaranteedResources", "guaranteedResources"),
-            ("filter_elasticCloud", "elasticCloud")
         ]
 
         # filter fields are processed (lowercase etc)
@@ -555,21 +542,8 @@ class TestFetchById(BaseApplicationTestWithIndex):
         cases = [
             "lot",
             "serviceTypes",
-            "freeOption",
-            "trialOption",
             "minimumContractPeriod",
-            "supportForThirdParties",
-            "selfServiceProvisioning",
-            "datacentresEUCode",
-            "dataBackupRecovery",
-            "dataExtractionRemoval",
             "networksConnected",
-            "apiAccess",
-            "openStandardsSupported",
-            "openSource",
-            "persistentStorage",
-            "guaranteedResources",
-            "elasticCloud"
         ]
 
         for key in cases:
