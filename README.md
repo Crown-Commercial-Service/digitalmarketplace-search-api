@@ -108,7 +108,7 @@ regenerated with
 make freeze-requirements
 ```
 
-`requirements.txt` should be commited alongside `requirements-app.txt` changes.
+`requirements.txt` should be committed alongside `requirements-app.txt` changes.
 
 ### Using FeatureFlags
 
@@ -117,28 +117,29 @@ To use feature flags, check out the documentation in (the README of)
 
 ### Updating the index mapping
 
-Whenever the mappings JSON file is updated, a new version value should be written to the mapping
-metadata in `"_meta": {"version": VALUE}`.
+Whenever a mapping JSON file is updated, a new version value should be written to the mapping
+metadata in `"_meta": {"version": VALUE}`. Mapping files should be generated from framework data.
 
-Mapping can be updated by issuing a PUT request to the existing index enpoint:
+An index's mapping can be updated by issuing a PUT request to the existing index endpoint:
 
 ```
 PUT /g-cloud-index HTTP/1.1
 Authorization: Bearer myToken
 Content-Type: application/json
 
-{"type": "index"}
+{"type": "index", "mapping": "services"}
 ```
 
 If the mapping cannot be updated in-place, [zero-downtime mapping update process](https://www.elastic.co/blog/changing-mapping-with-zero-downtime) should be used instead:
 
-1. Create a new index, using the `index-name-YYYY-MM-DD` pattern for the new index name.
+1. Create a new index, using the `index-name-YYYY-MM-DD` pattern for the new index name, and the mapping named
+   'services'
    ```
    PUT /g-cloud-2015-09-29 HTTP/1.1
    Authorization: Bearer myToken
    Content-Type: application/json
 
-   {"type": "index"}
+   {"type": "index", "mapping": "services"}
    ```
 2. Reindex documents into the new index using existing index document endpoints with the new index name
 3. Once the indexing is finished, update the index alias to point to the new index:
