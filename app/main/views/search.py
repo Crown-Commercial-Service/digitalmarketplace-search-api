@@ -1,4 +1,4 @@
-from flask import jsonify, url_for, request, abort
+from flask import jsonify, request, abort
 from app.main import main
 from app.main.services.search_service import search_with_keywords_and_filters, aggregations_with_keywords_and_filters, \
     index, status_for_index, create_index, delete_index, \
@@ -6,20 +6,6 @@ from app.main.services.search_service import search_with_keywords_and_filters, a
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 import app
-
-
-@main.route('/')
-def root():
-    """Entry point for the API, show the resources that are available."""
-    return jsonify(links=[
-        {
-            "rel": "query.gdm.index",
-            "href": url_for('.search',
-                            index_name="index-name",
-                            doc_type="doc-type",
-                            _external=True)
-        }
-    ]), 200
 
 
 @main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])

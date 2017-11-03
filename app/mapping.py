@@ -48,7 +48,7 @@ def get_mapping(index_name, document_type):
 
 
 def load_mapping_definition(mapping_name):
-    mapping_file_spec = get_mapping_file_paths().get(mapping_name)
+    mapping_file_spec = get_mapping_file_paths_by_name().get(mapping_name)
     if mapping_file_spec is not None:
         with open(mapping_file_spec) as mapping_file:
             return json.load(mapping_file)
@@ -57,7 +57,7 @@ def load_mapping_definition(mapping_name):
         raise MappingNotFound("Mapping definition named '{}' not found.".format(mapping_name))
 
 
-def get_mapping_file_paths():
+def get_mapping_file_paths_by_name():
     global _mapping_files
     if _mapping_files is None:
         _mapping_files = dict()
