@@ -180,7 +180,7 @@ def _get_an_error_message(exception):
     try:
         info = exception.info
     except AttributeError:
-        return exception
+        return str(exception)
     try:
         error = info['error']
     except (KeyError, TypeError):
