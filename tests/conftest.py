@@ -18,7 +18,7 @@ def services_mapping():
     return app.mapping.Mapping(_services_mapping_definition, 'services')
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope="module")
 def services_mapping_definition():
     """Fixture that patches load_mapping_definition, to ensure our mapping fixture is used wherever an index is
     created."""

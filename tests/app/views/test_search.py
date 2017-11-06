@@ -142,6 +142,15 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(get_json_from_response(response)["error"],
                      "index_not_found_exception: no such index (index-does-not-exist)")
 
+    def test_bad_mapping_name_gives_400(self):
+        response = self.client.put('/index-to-create', data=json.dumps({
+            "type": "index",
+            "mapping": "some-bad-mapping"
+        }), content_type="application/json")
+
+        assert response.status_code == 400
+        assert get_json_from_response(response)["error"] == "Mapping definition named 'some-bad-mapping' not found."
+
 
 class TestIndexingDocuments(BaseApplicationTestWithIndex):
 
@@ -242,6 +251,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
         assert_equal(response.status_code, 200)
 
 
+@pytest.mark.usefixtures("services_mapping_definition")
 class TestSearchEndpoint(BaseApplicationTestWithIndex):
     def setup(self):
         super(TestSearchEndpoint, self).setup()
