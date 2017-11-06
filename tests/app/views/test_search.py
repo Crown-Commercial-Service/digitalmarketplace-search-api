@@ -293,6 +293,18 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
 
+    def test_keyword_search_via_alias(self):
+        with self.app.app_context():
+            self.client.put('/{}'.format('index-alias'), data=json.dumps({
+                "type": "alias",
+                "target": "index-to-create",
+            }), content_type="application/json")
+            response = self.client.get(
+                '/index-alias/services/search?q=serviceName')
+            assert_equal(response.status_code, 200)
+            assert_equal(
+                get_json_from_response(response)["meta"]["total"], 10)
+
     def test_should_get_services_up_to_page_size(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'

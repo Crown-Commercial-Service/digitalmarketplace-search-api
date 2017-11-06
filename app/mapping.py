@@ -42,9 +42,14 @@ class Mapping(object):
 
 
 def get_mapping(index_name, document_type):
-    # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going away.
-    return Mapping(es.indices.get_mapping(index=index_name, doc_type=document_type)[index_name],
-                   mapping_type=document_type)
+    # es.indices.get_mapping has a key for the index name, regardless of any alias we may be going via, so rather than
+    # use index_name, we access the one and only value in the dictionary using next(iter).
+    mapping_data = next(iter(es.indices.get_mapping(index=index_name, doc_type=document_type).values()))
+
+    # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going away,
+    # see <https://www.elastic.co/guide/en/elasticsearch/reference/5.6/removal-of-types.html>. For us, document_type
+    # === mapping_type, and there will be only one per index.
+    return Mapping(mapping_data, mapping_type=document_type)
 
 
 def load_mapping_definition(mapping_name):
