@@ -20,7 +20,7 @@ def create_index(index_name, mapping_name):
     mapping_definition = app.mapping.load_mapping_definition(mapping_name)
     try:
         es.indices.create(index=index_name, body=mapping_definition)
-        return "acknowledged", 200  # TODO should be 201 Created surely
+        return "acknowledged", 200
     except TransportError as e:
         if 'index_already_exists_exception' in _get_an_error_message(e):
             return put_index_mapping(index_name, mapping_definition)
