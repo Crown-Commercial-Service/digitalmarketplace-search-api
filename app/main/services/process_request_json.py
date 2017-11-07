@@ -44,7 +44,7 @@ def _append_conditionally(arguments, document):
             document[target_field] = target_values
 
 
-def _copyhash_to(arguments, document):
+def _hash_to(arguments, document):
     """
     A transformation processor that performs a sha256 on the (utf8) string representation of the "field" and stores
     the (lowercase hex string) result on the document under a key specified by "target_field". If "target_field" is not
@@ -61,7 +61,7 @@ def _copyhash_to(arguments, document):
 
 TRANSFORMATION_PROCESSORS = {
     'append_conditionally': _append_conditionally,
-    'copyhash_to': _copyhash_to,
+    'hash_to': _hash_to,
 }
 
 
