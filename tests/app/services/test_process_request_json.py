@@ -1,6 +1,5 @@
 import pytest
 
-import app.mapping
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
 from nose.tools import assert_equal
@@ -17,9 +16,10 @@ def test_should_add_filter_fields_to_index_json(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
-        "lot": "SaaS",
-        "filter_lot": "saas",
-        "filter_phoneSupport": True,
+        "dmagg_lot": "SaaS",
+        "dmtext_lot": "SaaS",
+        "dmfilter_lot": "SaaS",
+        "dmfilter_phoneSupport": True,
     })
 
 
@@ -32,11 +32,12 @@ def test_should_make__match_array_fields(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
-        "lot": "SaaS",
-        "filter_lot": "saas",
-        "serviceTypes": ["One", "Two", "Three"],
-        "filter_serviceTypes": ["one", "two", "three"],
-        "filter_networksConnected": ["internet", "psn"],
+        "dmagg_lot": "SaaS",
+        "dmtext_lot": "SaaS",
+        "dmfilter_lot": "SaaS",
+        "dmtext_serviceTypes": ["One", "Two", "Three"],
+        "dmfilter_serviceTypes": ["One", "Two", "Three"],
+        "dmfilter_networksConnected": ["Internet", "PSN"],
     })
 
 
@@ -48,22 +49,10 @@ def test_should_ignore_non_filter_and_non_text_fields(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
     assert_equal(result, {
-        "lot": "SaaS",
-        "filter_lot": "saas",
+        "dmagg_lot": "SaaS",
+        "dmtext_lot": "SaaS",
+        "dmfilter_lot": "SaaS",
     })
-
-
-def test_should_remove_raw_filter_fields_that_are_non_text(services_mapping):
-    request = {
-        "lot": "SaaS",
-        "phoneSupport": False,
-    }
-
-    result = convert_request_json_into_index_json(services_mapping, request)
-    assert_equal(result["lot"], "SaaS")
-    assert_equal(result["filter_lot"], "saas")
-    assert_equal(result["filter_phoneSupport"], False)
-    assert_equal("freeOption" in result, False)
 
 
 def test_should_add_parent_category(services_mapping):
@@ -73,14 +62,14 @@ def test_should_add_parent_category(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
 
-    assert result["serviceCategories"] == [
+    assert result["dmtext_serviceCategories"] == [
         "Accounts payable",
         "Accounting and finance",
     ]
 
-    assert result["filter_serviceCategories"] == [
-        "accountspayable",
-        "accountingandfinance",
+    assert result["dmfilter_serviceCategories"] == [
+        "Accounts payable",
+        "Accounting and finance",
     ]
 
 
@@ -106,7 +95,7 @@ def test_append_conditionally_does_not_duplicate_values(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
 
-    assert result["serviceCategories"] == [
+    assert result["dmtext_serviceCategories"] == [
         "Crops", "Animals", "Agriculture",
     ]  # not ["Crops", "Animals", "Agriculture", "Agriculture"]
 
@@ -150,7 +139,7 @@ def test_duplicative_transformations_do_duplicate_values(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
 
-    assert result["serviceCategories"] == [
+    assert result["dmtext_serviceCategories"] == [
         "Crops", "Animals", "Agriculture", "Agriculture",
     ]
 
@@ -159,7 +148,7 @@ def test_missing_field_in_transformation(services_mapping):
     services_mapping.transform_fields = [
         {
             "append_conditionally": {
-                "field": "someField",
+                "field": "supplierName",
                 "any_of": [
                     "foo",
                 ],
@@ -169,16 +158,15 @@ def test_missing_field_in_transformation(services_mapping):
             }
         },
     ]
-    services_mapping.text_fields_set = {'someField', 'otherField'}
     request = {
-        "otherField": ["wibble"],
+        "serviceFeatures": ["wibble"],
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
     # really just checking this case doesn't throw!
 
     assert result == {
-        "otherField": ["wibble"],
+        "dmtext_serviceFeatures": ["wibble"],
     }
 
 
@@ -186,29 +174,28 @@ def test_create_new_field_in_transformation(services_mapping):
     services_mapping.transform_fields = [
         {
             "append_conditionally": {
-                "field": "someField",
+                "field": "supplierName",
                 "any_of": [
                     "foo",
                 ],
-                "target_field": "newField",
+                "target_field": "serviceTypes",
                 "append_value": [
                     "bar"
                 ]
             }
         }
     ]
-    services_mapping.text_fields_set = {'someField', 'newField'}
     request = {
-        "someField": ["foo"],
+        "supplierName": ["foo"],
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
 
-    assert result["newField"] == [
-        "bar",
-    ]
-
-    assert result["someField"] == ["foo"]
+    assert result == {
+        "dmtext_supplierName": ["foo"],
+        "dmtext_serviceTypes": ["bar"],
+        "dmfilter_serviceTypes": ["bar"],
+    }
 
 
 def test_service_id_hash_added_if_id_present(services_mapping):
@@ -218,6 +205,7 @@ def test_service_id_hash_added_if_id_present(services_mapping):
 
     result = convert_request_json_into_index_json(services_mapping, request)
 
-    assert result["id"] == "999999999"
-
-    assert app.mapping.SERVICE_ID_HASH_FIELD_NAME in result
+    assert result == {
+        "dmtext_id": "999999999",
+        "dmsortonly_serviceIdHash": "bb421fa35db885ce507b0ef5c3f23cb09c62eb378fae3641c165bdf4c0272949",
+    }

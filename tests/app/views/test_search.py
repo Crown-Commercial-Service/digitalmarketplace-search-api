@@ -7,7 +7,6 @@ from urllib3.exceptions import NewConnectionError
 
 from app import elasticsearch_client as es
 from app.main.services.search_service import core_search_and_aggregate
-from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 
 from ..helpers import BaseApplicationTest, BaseApplicationTestWithIndex, default_service, assert_response_status
@@ -258,11 +257,12 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         with self.app.app_context():
             services = create_services(10)
             for service in services:
-                self.client.put(
+                response = self.client.put(
                     '/index-to-create/services/'
                     + str(service["service"]["id"]),
                     data=json.dumps(service),
                     content_type='application/json')
+                assert response.status_code == 200
             search_service.refresh('index-to-create')
 
     def _put_into_and_get_back_from_elasticsearch(self, service, query_string):
@@ -280,10 +280,11 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
 
     def test_should_return_service_on_id(self):
         service = default_service()
-        self.client.put(
+        response = self.client.put(
             '/index-to-create/services/' + str(service["service"]["id"]),
             data=json.dumps(service),
             content_type='application/json')
+        assert response.status_code == 200
 
     def test_should_return_service_on_keyword_search(self):
         with self.app.app_context():
@@ -497,30 +498,24 @@ class TestFetchById(BaseApplicationTestWithIndex):
             data['services']["_id"],
             str(service["service"]["id"]))
         assert_equal(
-            data['services']["_source"]["id"],
+            data['services']["_source"]["dmtext_id"],
             str(service["service"]["id"]))
 
-        cases = [
-            # (indexed name, original name)
-            ("filter_lot", "lot"),
-            ("serviceName", "serviceName"),
-            ("serviceSummary", "serviceSummary"),
-            ("serviceBenefits", "serviceBenefits"),
-            ("serviceFeatures", "serviceFeatures"),
-            ("serviceTypes", "serviceTypes"),
-            ("filter_serviceTypes", "serviceTypes"),
-            ("supplierName", "supplierName"),
-            ("filter_minimumContractPeriod", "minimumContractPeriod"),
-            ("filter_networksConnected", "networksConnected"),
-        ]
+        cases = (
+            "lot",
+            "serviceName",
+            "serviceSummary",
+            "serviceBenefits",
+            "serviceFeatures",
+            "serviceTypes",
+            "supplierName",
+        )
 
         # filter fields are processed (lowercase etc)
         # and also have a new key (filter_FIELDNAME)
         for key in cases:
-            original = service["service"][key[1]]
-            indexed = data['services']["_source"][key[0]]
-            if key[0].startswith("filter"):
-                original = process_values_for_matching(service["service"][key[1]])
+            original = service["service"][key]
+            indexed = data['services']["_source"]["dmtext_" + key]
             assert_equal(original, indexed)
 
     def test_service_should_have_all_exact_match_fields(self):
@@ -548,8 +543,8 @@ class TestFetchById(BaseApplicationTestWithIndex):
 
         for key in cases:
             assert_equal(
-                data['services']["_source"]["filter_" + key],
-                process_values_for_matching(service["service"][key]))
+                data['services']["_source"]["dmfilter_" + key],
+                service["service"][key])
 
 
 class TestDeleteById(BaseApplicationTestWithIndex):
