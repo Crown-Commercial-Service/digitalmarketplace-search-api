@@ -55,7 +55,7 @@ class BaseApplicationTest(object):
 
         response = self.client.put('/{}'.format(index_name), data=json.dumps({
             "type": "index",
-            "mapping": "services",
+            "mapping": self.default_mapping_name,
         }), content_type="application/json")
         assert response.status_code in (200, 201)
         return response
