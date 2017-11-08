@@ -20,39 +20,7 @@ Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
 sudo easy_install virtualenv
 ```
 
-Install dependencies and run the app
-```
-make run-all
-```
-
-## Setup
-
-Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 5.x series; ideally 5.4 which is what we run on live systems.
-
-```
-brew update
-brew install homebrew/versions/elasticsearch
-```
-
-Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
-
-```
-sudo easy_install virtualenv
-```
-
-Create a virtual environment in the checked-out repository folder
-
-```
-make virtualenv
-```
-
-### Activate the virtual environment
-
-```
-source ./venv/bin/activate
-```
-
-### Upgrade dependencies
+### Install/Upgrade dependencies
 
 Install Python dependencies with pip
 
