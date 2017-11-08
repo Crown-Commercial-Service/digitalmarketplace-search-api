@@ -10,7 +10,7 @@ from app.main.services.search_service import core_search_and_aggregate
 from app.main.services.process_request_json import process_values_for_matching
 from app.main.services import search_service
 
-from ..helpers import BaseApplicationTest, default_service
+from ..helpers import BaseApplicationTest, BaseApplicationTestWithIndex, default_service, assert_response_status
 
 
 pytestmark = pytest.mark.usefixtures("services_mapping")
@@ -19,20 +19,20 @@ pytestmark = pytest.mark.usefixtures("services_mapping")
 class TestSearchIndexes(BaseApplicationTest):
     def test_should_be_able_create_and_delete_index(self):
         response = self.create_index()
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
         response = self.client.get('/index-to-create')
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
         response = self.client.delete('/index-to-create')
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal(get_json_from_response(response)["message"],
                      "acknowledged")
 
         response = self.client.get('/index-to-create')
-        assert_equal(response.status_code, 404)
+        assert_response_status(response, 404)
 
     def test_should_be_able_to_create_aliases(self):
         self.create_index()
@@ -41,7 +41,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "index-to-create"
         }), content_type="application/json")
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal(get_json_from_response(response)["message"], "acknowledged")
 
     def test_should_not_be_able_to_delete_aliases(self):
@@ -53,7 +53,7 @@ class TestSearchIndexes(BaseApplicationTest):
 
         response = self.client.delete('/index-alias')
 
-        assert_equal(response.status_code, 400)
+        assert_response_status(response, 400)
         assert_equal(get_json_from_response(response)["error"], "Cannot delete alias 'index-alias'")
 
     def test_should_not_be_able_to_delete_index_with_alias(self):
@@ -65,7 +65,7 @@ class TestSearchIndexes(BaseApplicationTest):
 
         response = self.client.delete('/index-to-create')
 
-        assert_equal(response.status_code, 400)
+        assert_response_status(response, 400)
         assert_equal(
             get_json_from_response(response)["error"],
             "Index 'index-to-create' is aliased as 'index-alias' and cannot be deleted"
@@ -77,9 +77,9 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "index-to-create"
         }), content_type="application/json")
 
-        assert_equal(response.status_code, 404)
-        assert_equal(get_json_from_response(response)["error"],
-                     'index_not_found_exception: no such index (<no index>)')
+        assert_response_status(response, 404)
+        assert get_json_from_response(response)["error"].startswith(
+            'index_not_found_exception: no such index')
 
     def test_cant_replace_index_with_alias(self):
         self.create_index()
@@ -88,7 +88,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "index-to-create"
         }), content_type="application/json")
 
-        assert_equal(response.status_code, 400)
+        assert_response_status(response, 400)
         assert_equal(get_json_from_response(response)["error"],
                      'invalid_alias_name_exception: Invalid alias name [index-to-create], an index exists with the '
                      'same name as the alias (index-to-create)')
@@ -106,7 +106,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "index-to-create-2"
         }), content_type="application/json")
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         status = get_json_from_response(self.client.get('/_all'))["status"]
         assert_equal(status['index-to-create']['aliases'], [])
         assert_equal(status['index-to-create-2']['aliases'], ['index-alias'])
@@ -120,7 +120,7 @@ class TestSearchIndexes(BaseApplicationTest):
             ) as es_mock:
                 response = self.create_index()
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal("acknowledged", get_json_from_response(response)["message"])
         es_mock.assert_called_with(
             index='index-to-create',
@@ -132,18 +132,27 @@ class TestSearchIndexes(BaseApplicationTest):
         self.create_index()
         self.client.delete('/index-to-create')
         response = self.client.delete('/index-to-create')
-        assert_equal(response.status_code, 404)
+        assert_response_status(response, 404)
         assert_equal(get_json_from_response(response)["error"],
                      'index_not_found_exception: no such index (index-to-create)')
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist')
-        assert_equal(response.status_code, 404)
+        assert_response_status(response, 404)
         assert_equal(get_json_from_response(response)["error"],
                      "index_not_found_exception: no such index (index-does-not-exist)")
 
+    def test_bad_mapping_name_gives_400(self):
+        response = self.client.put('/index-to-create', data=json.dumps({
+            "type": "index",
+            "mapping": "some-bad-mapping"
+        }), content_type="application/json")
 
-class TestIndexingDocuments(BaseApplicationTest):
+        assert_response_status(response, 400)
+        assert get_json_from_response(response)["error"] == "Mapping definition named 'some-bad-mapping' not found."
+
+
+class TestIndexingDocuments(BaseApplicationTestWithIndex):
 
     EXAMPLE_CONNECTION_ERROR = (
         '<urllib3.connection.HTTPConnection object at 0x107626588>: '
@@ -162,12 +171,12 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
         with self.app.app_context():
             search_service.refresh('index-to-create')
         response = self.client.get('/index-to-create')
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal(
             get_json_from_response(response)["status"]["num_docs"],
             1)
@@ -181,7 +190,7 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json'
         )
-        assert response.status_code == 500
+        assert_response_status(response, 500)
 
     @mock.patch(
         'app.main.views.search.index',
@@ -205,7 +214,7 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
     def test_should_index_a_document_with_extra_fields(self):
         service = default_service()
@@ -216,7 +225,7 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
     def test_should_index_a_document_with_incorrect_types(self):
         service = default_service()
@@ -227,7 +236,7 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
     def test_should_index_a_document_with_no_service_types(self):
         service = default_service()
@@ -239,13 +248,13 @@ class TestIndexingDocuments(BaseApplicationTest):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
 
-class TestSearchEndpoint(BaseApplicationTest):
+@pytest.mark.usefixtures("services_mapping_definition")
+class TestSearchEndpoint(BaseApplicationTestWithIndex):
     def setup(self):
         super(TestSearchEndpoint, self).setup()
-        self.create_index()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -280,7 +289,19 @@ class TestSearchEndpoint(BaseApplicationTest):
         with self.app.app_context():
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName')
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
+            assert_equal(
+                get_json_from_response(response)["meta"]["total"], 10)
+
+    def test_keyword_search_via_alias(self):
+        with self.app.app_context():
+            self.client.put('/{}'.format('index-alias'), data=json.dumps({
+                "type": "alias",
+                "target": "index-to-create",
+            }), content_type="application/json")
+            response = self.client.get(
+                '/index-alias/services/search?q=serviceName')
+            assert_response_status(response, 200)
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
 
@@ -291,7 +312,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName'
             )
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
@@ -305,7 +326,7 @@ class TestSearchEndpoint(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName&page=2')
             response_json = get_json_from_response(response)
 
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_in("page=1", response_json['links']['prev'])
             assert_in("page=3", response_json['links']['next'])
 
@@ -314,7 +335,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&from=5')
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
@@ -325,7 +346,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&page=3')
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
@@ -336,14 +357,14 @@ class TestSearchEndpoint(BaseApplicationTest):
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&page=-1')
-            assert_equal(response.status_code, 400)
+            assert_response_status(response, 400)
 
     def test_should_get_400_response__on_non_numeric_page(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName&page=foo')
-            assert_equal(response.status_code, 400)
+            assert_response_status(response, 400)
 
     def test_highlighting_should_use_defined_html_tags(self):
         service = default_service(
@@ -356,7 +377,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             service=service,
             query_string='q=storing'
         )
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         search_results = get_json_from_response(
             response
         )["services"]
@@ -374,7 +395,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             service=service,
             query_string='q=storing'
         )
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         search_results = get_json_from_response(response)["services"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
@@ -392,7 +413,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             service=service,
             query_string='q=oY'
         )
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         search_results = get_json_from_response(response)["services"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
@@ -414,7 +435,7 @@ class TestSearchEndpoint(BaseApplicationTest):
             service=service,
             query_string='lot=TaaS'
         )
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
         search_results = get_json_from_response(response)["services"]
         # Get the first with a matching value from a list
@@ -436,7 +457,7 @@ class TestSearchEndpoint(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName&idOnly=True')
             response_json = get_json_from_response(response)
 
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_equal(len(response_json['services']), expected_count)
 
     def test_only_ids_returned_for_id_only_request(self):
@@ -445,16 +466,16 @@ class TestSearchEndpoint(BaseApplicationTest):
                 '/index-to-create/services/search?q=serviceName&idOnly=True')
             response_json = get_json_from_response(response)
 
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_equal(set(response_json['services'][0].keys()), {'id'})
 
 
-class TestFetchById(BaseApplicationTest):
+class TestFetchById(BaseApplicationTestWithIndex):
     def test_should_return_404_if_no_service(self):
         response = self.client.get(
             '/index-to-create/services/100')
 
-        assert_equal(response.status_code, 404)
+        assert_response_status(response, 404)
 
     def test_should_return_service_by_id(self):
         service = default_service()
@@ -471,7 +492,7 @@ class TestFetchById(BaseApplicationTest):
             '/index-to-create/services/' + str(service["service"]["id"]))
 
         data = get_json_from_response(response)
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal(
             data['services']["_id"],
             str(service["service"]["id"]))
@@ -529,7 +550,7 @@ class TestFetchById(BaseApplicationTest):
             '/index-to-create/services/' + str(service["service"]["id"]))
 
         data = get_json_from_response(response)
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
 
         cases = [
             "lot",
@@ -557,7 +578,7 @@ class TestFetchById(BaseApplicationTest):
                 process_values_for_matching(service["service"][key]))
 
 
-class TestDeleteById(BaseApplicationTest):
+class TestDeleteById(BaseApplicationTestWithIndex):
     def test_should_delete_service_by_id(self):
         service = default_service()
         self.client.put(
@@ -572,13 +593,13 @@ class TestDeleteById(BaseApplicationTest):
             '/index-to-create/services/' + str(service["service"]["id"]))
 
         data = get_json_from_response(response)
-        assert_equal(response.status_code, 200)
+        assert_response_status(response, 200)
         assert_equal(data['message']['found'], True)
 
         response = self.client.get(
             '/index-to-create/services/' + str(service["service"]["id"]))
         data = get_json_from_response(response)
-        assert_equal(response.status_code, 404)
+        assert_response_status(response, 404)
         assert_equal(data['error']['found'], False)
 
     def test_should_return_404_if_no_service(self):
@@ -588,11 +609,11 @@ class TestDeleteById(BaseApplicationTest):
             '/index-to-create/delete/100')
 
         data = get_json_from_response(response)
-        assert_equal(response.status_code, 404)
+        assert_response_status(response, 404)
         assert_equal(data['error']['found'], False)
 
 
-class TestSearchType(BaseApplicationTest):
+class TestSearchType(BaseApplicationTestWithIndex):
     def test_core_search_and_aggregate_does_dfs_query_for_searches(self):
         with self.app.app_context(), mock.patch.object(es, 'search') as es_search_mock:
             core_search_and_aggregate('index-to-create', 'services', MultiDict(), search=True)
@@ -606,10 +627,9 @@ class TestSearchType(BaseApplicationTest):
         assert es_search_mock.call_args[1]['body']['size'] == 0
 
 
-class TestSearchResultsOrdering(BaseApplicationTest):
+class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
     def setup(self):
         super(TestSearchResultsOrdering, self).setup()
-        self.create_index()
         with self.app.app_context():
             services = create_services(10)
             for service in services:
@@ -623,7 +643,7 @@ class TestSearchResultsOrdering(BaseApplicationTest):
     def test_should_order_services_by_service_id_sha256(self):
         with self.app.app_context():
             response = self.client.get('/index-to-create/services/search')
-            assert_equal(response.status_code, 200)
+            assert_response_status(response, 200)
             assert_equal(get_json_from_response(response)["meta"]["total"], 10)
 
         ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['services']]

@@ -2,10 +2,10 @@ from .conversions import strip_and_lowercase
 import app.mapping
 
 
-def construct_query(query_args, aggregations=[], page_size=100):
-    if not is_filtered(query_args):
+def construct_query(mapping, query_args, aggregations=[], page_size=100):
+    if not is_filtered(mapping, query_args):
         query = {
-            "query": build_keywords_query(query_args)
+            "query": build_keywords_query(mapping, query_args)
         }
     else:
         query_filters = []
@@ -16,7 +16,7 @@ def construct_query(query_args, aggregations=[], page_size=100):
         query = {
             "query": {
                 "bool": {
-                    "must": build_keywords_query(query_args),
+                    "must": build_keywords_query(mapping, query_args),
                     "filter": filter_clause(query_args)
                 }
             }
@@ -26,7 +26,7 @@ def construct_query(query_args, aggregations=[], page_size=100):
 
     if aggregations:
         aggregations = set(aggregations)
-        missing_aggregations = aggregations.difference(app.mapping.get_services_mapping().aggregatable_fields)
+        missing_aggregations = aggregations.difference(mapping.aggregatable_fields)
         if missing_aggregations:
             raise ValueError("Aggregations for `{}` are not supported.".format(', '.join(missing_aggregations)))
 
@@ -38,7 +38,7 @@ def construct_query(query_args, aggregations=[], page_size=100):
             query['_source'] = ['id']
 
         else:
-            query["highlight"] = highlight_clause()
+            query["highlight"] = highlight_clause(mapping)
             query['sort'] = ['_score', {app.mapping.SERVICE_ID_HASH_FIELD_NAME: 'desc'}]
 
     if "page" in query_args:
@@ -50,7 +50,7 @@ def construct_query(query_args, aggregations=[], page_size=100):
     return query
 
 
-def highlight_clause():
+def highlight_clause(mapping):
     highlights = {
         "encoder": "html",
         "pre_tags": ["<mark class='search-result-highlighted-text'>"],
@@ -59,7 +59,7 @@ def highlight_clause():
     highlights["fields"] = {}
 
     # Get all fields searched and allow non-matches to a max of the searchSummary limit
-    for field in app.mapping.get_services_mapping().text_fields_set:
+    for field in mapping.text_fields_set:
         highlights["fields"][field] = {
             "number_of_fragments": 0,
             "no_match_size": 500
@@ -68,19 +68,19 @@ def highlight_clause():
     return highlights
 
 
-def is_filtered(query_args):
+def is_filtered(mapping, query_args):
     return len(set(query_args.keys()).intersection(
-        ["filter_" + field for field in app.mapping.get_services_mapping().filter_fields_set])) > 0
+        ["filter_" + field for field in mapping.filter_fields_set])) > 0
 
 
-def build_keywords_query(query_args):
+def build_keywords_query(mapping, query_args):
     if "q" in query_args:
-        return multi_match_clause(query_args["q"])
+        return multi_match_clause(mapping, query_args["q"])
     else:
         return match_all_clause()
 
 
-def multi_match_clause(keywords):
+def multi_match_clause(mapping, keywords):
     """Builds a query string supporting basic query syntax.
 
     Uses "simple_query_string" with a predefined list of supported flags:
@@ -108,7 +108,7 @@ def multi_match_clause(keywords):
     return {
         "simple_query_string": {
             "query": keywords,
-            "fields": app.mapping.get_services_mapping().text_fields,
+            "fields": mapping.text_fields,
             "default_operator": "and",
             "flags": "OR|AND|NOT|PHRASE|ESCAPE|WHITESPACE"
         }

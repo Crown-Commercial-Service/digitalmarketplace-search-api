@@ -49,8 +49,7 @@ TRANSFORMATION_PROCESSORS = {
 }
 
 
-def convert_request_json_into_index_json(request_json):
-    mapping = app.mapping.get_services_mapping()
+def convert_request_json_into_index_json(mapping, request_json):
     index_json = {}
     for transformation in mapping.transform_fields:
         # Each transformation is a dictionary, with a type mapping to the arguments pertaining to

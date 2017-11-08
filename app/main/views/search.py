@@ -1,24 +1,11 @@
-from flask import jsonify, url_for, request, abort
+from flask import jsonify, request, abort
 from app.main import main
 from app.main.services.search_service import search_with_keywords_and_filters, aggregations_with_keywords_and_filters, \
     index, status_for_index, create_index, delete_index, \
     fetch_by_id, delete_by_id, create_alias
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
-
-
-@main.route('/')
-def root():
-    """Entry point for the API, show the resources that are available."""
-    return jsonify(links=[
-        {
-            "rel": "query.gdm.index",
-            "href": url_for('.search',
-                            index_name="index-name",
-                            doc_type="doc-type",
-                            _external=True)
-        }
-    ]), 200
+import app
 
 
 @main.route('/<string:index_name>/<string:doc_type>/search', methods=['GET'])
@@ -50,7 +37,8 @@ def aggregations(index_name, doc_type):
             methods=['PUT'])
 def index_document(index_name, doc_type, service_id):
     json_payload = get_json_from_request('service')
-    index_json = convert_request_json_into_index_json(json_payload)
+    mapping = app.mapping.get_mapping(index_name, doc_type)
+    index_json = convert_request_json_into_index_json(mapping, json_payload)
     result, status_code = index(index_name, doc_type, index_json, service_id)
 
     return api_response(result, status_code)
@@ -60,7 +48,8 @@ def index_document(index_name, doc_type, service_id):
 def create(index_name):
     create_type = get_json_from_request('type')
     if create_type == 'index':
-        result, status_code = create_index(index_name)
+        mapping_name = get_json_from_request('mapping')
+        result, status_code = create_index(index_name, mapping_name)
     elif create_type == 'alias':
         alias_target = get_json_from_request('target')
         result, status_code = create_alias(index_name, alias_target)

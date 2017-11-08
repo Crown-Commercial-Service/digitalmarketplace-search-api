@@ -1,7 +1,5 @@
 import math
 
-import app.mapping
-
 
 def convert_es_status(index_name, status_response, info_response=None):
     if index_name in ["_all", ""]:
@@ -29,14 +27,14 @@ def _convert_es_index_status(index_name, status_response, info_response):
     }
 
 
-def convert_es_results(results, query_args):
+def convert_es_results(mapping, results, query_args):
     services = []
     total = results["hits"]["total"]
     took = results["took"]
 
     for service in results["hits"]["hits"]:
         result = {}
-        for field in app.mapping.get_services_mapping().text_fields:
+        for field in mapping.text_fields:
             append_field_if_present(result, service["_source"], field)
 
         append_field_if_present(result, service, "highlight")

@@ -20,15 +20,15 @@ with open("example_es_responses/search_results.json") as search_results:
     SEARCH_RESULTS_JSON = json.load(search_results)
 
 
-def test_should_build_query_block_in_response():
-    res = convert_es_results(SEARCH_RESULTS_JSON,
+def test_should_build_query_block_in_response(services_mapping):
+    res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON,
                              {"q": "keywords", "category": "some catergory"})
     assert_equal(res["meta"]["query"]["q"], "keywords")
     assert_equal(res["meta"]["query"]["category"], "some catergory")
 
 
-def test_should_build_search_response_from_es_response():
-    res = convert_es_results(SEARCH_RESULTS_JSON, {"q": "keywords"})
+def test_should_build_search_response_from_es_response(services_mapping):
+    res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
     assert_equal(res["meta"]["query"]["q"], "keywords")
     assert_equal(res["meta"]["total"], 628)
     assert_equal(res["meta"]["took"], 69)
@@ -44,8 +44,8 @@ def test_should_build_search_response_from_es_response():
     ])
 
 
-def test_should_build_highlights_es_response():
-    res = convert_es_results(SEARCH_RESULTS_JSON, {"q": "keywords"})
+def test_should_build_highlights_es_response(services_mapping):
+    res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
     assert_equal(
         res["services"][0]["highlight"]["serviceName"],
         ["Email Verification"])
@@ -60,10 +60,10 @@ def test_should_build_highlights_es_response():
     ])
 
 
-def test_should_not_include_highlights_if_not_in_es_results():
+def test_should_not_include_highlights_if_not_in_es_results(services_mapping):
     copy = SEARCH_RESULTS_JSON
     del copy["hits"]["hits"][0]["highlight"]
-    res = convert_es_results(copy, {"category": "some catergory"})
+    res = convert_es_results(services_mapping, copy, {"category": "some catergory"})
     assert_equal("highlight" in res["services"][0], False)
 
 
