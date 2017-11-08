@@ -115,5 +115,5 @@ def default_service(**kwargs):
 
 def assert_response_status(response, expected_status):
     assert response.status_code == expected_status, "Expected {} response; got {}. {}".format(
-        expected_status, response.status_code, response.get_data()
+        expected_status, response.status_code, response.get_data(as_text=True)
     )
