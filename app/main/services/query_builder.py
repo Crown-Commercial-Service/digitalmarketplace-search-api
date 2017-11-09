@@ -7,11 +7,6 @@ def construct_query(mapping, query_args, aggregations=[], page_size=100):
             "query": build_keywords_query(mapping, query_args)
         }
     else:
-        query_filters = []
-        for field, values in query_args.lists():
-            if field.startswith("filter"):
-                query_filters.extend(field_filters(mapping, field, values))
-
         query = {
             "query": {
                 "bool": {
