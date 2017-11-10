@@ -31,12 +31,12 @@ def _convert_es_result(mapping, es_result):
     # generate outgoing result dict only including es_result keys whose un-prefixed field name is in
     # mapping.response_fields, removing prefix in the process
     return {
-        maybe_name[0]: value
-        for (prefix, *maybe_name), value in (
+        maybe_name_seq[0]: value
+        for (prefix, *maybe_name_seq), value in (
             (prefixed_name.split("_", 1), value)
             for prefixed_name, value in es_result.items()
         )
-        if prefix and maybe_name and maybe_name[0] in mapping.fields_by_prefix[mapping.response_field_prefix]
+        if prefix and maybe_name_seq and maybe_name_seq[0] in mapping.fields_by_prefix[mapping.response_field_prefix]
     }
 
 

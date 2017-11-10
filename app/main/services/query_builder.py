@@ -75,9 +75,9 @@ def highlight_clause(mapping):
 
 def is_filtered(mapping, query_args):
     return bool(frozenset(
-        maybe_name[0]
-        for prefix, *maybe_name in (arg_key.split("_", 1) for arg_key in query_args.keys())
-        if prefix == "filter" and maybe_name  # maybe_name could be an empty seq if no underscores were found
+        maybe_name_seq[0]
+        for prefix, *maybe_name_seq in (arg_key.split("_", 1) for arg_key in query_args.keys())
+        if prefix == "filter" and maybe_name_seq  # maybe_name_seq could be an empty seq if no underscores were found
     ) & (mapping.fields_by_prefix.get(mapping.filter_field_prefix) or frozenset()))
 
 
@@ -205,12 +205,13 @@ def filter_clause(mapping, query_args):
     return {
         "bool": {
             "must": list(chain.from_iterable(
-                field_filters(mapping, maybe_name[0], values)
-                for (prefix, *maybe_name), values in (
+                field_filters(mapping, maybe_name_seq[0], values)
+                for (prefix, *maybe_name_seq), values in (
                     (arg_key.split("_", 1), values)
                     for arg_key, values in query_args.lists()
                 )
-                if prefix == "filter" and maybe_name  # maybe_name could be an empty seq if no underscores were found
+                if prefix == "filter" and maybe_name_seq  # maybe_name_seq could be an empty seq if no underscores were
+                                                          # found
             )),
         },
     }

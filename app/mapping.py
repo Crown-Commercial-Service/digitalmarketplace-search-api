@@ -36,12 +36,12 @@ class Mapping(object):
             prefix: frozenset(name for _, name in pairs)
             for prefix, pairs in groupby(
                 (
-                    (prefix, maybe_name[0])
-                    for prefix, *maybe_name in (
+                    (prefix, maybe_name_seq[0])
+                    for prefix, *maybe_name_seq in (
                         full_field_name.split("_", 1)
                         for full_field_name in sorted(properties.keys())
                     )
-                    if maybe_name  # maybe_name would be an empty sequence if no underscores were found, discard these
+                    if maybe_name_seq  # maybe_name_seq would be an empty seq if no underscores were found, discard them
                 ),
                 key=lambda x: x[0],  # (the prefix)
             )
