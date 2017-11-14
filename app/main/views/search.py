@@ -1,4 +1,4 @@
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, current_app
 from app.main import main
 from app.main.services.search_service import search_with_keywords_and_filters, aggregations_with_keywords_and_filters, \
     index, status_for_index, create_index, delete_index, \
@@ -104,6 +104,16 @@ def delete_service(index_name, doc_type, service_id):
     result, status_code = delete_by_id(index_name, doc_type, service_id)
 
     return api_response(result, status_code)
+
+
+@main.route('/<string:framework>/<string:object_type>/index', methods=['GET'])
+def get_index_for_object_type(framework, object_type):
+    try:
+        index = current_app.config['DM_FRAMEWORK_TO_ES_INDEX_MAPPING'][framework][object_type]
+    except KeyError:
+        abort(400, "No index found for '{}' object type on '{}' framework".format(object_type, framework))
+
+    return api_response(index, 200, 'index')
 
 
 def api_response(data, status_code, key='message'):
