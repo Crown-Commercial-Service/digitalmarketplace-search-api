@@ -88,22 +88,9 @@ def default_service(**kwargs):
         "serviceFeatures": "serviceFeatures",
         "serviceTypes": ["serviceTypes"],
         "supplierName": "Supplier Name",
-        "freeOption": True,
-        "trialOption": True,
         "minimumContractPeriod": "Month",
-        "supportForThirdParties": True,
-        "selfServiceProvisioning": True,
-        "datacentresEUCode": True,
-        "dataBackupRecovery": True,
-        "dataExtractionRemoval": True,
         "networksConnected": ["PSN", "PNN"],
         "datacentreTier": "tia-942 tier 1",
-        "apiAccess": True,
-        "openStandardsSupported": True,
-        "openSource": True,
-        "persistentStorage": True,
-        "guaranteedResources": True,
-        "elasticCloud": True
     }
 
     service.update(kwargs)

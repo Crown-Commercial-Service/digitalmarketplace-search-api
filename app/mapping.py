@@ -1,12 +1,12 @@
 import os.path
+from functools import reduce
+from itertools import groupby
+from operator import or_
 
 from flask import json
 from werkzeug.exceptions import BadRequest
 from app import elasticsearch_client as es
 
-
-SERVICES_MAPPING_FILE_SPEC = "mappings/services.json"
-SERVICE_ID_HASH_FIELD_NAME = "service_id_hash"
 
 _mapping_files = None  # dict(name: filespec)
 
@@ -16,25 +16,38 @@ class MappingNotFound(BadRequest):
 
 
 class Mapping(object):
+    filter_field_prefix = "dmfilter"
+    text_search_field_prefix = "dmtext"
+    sort_only_field_prefix = "dmsortonly"
+    aggregatable_field_prefix = "dmagg"
+
+    # for now, these definitions are identical
+    response_field_prefix = "dmtext"
+
     def __init__(self, mapping_definition, mapping_type):
         self.definition = mapping_definition
-        self._filter_fields = tuple(sorted(
-            field.replace('filter_', '')
-            for field in self.definition['mappings'][mapping_type]['properties'].keys()
-            if field.startswith('filter_'))
-        )
-        self.filter_fields_set = frozenset(self._filter_fields)
-        self.text_fields = tuple(sorted(
-            field
-            for field in self.definition['mappings'][mapping_type]['properties'].keys()
-            if not field.startswith('filter_') and field != SERVICE_ID_HASH_FIELD_NAME
-        ))
-        self.text_fields_set = frozenset(self.text_fields)
-        self.aggregatable_fields = tuple(sorted(
-            k
-            for k, v in self.definition['mappings'][mapping_type]['properties'].items()
-            if v.get('fields', {}).get('raw', False)
-        ))
+        properties = self.definition['mappings'][mapping_type]['properties']
+
+        # build a dict of {prefix: frozenset(unprefixed_field_names)}
+        self.fields_by_prefix = {
+            prefix: frozenset(name for _, name in pairs)
+            for prefix, pairs in groupby(
+                (
+                    (prefix, maybe_name_seq[0])
+                    for prefix, *maybe_name_seq in (
+                        full_field_name.split("_", 1)
+                        for full_field_name in sorted(properties.keys())
+                    )
+                    if maybe_name_seq  # maybe_name_seq would be an empty seq if no underscores were found, discard them
+                ),
+                key=lambda x: x[0],  # (the prefix)
+            )
+        }
+        # now generate the inverse, {field_name: frozenset(prefixes)}
+        self.prefixes_by_field = {
+            name: frozenset(prefix for prefix, names in self.fields_by_prefix.items() if name in names)
+            for name in reduce(or_, self.fields_by_prefix.values() or frozenset())
+        }
 
         self.transform_fields = tuple(
             self.definition['mappings'][mapping_type].get('_meta', {}).get('transformations', {})

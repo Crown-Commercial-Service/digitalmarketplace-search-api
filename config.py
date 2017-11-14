@@ -16,6 +16,14 @@ class Config:
     DM_ELASTICSEARCH_CERT_PATH = None
 
     DM_SEARCH_API_AUTH_TOKENS = None
+    DM_FRAMEWORK_TO_ES_INDEX_MAPPING = {
+        'g-cloud-9': {
+            'services': 'g-cloud-9'
+        },
+        'digital-outcomes-and-specialists-2': {
+            'briefs': 'briefs-digital-outcomes-and-specialists-2'
+        }
+    }
 
     DM_SEARCH_PAGE_SIZE = 100
     DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER = 10
