@@ -23,22 +23,28 @@ class Mapping(object):
     # for now, these definitions are identical
     response_field_prefix = "dmtext"
 
+    def _get_prefix_split_fields(self):
+        """
+        returns iterable of all "prefixed" field names from the mapping in tuples of (prefix, field_name)
+        """
+        return (
+            (prefix, maybe_name_seq[0])
+            for prefix, *maybe_name_seq in (
+                full_field_name.split("_", 1)
+                for full_field_name in sorted(self.definition['mappings'][self.mapping_type]['properties'].keys())
+            )
+            if maybe_name_seq  # maybe_name_seq would be an empty seq if no underscores were found, discard them
+        )
+
     def __init__(self, mapping_definition, mapping_type):
         self.definition = mapping_definition
-        properties = self.definition['mappings'][mapping_type]['properties']
+        self.mapping_type = mapping_type
 
         # build a dict of {prefix: frozenset(unprefixed_field_names)}
         self.fields_by_prefix = {
             prefix: frozenset(name for _, name in pairs)
             for prefix, pairs in groupby(
-                (
-                    (prefix, maybe_name_seq[0])
-                    for prefix, *maybe_name_seq in (
-                        full_field_name.split("_", 1)
-                        for full_field_name in sorted(properties.keys())
-                    )
-                    if maybe_name_seq  # maybe_name_seq would be an empty seq if no underscores were found, discard them
-                ),
+                self._get_prefix_split_fields(),
                 key=lambda x: x[0],  # (the prefix)
             )
         }
