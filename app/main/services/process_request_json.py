@@ -18,7 +18,7 @@ def _append_conditionally(arguments, document):
     we are adding parent categories, whenever any one of their subcategories
     is present.
     :param arguments: dict -- the parameters to the processor as specified in configuration
-    :param document: dict -- the Elasticsearch document that we are transforming
+    :param document: dict -- the submitted document that we are transforming
     """
     source_field = arguments['field']
     target_field = arguments.get('target_field') or source_field
@@ -40,7 +40,7 @@ def _hash_to(arguments, document):
     the (lowercase hex string) result on the document under a key specified by "target_field". If "target_field" is not
     specified, the source field will be overwritten with the result.
     :param arguments: dict -- the parameters to the processor as specified in configuration
-    :param document: dict -- the Elasticsearch document that we are transforming
+    :param document: dict -- the submitted document that we are transforming
     """
     source_field = arguments['field']
     target_field = arguments.get('target_field') or source_field
