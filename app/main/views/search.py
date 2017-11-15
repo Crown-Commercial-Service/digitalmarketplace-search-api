@@ -33,13 +33,17 @@ def aggregations(index_name, doc_type):
         return api_response(result, status_code)
 
 
-@main.route('/<string:index_name>/<string:doc_type>/<string:service_id>',
+@main.route('/<string:index_name>/<string:doc_type>/<string:document_id>',
             methods=['PUT'])
-def index_document(index_name, doc_type, service_id):
-    json_payload = get_json_from_request('service')
+def index_document(index_name, doc_type, document_id):
+    payload = check_json_from_request(request)
+    json_payload = payload.get('document') or payload.get('service')  # fallback to 'service' for backward-compat.
+    if json_payload is None:
+        abort(400, "Invalid JSON must have 'document' key.")
+
     mapping = app.mapping.get_mapping(index_name, doc_type)
     index_json = convert_request_json_into_index_json(mapping, json_payload)
-    result, status_code = index(index_name, doc_type, index_json, service_id)
+    result, status_code = index(index_name, doc_type, index_json, document_id)
 
     return api_response(result, status_code)
 
