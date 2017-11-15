@@ -28,6 +28,10 @@
         "generated_from_framework": "g-cloud-9",
         "generated_by": "hand",
         "generated_time": "2017-07-14",
+        "dm_sort_clause": [
+          "_score",
+          {"sortonly_serviceIdHash": "desc"}
+        ],
         "transformations": [
           {
             "append_conditionally": {
@@ -74,7 +78,7 @@
         "dmtext_id": {
           "type": "keyword"
         },
-        "dmsortonly_serviceIdHash": {
+        "sortonly_serviceIdHash": {
           "type": "keyword",
           "include_in_all": false
         },

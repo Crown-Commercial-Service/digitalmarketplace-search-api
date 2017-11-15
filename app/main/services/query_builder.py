@@ -38,13 +38,7 @@ def construct_query(mapping, query_args, aggregations=[], page_size=100):
 
         else:
             query["highlight"] = highlight_clause(mapping)
-            query['sort'] = list(chain(
-                ('_score',),
-                (
-                    {"_".join((mapping.sort_only_field_prefix, name)): 'desc'}
-                    for name in sorted(mapping.fields_by_prefix.get(mapping.sort_only_field_prefix, ()))
-                )
-            ))
+            query['sort'] = mapping.sort_clause
 
     if "page" in query_args:
         try:

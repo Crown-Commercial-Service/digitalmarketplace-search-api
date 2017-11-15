@@ -18,7 +18,6 @@ class MappingNotFound(BadRequest):
 class Mapping(object):
     filter_field_prefix = "dmfilter"
     text_search_field_prefix = "dmtext"
-    sort_only_field_prefix = "dmsortonly"
     aggregatable_field_prefix = "dmagg"
 
     # for now, these definitions are identical
@@ -52,6 +51,8 @@ class Mapping(object):
         self.transform_fields = tuple(
             self.definition['mappings'][mapping_type].get('_meta', {}).get('transformations', {})
         )
+
+        self.sort_clause = self.definition['mappings'][mapping_type].get('_meta', {}).get('dm_sort_clause', ["_score"])
 
 
 def get_mapping(index_name, document_type):

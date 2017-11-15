@@ -207,5 +207,5 @@ def test_service_id_hash_added_if_id_present(services_mapping):
 
     assert result == {
         "dmtext_id": "999999999",
-        "dmsortonly_serviceIdHash": "bb421fa35db885ce507b0ef5c3f23cb09c62eb378fae3641c165bdf4c0272949",
+        "sortonly_serviceIdHash": "bb421fa35db885ce507b0ef5c3f23cb09c62eb378fae3641c165bdf4c0272949",
     }

@@ -201,7 +201,7 @@ def test_service_id_hash_not_in_searched_fields(services_mapping):
 
 def test_sort_results_by_score_and_service_id_hash(services_mapping):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
-    assert query['sort'] == ['_score', {"dmsortonly_serviceIdHash": 'desc'}]
+    assert query['sort'] == ['_score', {"sortonly_serviceIdHash": 'desc'}]
 
 
 @pytest.mark.parametrize('example, expected', (
