@@ -11,10 +11,10 @@
         "_index": "g-cloud",
         "_score": 2.4522085,
         "_source": {
-          "id": "5390159512076288",
-          "lot": "SaaS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "5390159512076288",
+          "dmtext_lot": "SaaS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Increase email deliverability",
             "Reduce bogus registrations",
             "Protect your reputation",
@@ -22,38 +22,38 @@
             "Reduce bounce rates",
             "Improve customer mailing"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Verify email addresses at the point of entry",
             "Validate email address format",
             "Live email account",
             "Safe to email",
             "Untraceable ping of the account"
           ],
-          "serviceName": "Email Verification",
-          "serviceSummary": "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as they’re typed, or in bulk.\r\nOur cloud-based technology uses self-learning algorithms so that it constantly evolves to deliver the most accurate results without requiring you to make any updates.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Email Verification",
+          "dmtext_serviceSummary": "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as they’re typed, or in bulk.\r\nOur cloud-based technology uses self-learning algorithms so that it constantly evolves to deliver the most accurate results without requiring you to make any updates.",
+          "dmtext_serviceTypes": [
             "Data management"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "datamanagement"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceBenefits": [
+          "dmtext_serviceBenefits": [
             "Increase email deliverability"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Verify email addresses at the point of entry",
             "Validate email address format",
             "Live email account",
             "Safe to email"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Email Verification"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as"
           ]
         }
@@ -63,16 +63,16 @@
         "_index": "g-cloud",
         "_score": 2.4522085,
         "_source": {
-          "id": "6446043935801344",
-          "lot": "SCS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "6446043935801344",
+          "dmtext_lot": "SCS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Creativity to achieve cut-through",
             "Advanced Targeting and Segmentation",
             "Integration with wider marketing mix",
             "Measurement and Analysis"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Targeting and Data Segmentation",
             "Email Design",
             "Email Copywriting",
@@ -84,35 +84,35 @@
             "eCRM Programme Development",
             "Content Calendar Planning"
           ],
-          "serviceName": "Email Marketing",
-          "serviceSummary": "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of services from email design and build, targeting and data segmentation through to distribution, testing, deployment and reporting.  Our experience includes working with renown brands on multilingual Pan-European and Global eCRM campaigns.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Email Marketing",
+          "dmtext_serviceSummary": "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of services from email design and build, targeting and data segmentation through to distribution, testing, deployment and reporting.  Our experience includes working with renown brands on multilingual Pan-European and Global eCRM campaigns.",
+          "dmtext_serviceTypes": [
             "Implementation",
             "Ongoing support",
             "Planning",
             "Testing",
             "Training"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "implementation",
             "ongoingsupport",
             "planning",
             "testing",
             "training"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Email Design",
             "Email Copywriting",
             "Email Build"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Email Marketing"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of",
             " services from email design and build, targeting and data segmentation through to distribution"
           ]
@@ -123,47 +123,47 @@
         "_index": "g-cloud",
         "_score": 2.4175146,
         "_source": {
-          "id": "4514646266478592",
-          "lot": "SCS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "4514646266478592",
+          "dmtext_lot": "SCS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "User messaging options",
             "Intergrated email support"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Integration of user's email",
             "Notification emails"
           ],
-          "serviceName": "Manage Email",
-          "serviceSummary": "Integration of email to enable documents to be emailed from the Store.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Manage Email",
+          "dmtext_serviceSummary": "Integration of email to enable documents to be emailed from the Store.",
+          "dmtext_serviceTypes": [
             "Implementation",
             "Ongoing support",
             "Planning",
             "Testing",
             "Training"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "implementation",
             "ongoingsupport",
             "planning",
             "testing",
             "training"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceBenefits": [
+          "dmtext_serviceBenefits": [
             "Intergrated email support"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Integration of user's email"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Manage Email"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "Integration of email to enable documents to be emailed from the Store."
           ]
         }
@@ -173,40 +173,40 @@
         "_index": "g-cloud",
         "_score": 2.4175146,
         "_source": {
-          "id": "5766140261302272",
-          "lot": "SaaS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "5766140261302272",
+          "dmtext_lot": "SaaS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Secure, managed service ",
             "Fully resilient service ",
             "UK based"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Exchange-based secure email service",
             "Support for migration from other email available",
             "Supports Official and Official Sensitive Data ",
             "Remote and Mobile access"
           ],
-          "serviceName": "Secure Email",
-          "serviceSummary": "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders",
-          "serviceTypes": [
+          "dmtext_serviceName": "Secure Email",
+          "dmtext_serviceSummary": "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders",
+          "dmtext_serviceTypes": [
             "Collaboration"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "collaboration"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Exchange-based secure email service",
             "Support for migration from other email available"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Secure Email"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It",
             " provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders"
           ]
@@ -217,10 +217,10 @@
         "_index": "g-cloud",
         "_score": 2.1946852,
         "_source": {
-          "id": "4573911983325184",
-          "lot": "SCS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "4573911983325184",
+          "dmtext_lot": "SCS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Unlimited Storage as standard ",
             "Achieve Legal and Compliance targets",
             "Granular and flexible retention policies ",
@@ -228,7 +228,7 @@
             "Fault tolerant and scalable platform ",
             "Guaranteed 100% availability on all infrastructure (power, cooling and network) "
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Import of legacy data ",
             "Tamper proof archive for eDiscovery and legal compliance ",
             "Unlimited archive storage ",
@@ -239,15 +239,15 @@
             "Archive of external and internal emails ",
             "Complete policy flexibility "
           ],
-          "serviceName": "Secure Email Archiving",
-          "serviceSummary": "All archived mail is encrypted. Set policy levels, what mail requires archiving and who has access to the archive. Mail is stored in multiple geographically diverse locations within the UK. Archive all mail to or from a domain, individual users or groups of users with retention periods from one year. ",
-          "serviceTypes": [
+          "dmtext_serviceName": "Secure Email Archiving",
+          "dmtext_serviceSummary": "All archived mail is encrypted. Set policy levels, what mail requires archiving and who has access to the archive. Mail is stored in multiple geographically diverse locations within the UK. Archive all mail to or from a domain, individual users or groups of users with retention periods from one year. ",
+          "dmtext_serviceTypes": [
             "Ongoing support"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "ongoingsupport"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
@@ -264,10 +264,10 @@
         "_index": "g-cloud",
         "_score": 2.1946852,
         "_source": {
-          "id": "5034117041225728",
-          "lot": "SaaS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "5034117041225728",
+          "dmtext_lot": "SaaS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Reduced IT infrastructure costs",
             "Enhanced security",
             "No upgrades or repairs",
@@ -275,7 +275,7 @@
             "Instant scalability",
             "Workforce mobility"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Microsoft Exchange features",
             "Instant deployment",
             "Massive 50GB per mailbox",
@@ -285,22 +285,22 @@
             "Award-winning Anti-Spam",
             "Advance security options available "
           ],
-          "serviceName": "Microsoft Exchange Email Services",
-          "serviceSummary": "As professionals you’re under pressure to cut costs, become more productive, whilst making yourself more available to clients and colleagues. So when the time comes to move to a Hosted Exchange platform, make sure you choose a platform that guarantees you peace of mind from a provider you can trust. ",
-          "serviceTypes": [
+          "dmtext_serviceName": "Microsoft Exchange Email Services",
+          "dmtext_serviceSummary": "As professionals you’re under pressure to cut costs, become more productive, whilst making yourself more available to clients and colleagues. So when the time comes to move to a Hosted Exchange platform, make sure you choose a platform that guarantees you peace of mind from a provider you can trust. ",
+          "dmtext_serviceTypes": [
             "Collaboration"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "collaboration"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Mobile email ‘push’ technology"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Microsoft Exchange Email Services"
           ]
         }
@@ -310,10 +310,10 @@
         "_index": "g-cloud",
         "_score": 2.1946852,
         "_source": {
-          "id": "5309011876380672",
-          "lot": "SCS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "5309011876380672",
+          "dmtext_lot": "SCS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Ensures predictable outcomes, minimised risk, maximised productivity during technology change",
             "Accelerated ability to use enhanced capabilities of Microsoft Exchange ",
             "Greater scaling power and performance per user/server",
@@ -325,7 +325,7 @@
             "Accelerated timescales",
             "Lower project risk, release of project cost savings"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Highly experienced professional consultants",
             "Proven Assured Performance tool and dedicated 24hr migration factory ",
             "Accelerated timescales, lower project risk and project cost savings",
@@ -334,24 +334,24 @@
             "Work package:  Construction ",
             "Work package:  Migration and deployment "
           ],
-          "serviceName": "Email Migration and Modernisation",
-          "serviceSummary": "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email processes, and supports migration from earlier versions of Exchange/Lotus Domino/Notes to the latest version of Microsoft Exchange. Experience of 10M+ mailboxes, in highly regulated markets. Partnerships with VMware, RSA and Microsoft ensure highly scalable, secure and flexible deployments.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Email Migration and Modernisation",
+          "dmtext_serviceSummary": "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email processes, and supports migration from earlier versions of Exchange/Lotus Domino/Notes to the latest version of Microsoft Exchange. Experience of 10M+ mailboxes, in highly regulated markets. Partnerships with VMware, RSA and Microsoft ensure highly scalable, secure and flexible deployments.",
+          "dmtext_serviceTypes": [
             "Implementation",
             "Planning"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "implementation",
             "planning"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceName": [
+          "dmtext_serviceName": [
             "Email Migration and Modernisation"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email"
           ]
         }
@@ -361,10 +361,10 @@
         "_index": "g-cloud",
         "_score": 2.1946852,
         "_source": {
-          "id": "5365560355323904",
-          "lot": "SaaS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "5365560355323904",
+          "dmtext_lot": "SaaS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Stop malicious or unwanted email from ever reaching your ",
             "Prevents malicious URLs in emails from affecting end users",
             "Interactive digests enable users to manage their own quarantine",
@@ -375,7 +375,7 @@
             "Send large files through Outlook, securly, upto 2GB",
             "Centralise disclaimer and stationery management"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Always-on cloud-based security service",
             "Real-time online track & trace",
             "Stops 99% of spam and 100% malware in the cloud",
@@ -386,36 +386,36 @@
             "Secure Messaging for secure email sending ",
             "Real-time monitoring with email & SMS alerting for  issues"
           ],
-          "serviceName": "Mimecast Email Security",
-          "serviceSummary": "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on the market today. Mimecast’s massively scalable mail transfer agent with multiple layers of malware and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Mimecast Email Security",
+          "dmtext_serviceSummary": "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on the market today. Mimecast’s massively scalable mail transfer agent with multiple layers of malware and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network.",
+          "dmtext_serviceTypes": [
             "Data management",
             "IT management",
             "Legal",
             "Security"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "datamanagement",
             "itmanagement",
             "legal",
             "security"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceBenefits": [
+          "dmtext_serviceBenefits": [
             "Stop malicious or unwanted email from ever reaching your ",
             "Early alert/notification of possible email communication problems"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Secure Messaging for secure email sending ",
             "Real-time monitoring with email & SMS alerting for  issues"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Mimecast Email Security"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on",
             " and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network."
           ]
@@ -426,23 +426,23 @@
         "_index": "g-cloud",
         "_score": 2.1946852,
         "_source": {
-          "id": "6082103036870656",
-          "lot": "SaaS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "6082103036870656",
+          "dmtext_lot": "SaaS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Inbox success",
             "IP pool flexibility",
             "Advanced tagging and segmenting"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "API integration",
             "Postback service",
             "Deliverability support and ISP/Mailbox provider remediation",
             "Advanced reporting"
           ],
-          "serviceName": "Dyn Email Delivery",
-          "serviceSummary": "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk/marketing campaign email. Along with sending email generated by an application, Dyn’s email solution is integrated with the leading marketing automation and email template/management solutions.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Dyn Email Delivery",
+          "dmtext_serviceSummary": "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk/marketing campaign email. Along with sending email generated by an application, Dyn’s email solution is integrated with the leading marketing automation and email template/management solutions.",
+          "dmtext_serviceTypes": [
             "Business intelligence and analytics",
             "Customer relationship management (CRM)",
             "IT management",
@@ -450,7 +450,7 @@
             "Operations management",
             "Security"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "businessintelligenceandanalytics",
             "customerrelationshipmanagement(crm)",
             "itmanagement",
@@ -458,14 +458,14 @@
             "operationsmanagement",
             "security"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceName": [
+          "dmtext_serviceName": [
             "Dyn Email Delivery"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk",
             "/marketing campaign email. Along with sending email generated by an application, Dyn’s email",
             " solution is integrated with the leading marketing automation and email template/management solutions."
@@ -477,10 +477,10 @@
         "_index": "g-cloud",
         "_score": 2.1946852,
         "_source": {
-          "id": "6433200507191296",
-          "lot": "SaaS",
-          "frameworkName": "G-Cloud 6",
-          "serviceBenefits": [
+          "dmtext_id": "6433200507191296",
+          "dmtext_lot": "SaaS",
+          "dmtext_frameworkName": "G-Cloud 6",
+          "dmtext_serviceBenefits": [
             "Bottomless user mailboxes",
             "Personal archive access from Outlook, MAC, tablet and mobile devices",
             "ediscovery and case management easily accomplished",
@@ -492,7 +492,7 @@
             "Export email to Outlook from a Personal archive",
             "ediscovery exports in ZIP, PST or EDRM XML"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Highly secure, resilient, bottomless email storage",
             "All stored data is encrypted",
             "Data stored in defined, appropriate jurisdictions",
@@ -504,28 +504,28 @@
             "Sub 7 second archive search SLA",
             "No additional on-premises hardware required"
           ],
-          "serviceName": "Mimecast Email Archiving",
-          "serviceSummary": "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users a bottomless mailbox, while superior mailbox management capability helps reduce the load on Exchange. Compliance officers benefit from near real time searches.",
-          "serviceTypes": [
+          "dmtext_serviceName": "Mimecast Email Archiving",
+          "dmtext_serviceSummary": "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users a bottomless mailbox, while superior mailbox management capability helps reduce the load on Exchange. Compliance officers benefit from near real time searches.",
+          "dmtext_serviceTypes": [
             "Data management"
           ],
-          "serviceTypesExact": [
+          "dmtext_serviceTypesExact": [
             "datamanagement"
           ],
-          "supplierName": "Supplier Name"
+          "dmtext_supplierName": "Supplier Name"
         },
         "_type": "services",
         "highlight": {
-          "serviceBenefits": [
+          "dmtext_serviceBenefits": [
             "Export email to Outlook from a Personal archive"
           ],
-          "serviceFeatures": [
+          "dmtext_serviceFeatures": [
             "Highly secure, resilient, bottomless email storage"
           ],
-          "serviceName": [
+          "dmtext_serviceName": [
             "Mimecast Email Archiving"
           ],
-          "serviceSummary": [
+          "dmtext_serviceSummary": [
             "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the",
             " complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users"
           ]

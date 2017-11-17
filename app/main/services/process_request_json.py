@@ -1,17 +1,7 @@
 import hashlib
+from itertools import chain
+
 import six
-
-import app.mapping
-from .conversions import strip_and_lowercase
-
-
-def process_values_for_matching(values):
-    if isinstance(values, list):
-        return [strip_and_lowercase(value) for value in values]
-    elif isinstance(values, six.string_types):
-        return strip_and_lowercase(values)
-
-    return values
 
 
 def _ensure_value_list(json_string_or_list):
@@ -28,7 +18,7 @@ def _append_conditionally(arguments, document):
     we are adding parent categories, whenever any one of their subcategories
     is present.
     :param arguments: dict -- the parameters to the processor as specified in configuration
-    :param document: dict -- the Elasticsearch document that we are transforming
+    :param document: dict -- the submitted document that we are transforming
     """
     source_field = arguments['field']
     target_field = arguments.get('target_field') or source_field
@@ -44,13 +34,28 @@ def _append_conditionally(arguments, document):
             document[target_field] = target_values
 
 
+def _hash_to(arguments, document):
+    """
+    A transformation processor that performs a sha256 on the (utf8) string representation of the "field" and stores
+    the (lowercase hex string) result on the document under a key specified by "target_field". If "target_field" is not
+    specified, the source field will be overwritten with the result.
+    :param arguments: dict -- the parameters to the processor as specified in configuration
+    :param document: dict -- the submitted document that we are transforming
+    """
+    source_field = arguments['field']
+    target_field = arguments.get('target_field') or source_field
+
+    if source_field in document:
+        document[target_field] = hashlib.sha256((six.text_type(document[source_field])).encode('utf-8')).hexdigest()
+
+
 TRANSFORMATION_PROCESSORS = {
-    'append_conditionally': _append_conditionally
+    'append_conditionally': _append_conditionally,
+    'hash_to': _hash_to,
 }
 
 
 def convert_request_json_into_index_json(mapping, request_json):
-    index_json = {}
     for transformation in mapping.transform_fields:
         # Each transformation is a dictionary, with a type mapping to the arguments pertaining to
         # that type. We anticipate only one type per transformation (consistent with how 'ingest
@@ -60,18 +65,13 @@ def convert_request_json_into_index_json(mapping, request_json):
         for transformation_type, transformation_arguments in transformation.items():
             TRANSFORMATION_PROCESSORS[transformation_type](transformation_arguments, request_json)
 
-    for field in request_json:
-        # TODO G9 breaking change, remove once G7/G8 does not need to be indexed
-        if not (field == "cloudDeploymentModel" and request_json['frameworkSlug'] in ('g-cloud-7', 'g-cloud-8')):
-            if field in mapping.filter_fields_set:
-                index_json["filter_" + field] = process_values_for_matching(
-                    request_json[field]
-                )
-            if field in mapping.text_fields_set:
-                index_json[field] = request_json[field]
-
-    if request_json.get('id'):
-        index_json[app.mapping.SERVICE_ID_HASH_FIELD_NAME] = \
-            hashlib.sha256(request_json['id'].encode('utf-8')).hexdigest()
-
-    return index_json
+    # build a dict: for each key/value in the request_json, look up mapping.prefixes_by_field to see how many
+    # differently-prefixed variants that field has in the mapping and copy value verbatim to all those keys. it could
+    # of course have no representation in the mapping, in which case it would be ignored.
+    return dict(chain.from_iterable(
+        (
+            ("_".join((prefix, key)), value)
+            for prefix in mapping.prefixes_by_field.get(key, ())
+        )
+        for key, value in request_json.items()
+    ))

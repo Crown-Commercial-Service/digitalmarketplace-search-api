@@ -27,25 +27,40 @@ def _convert_es_index_status(index_name, status_response, info_response):
     }
 
 
+def _convert_es_result(mapping, es_result):
+    # generate outgoing result dict only including es_result keys whose un-prefixed field name is in
+    # mapping.response_fields, removing prefix in the process
+    return {
+        maybe_name_seq[0]: value
+        for (prefix, *maybe_name_seq), value in (
+            (prefixed_name.split("_", 1), value)
+            for prefixed_name, value in es_result.items()
+        )
+        if prefix and maybe_name_seq and maybe_name_seq[0] in mapping.fields_by_prefix[mapping.response_field_prefix]
+    }
+
+
 def convert_es_results(mapping, results, query_args):
     services = []
-    total = results["hits"]["total"]
-    took = results["took"]
 
     for service in results["hits"]["hits"]:
-        result = {}
-        for field in mapping.text_fields:
-            append_field_if_present(result, service["_source"], field)
+        if 'idOnly' in query_args:
+            services.append({"id": service["_id"]})
+        else:
+            # populate result from service["_source"] object
+            result = _convert_es_result(mapping, service["_source"])
 
-        append_field_if_present(result, service, "highlight")
+            if "highlight" in service:
+                # perform the same conversion for any highlight terms
+                result["highlight"] = _convert_es_result(mapping, service["highlight"])
 
-        services.append(result)
+            services.append(result)
 
     return {
         "meta": {
             "query": query_args,
-            "total": total,
-            "took": took
+            "total": results["hits"]["total"],
+            "took": results["took"],
         },
         "services": services,
     }
@@ -62,8 +77,3 @@ def generate_pagination_links(query_args, total, page_size, url_for_search):
     if page < max_page:
         links['next'] = url_for_search(page=page + 1, **args_no_page)
     return links
-
-
-def append_field_if_present(result, service, field):
-    if field in service:
-        result[field] = service[field]

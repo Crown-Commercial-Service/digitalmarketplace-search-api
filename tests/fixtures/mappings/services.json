@@ -1,4 +1,26 @@
 {
+  "settings": {
+    "analysis": {
+      "char_filter": {
+        "nonalpha_removal": {
+          "type": "pattern_replace",
+          "pattern": "\\W+",
+          "replacement": ""
+        }
+      },
+      "normalizer": {
+        "filter_normalizer": {
+          "type": "custom",
+          "char_filter": [
+            "nonalpha_removal"
+          ],
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    }
+  },
   "mappings": {
     "services": {
       "_meta": {
@@ -6,6 +28,10 @@
         "generated_from_framework": "g-cloud-9",
         "generated_by": "hand",
         "generated_time": "2017-07-14",
+        "dm_sort_clause": [
+          "_score",
+          {"sortonly_serviceIdHash": "desc"}
+        ],
         "transformations": [
           {
             "append_conditionally": {
@@ -38,231 +64,220 @@
                 "Accounting and finance"
               ]
             }
+          },
+          {
+            "hash_to": {
+              "field": "id",
+              "target_field": "serviceIdHash"
+            }
           }
         ]
       },
       "dynamic": "strict",
       "properties": {
-        "id": {
+        "dmtext_id": {
           "type": "keyword"
         },
-        "service_id_hash": {
+        "sortonly_serviceIdHash": {
           "type": "keyword",
           "include_in_all": false
         },
-        "lot": {
+        "dmtext_lot": {
+          "type": "keyword"
+        },
+        "dmagg_lot": {
+          "type": "keyword"
+        },
+        "dmfilter_lot": {
           "type": "keyword",
-          "fields": {
-            "raw": {
-              "type": "keyword"
-            }
-          }
+          "normalizer": "filter_normalizer"
         },
-        "lotName": {
+        "dmtext_lotName": {
           "type": "text"
         },
-        "frameworkName": {
+        "dmtext_frameworkName": {
           "type": "keyword"
         },
-        "serviceName": {
+        "dmtext_serviceName": {
           "type": "text"
         },
-        "serviceSummary": {
+        "dmtext_serviceSummary": {
           "term_vector": "with_positions_offsets",
           "type": "text"
         },
-        "serviceDescription": {
+        "dmtext_serviceDescription": {
           "term_vector": "with_positions_offsets",
           "type": "text"
         },
-        "serviceBenefits": {
+        "dmtext_serviceBenefits": {
           "type": "text"
         },
-        "serviceFeatures": {
+        "dmtext_serviceFeatures": {
           "type": "text"
         },
-        "supplierName": {
+        "dmtext_supplierName": {
           "type": "text"
         },
-        "serviceTypes": {
+        "dmtext_serviceTypes": {
           "type": "text"
         },
-        "filter_lot": {
+        "dmfilter_serviceTypes": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_minimumContractPeriod": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_datacentreTier": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_networksConnected": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmagg_serviceCategories": {
           "type": "keyword"
         },
-        "filter_serviceTypes": {
-          "type": "keyword"
+        "dmtext_serviceCategories": {
+          "type": "text"
         },
-        "filter_freeOption": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_serviceCategories": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_trialOption": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_cloudDeploymentModel": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_minimumContractPeriod": {
-          "type": "keyword"
+        "dmfilter_resellingType": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_supportForThirdParties": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_emailOrTicketingSupport": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_selfServiceProvisioning": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_phoneSupport": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_datacentresEUCode": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_webChatSupport": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_datacentreTier": {
-          "type": "keyword"
+        "dmfilter_onsiteSupport": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_dataBackupRecovery": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_supportAvailableToThirdParty": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_dataExtractionRemoval": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_browsersAccess": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_networksConnected": {
-          "type": "keyword"
+        "dmfilter_installation": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_apiAccess": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_mobile": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_openStandardsSupported": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_APISoftware": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_openSource": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_metricsHow": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_persistentStorage": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_metricsWhat": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_guaranteedResources": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_scalingType": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_elasticCloud": {
-          "type": "boolean",
-          "index": "not_analyzed"
+        "dmfilter_usageNotifications": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "serviceCategories": {
-          "type": "text",
-          "fields": {
-            "raw": {
-              "type": "keyword"
-            }
-          }
+        "dmfilter_backup": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_serviceCategories": {
-          "type": "keyword"
+        "dmfilter_backupDatacentre": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_cloudDeploymentModel": {
-          "type": "keyword"
+        "dmfilter_publicSectorNetworksTypes": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_resellingType": {
-          "type": "keyword"
+        "dmfilter_dataProtectionBetweenNetworks": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_emailOrTicketingSupport": {
-          "type": "keyword"
+        "dmfilter_dataProtectionWithinNetwork": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_phoneSupport": {
-          "type": "keyword"
+        "dmfilter_dataStorageAndProcessingLocations": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_webChatSupport": {
-          "type": "keyword"
+        "dmfilter_userAuthentication": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_onsiteSupport": {
-          "type": "keyword"
+        "dmfilter_managementAccessAuthentication": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_supportAvailableToThirdParty": {
-          "type": "keyword"
+        "dmfilter_standardsISOIEC27001": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_browsersAccess": {
-          "type": "keyword"
+        "dmfilter_standardsISO28000": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_installation": {
-          "type": "keyword"
+        "dmfilter_standardsCSASTAR": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_mobile": {
-          "type": "keyword"
+        "dmfilter_standardsPCI": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_APISoftware": {
-          "type": "keyword"
+        "dmfilter_securityGovernanceStandards": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_metricsHow": {
-          "type": "keyword"
+        "dmfilter_datacentreSecurityStandards": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_metricsWhat": {
-          "type": "keyword"
+        "dmfilter_staffSecurityClearanceChecks": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_scalingType": {
-          "type": "keyword"
+        "dmfilter_governmentSecurityClearances": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_usageNotifications": {
-          "type": "keyword"
+        "dmfilter_educationPricing": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
-        "filter_backup": {
-          "type": "keyword"
-        },
-        "filter_backupDatacentre": {
-          "type": "keyword"
-        },
-        "filter_publicSectorNetworksTypes": {
-          "type": "keyword"
-        },
-        "filter_dataProtectionBetweenNetworks": {
-          "type": "keyword"
-        },
-        "filter_dataProtectionWithinNetwork": {
-          "type": "keyword"
-        },
-        "filter_dataStorageAndProcessingLocations": {
-          "type": "keyword"
-        },
-        "filter_userAuthentication": {
-          "type": "keyword"
-        },
-        "filter_managementAccessAuthentication": {
-          "type": "keyword"
-        },
-        "filter_standardsISOIEC27001": {
-          "type": "keyword"
-        },
-        "filter_standardsISO28000": {
-          "type": "keyword"
-        },
-        "filter_standardsCSASTAR": {
-          "type": "keyword"
-        },
-        "filter_standardsPCI": {
-          "type": "keyword"
-        },
-        "filter_securityGovernanceStandards": {
-          "type": "keyword"
-        },
-        "filter_datacentreSecurityStandards": {
-          "type": "keyword"
-        },
-        "filter_staffSecurityClearanceChecks": {
-          "type": "keyword"
-        },
-        "filter_governmentSecurityClearances": {
-          "type": "keyword"
-        },
-        "filter_educationPricing": {
-          "type": "keyword"
-        },
-        "filter_freeVersionTrialOption": {
-          "type": "keyword"
+        "dmfilter_freeVersionTrialOption": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         }
       }
     }
