@@ -78,7 +78,7 @@ def setup_authorization(app):
         HTTP_AUTHORIZATION='Bearer {}'.format(app.config['DM_SEARCH_API_AUTH_TOKENS']))
 
 
-def default_service(**kwargs):
+def make_standard_service(**kwargs):
     service = {
         "id": "id",
         "lot": "LoT",
@@ -96,8 +96,13 @@ def default_service(**kwargs):
     service.update(kwargs)
 
     return {
-        "service": service
+        "document": service
     }
+
+
+def make_search_api_url(data, type_name='services'):
+    # currently, data may contain either "document" or "service" (as a backward compatibility shim)
+    return '/index-to-create/{}/{}'.format(type_name, str(data.get('document', data.get('service'))['id']))
 
 
 def assert_response_status(response, expected_status):

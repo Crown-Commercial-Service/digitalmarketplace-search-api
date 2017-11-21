@@ -9,7 +9,8 @@ from app import elasticsearch_client as es
 from app.main.services.search_service import core_search_and_aggregate
 from app.main.services import search_service
 
-from ..helpers import BaseApplicationTest, BaseApplicationTestWithIndex, default_service, assert_response_status
+from ..helpers import (BaseApplicationTest, BaseApplicationTestWithIndex, assert_response_status,
+                       make_search_api_url, make_standard_service)
 
 
 pytestmark = pytest.mark.usefixtures("services_mapping")
@@ -162,11 +163,11 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
         super(TestIndexingDocuments, self).setup()
         self.create_index()
 
-    def test_should_index_a_document(self):
-        service = default_service()
+    def test_should_index_a_document(self, default_service):
+        service = default_service
 
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json')
 
@@ -181,11 +182,11 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             1)
 
     @mock.patch('app.main.views.search.index', return_value=(NewConnectionError('', EXAMPLE_CONNECTION_ERROR), 'N/A'))
-    def test_index_document_handles_connection_error(self, ind):
-        service = default_service()
+    def test_index_document_handles_connection_error(self, ind, default_service):
+        service = default_service
 
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json'
         )
@@ -195,55 +196,55 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
         'app.main.views.search.index',
         return_value=(NewConnectionError('', EXAMPLE_CONNECTION_ERROR), 'something_other_than_N/A')
     )
-    def test_index_document_does_not_pass_on_non_NA_status_code(self, ind):
-        service = default_service()
+    def test_index_document_does_not_pass_on_non_NA_status_code(self, ind, default_service):
+        service = default_service
         with pytest.raises(TypeError):
             self.client.put(
-                '/index-to-create/services/' + str(service["service"]["id"]),
+                make_search_api_url(service),
                 data=json.dumps(service),
                 content_type='application/json'
             )
 
-    def test_should_index_a_document_with_missing_fields(self):
-        service = default_service()
-        del service["service"]["serviceName"]
+    def test_should_index_a_document_with_missing_fields(self, default_service):
+        service = default_service
+        del service.get('document', service.get('service'))["serviceName"]
 
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json')
 
         assert_response_status(response, 200)
 
-    def test_should_index_a_document_with_extra_fields(self):
-        service = default_service()
-        service["service"]["randomField"] = "some random"
+    def test_should_index_a_document_with_extra_fields(self, default_service):
+        service = default_service
+        service.get('document', service.get('service'))["randomField"] = "some random"
 
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json')
 
         assert_response_status(response, 200)
 
-    def test_should_index_a_document_with_incorrect_types(self):
-        service = default_service()
-        service["service"]["serviceName"] = 123
+    def test_should_index_a_document_with_incorrect_types(self, default_service):
+        service = default_service
+        service.get('document', service.get('service'))["serviceName"] = 123
 
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json')
 
         assert_response_status(response, 200)
 
-    def test_should_index_a_document_with_no_service_types(self):
-        service = default_service()
-        service["service"]["serviceName"] = 123
-        del service["service"]["serviceTypes"]
+    def test_should_index_a_document_with_no_service_types(self, default_service):
+        service = default_service
+        service.get('document', service.get('service'))["serviceName"] = 123
+        del service.get('document', service.get('service'))["serviceTypes"]
 
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json')
 
@@ -258,8 +259,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             services = create_services(10)
             for service in services:
                 response = self.client.put(
-                    '/index-to-create/services/'
-                    + str(service["service"]["id"]),
+                    make_search_api_url(service),
                     data=json.dumps(service),
                     content_type='application/json')
                 assert response.status_code == 200
@@ -268,7 +268,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
     def _put_into_and_get_back_from_elasticsearch(self, service, query_string):
 
         self.client.put(
-            '/index-to-create/services/{}'.format(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service), content_type='application/json')
 
         with self.app.app_context():
@@ -278,10 +278,10 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             '/index-to-create/services/search?{}'.format(query_string)
         )
 
-    def test_should_return_service_on_id(self):
-        service = default_service()
+    def test_should_return_service_on_id(self, default_service):
+        service = default_service
         response = self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json')
         assert response.status_code == 200
@@ -368,7 +368,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_response_status(response, 400)
 
     def test_highlighting_should_use_defined_html_tags(self):
-        service = default_service(
+        service = make_standard_service(
             serviceSummary="Accessing, storing and retaining email"
         )
         highlighted_summary = \
@@ -388,7 +388,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         )
 
     def test_highlighting_should_escape_html(self):
-        service = default_service(
+        service = make_standard_service(
             serviceSummary="accessing, storing <h1>and retaining</h1> email"
         )
 
@@ -405,7 +405,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         )
 
     def test_unhighlighted_result_should_escape_html(self):
-        service = default_service(
+        service = make_standard_service(
             serviceSummary='Oh <script>alert("Yo");</script>',
             lot='oY'
         )
@@ -426,11 +426,10 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         # 120 words, 600 characters
         really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 12
 
-        service = default_service(
+        service = make_standard_service(
             serviceSummary=really_long_service_summary,
             lot='TaaS'
         )
-
         # Doesn't actually search by lot, returns all services
         response = self._put_into_and_get_back_from_elasticsearch(
             service=service,
@@ -478,10 +477,10 @@ class TestFetchById(BaseApplicationTestWithIndex):
 
         assert_response_status(response, 404)
 
-    def test_should_return_service_by_id(self):
-        service = default_service()
+    def test_should_return_service_by_id(self, default_service):
+        service = default_service
         self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json'
         )
@@ -489,17 +488,14 @@ class TestFetchById(BaseApplicationTestWithIndex):
         with self.app.app_context():
             search_service.refresh('index-to-create')
 
-        response = self.client.get(
-            '/index-to-create/services/' + str(service["service"]["id"]))
+        response = self.client.get(make_search_api_url(service))
 
         data = get_json_from_response(response)
         assert_response_status(response, 200)
-        assert_equal(
-            data['services']["_id"],
-            str(service["service"]["id"]))
-        assert_equal(
-            data['services']["_source"]["dmtext_id"],
-            str(service["service"]["id"]))
+
+        original_service_id = service.get('document', service.get('service'))['id']  # TODO remove compat shim
+        assert data['services']["_id"] == str(original_service_id)
+        assert data['services']["_source"]["dmtext_id"] == str(original_service_id)
 
         cases = (
             "lot",
@@ -514,22 +510,21 @@ class TestFetchById(BaseApplicationTestWithIndex):
         # filter fields are processed (lowercase etc)
         # and also have a new key (filter_FIELDNAME)
         for key in cases:
-            original = service["service"][key]
+            original = service.get('document', service.get('service'))[key]  # TODO remove compat shim
             indexed = data['services']["_source"]["dmtext_" + key]
             assert_equal(original, indexed)
 
-    def test_service_should_have_all_exact_match_fields(self):
-        service = default_service()
+    def test_service_should_have_all_exact_match_fields(self, default_service):
+        service = default_service
         self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json'
         )
 
         with self.app.app_context():
             search_service.refresh('index-to-create')
-        response = self.client.get(
-            '/index-to-create/services/' + str(service["service"]["id"]))
+        response = self.client.get(make_search_api_url(service))
 
         data = get_json_from_response(response)
         assert_response_status(response, 200)
@@ -544,29 +539,27 @@ class TestFetchById(BaseApplicationTestWithIndex):
         for key in cases:
             assert_equal(
                 data['services']["_source"]["dmfilter_" + key],
-                service["service"][key])
+                service.get('document', service.get('service'))[key])  # TODO remove shim
 
 
 class TestDeleteById(BaseApplicationTestWithIndex):
-    def test_should_delete_service_by_id(self):
-        service = default_service()
+    def test_should_delete_service_by_id(self, default_service):
+        service = default_service
         self.client.put(
-            '/index-to-create/services/' + str(service["service"]["id"]),
+            make_search_api_url(service),
             data=json.dumps(service),
             content_type='application/json'
         )
 
         with self.app.app_context():
             search_service.refresh('index-to-create')
-        response = self.client.delete(
-            '/index-to-create/services/' + str(service["service"]["id"]))
+        response = self.client.delete(make_search_api_url(service),)
 
         data = get_json_from_response(response)
         assert_response_status(response, 200)
         assert_equal(data['message']['found'], True)
 
-        response = self.client.get(
-            '/index-to-create/services/' + str(service["service"]["id"]))
+        response = self.client.get(make_search_api_url(service),)
         data = get_json_from_response(response)
         assert_response_status(response, 404)
         assert_equal(data['error']['found'], False)
@@ -603,8 +596,7 @@ class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
             services = create_services(10)
             for service in services:
                 self.client.put(
-                    '/index-to-create/services/'
-                    + str(service["service"]["id"]),
+                    make_search_api_url(service),
                     data=json.dumps(service),
                     content_type='application/json')
             search_service.refresh('index-to-create')
@@ -622,7 +614,7 @@ class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
 def create_services(number_of_services):
     services = []
     for i in range(number_of_services):
-        service = default_service(id=str(i))
+        service = make_standard_service(id=str(i))
         services.append(service)
 
     return services

@@ -4,8 +4,7 @@ from nose.tools import assert_equal, ok_
 import pytest
 
 from app import create_app
-from ..helpers import setup_authorization
-from ..helpers import default_service
+from ..helpers import setup_authorization, make_standard_service
 
 
 # Helpers for 'result_fields_check'
@@ -195,7 +194,7 @@ def dummy_services(services_mapping_definition):
         services = list(create_services(120))
         for service in services:
             test_client.put(
-                '/index-to-create/services/%s' % service["service"]["id"],
+                '/index-to-create/services/%s' % service["document"]["id"],
                 data=json.dumps(service), content_type='application/json'
             )
             search_service.refresh('index-to-create')
@@ -207,7 +206,7 @@ def dummy_services(services_mapping_definition):
 
 def create_services(number_of_services):
     for i in range(number_of_services):
-        yield default_service(
+        yield make_standard_service(
             id=str(i),
             serviceName="Service {}".format(i),
             phoneSupport=bool(i % 2),
