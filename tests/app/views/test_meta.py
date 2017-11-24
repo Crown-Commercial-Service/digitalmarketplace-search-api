@@ -20,4 +20,7 @@ class TestMeta(BaseApplicationTestWithIndex):
             assert {"href": "http://localhost/index-alias/services/search",
                     "rel": "query.gdm.alias",
                     } in response_data['links']
-            assert set(response_data['field-mappings']) == set(('services', ))
+            assert frozenset(response_data['field-mappings']) == frozenset((
+                'services',
+                'briefs-digital-outcomes-and-specialists-2',
+            ))
