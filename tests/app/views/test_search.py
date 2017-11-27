@@ -250,6 +250,14 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
 
         assert_response_status(response, 200)
 
+    def test_should_raise_400_on_bad_doc_type(self, default_service):
+        response = self.client.put(
+            make_search_api_url(default_service, type_name='some-bad-type'),
+            data=json.dumps(default_service),
+            content_type='application/json')
+
+        assert_response_status(response, 400)
+
 
 @pytest.mark.usefixtures("services_mapping_definition")
 class TestSearchEndpoint(BaseApplicationTestWithIndex):
