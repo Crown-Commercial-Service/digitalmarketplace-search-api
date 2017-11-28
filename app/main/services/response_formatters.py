@@ -1,5 +1,7 @@
 import math
 
+from flask import jsonify
+
 
 def convert_es_status(index_name, status_response, info_response=None):
     if index_name in ["_all", ""]:
@@ -77,3 +79,20 @@ def generate_pagination_links(query_args, total, page_size, url_for_search):
     if page < max_page:
         links['next'] = url_for_search(page=page + 1, **args_no_page)
     return links
+
+
+def api_response(data, status_code, key='message'):
+    """Handle error codes.
+
+    See http://elasticsearch-py.readthedocs.io/en/master/exceptions.html#elasticsearch.TransportError.status_code for
+    an explaination of 'N/A' status code. elasticsearch-py client returns 'N/A' as status code if ES server cannot be
+    reached
+    """
+    try:
+        if status_code // 100 == 2:
+            return jsonify({key: data}), status_code
+    except TypeError as e:
+        if status_code == 'N/A':
+            return jsonify(error=str(data)), 500
+        raise e
+    return jsonify(error=data), status_code

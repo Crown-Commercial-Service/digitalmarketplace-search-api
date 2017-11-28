@@ -2,6 +2,8 @@ import hashlib
 from itertools import chain
 
 import six
+from flask import request
+from werkzeug.exceptions import abort
 
 
 def _ensure_value_list(json_string_or_list):
@@ -75,3 +77,28 @@ def convert_request_json_into_index_json(mapping, request_json):
         )
         for key, value in request_json.items()
     ))
+
+
+def check_json_from_request(request):
+    if request.content_type not in ['application/json',
+                                    'application/json; charset=UTF-8']:
+        abort(400, "Unexpected Content-Type, expecting 'application/json'")
+
+    data = request.get_json()
+
+    if data is None:
+        abort(400, "Invalid JSON; must be a valid JSON object")
+    return data
+
+
+def json_has_required_keys(data, keys):
+    for key in keys:
+        if key not in data.keys():
+            abort(400, "Invalid JSON must have '%s' key(s)" % keys)
+
+
+def get_json_from_request(root_field):
+    payload = check_json_from_request(request)
+    json_has_required_keys(payload, [root_field])
+    update_json = payload[root_field]
+    return update_json
