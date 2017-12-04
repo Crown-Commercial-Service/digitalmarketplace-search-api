@@ -32,14 +32,14 @@ def test_should_build_search_response_from_es_response(services_mapping):
     assert_equal(res["meta"]["query"]["q"], "keywords")
     assert_equal(res["meta"]["total"], 628)
     assert_equal(res["meta"]["took"], 69)
-    assert_equal(len(res["services"]), 10)
+    assert_equal(len(res["documents"]), 10)
 
-    assert_equal(res["services"][0]["id"], "5390159512076288")
-    assert_equal(res["services"][0]["lot"], "SaaS")
-    assert_equal(res["services"][0]["frameworkName"], "G-Cloud 6")
-    assert_equal(res["services"][0]["supplierName"], "Supplier Name")
-    assert_equal(res["services"][0]["serviceName"], "Email Verification")
-    assert_equal(res["services"][0]["serviceTypes"], [
+    assert_equal(res["documents"][0]["id"], "5390159512076288")
+    assert_equal(res["documents"][0]["lot"], "SaaS")
+    assert_equal(res["documents"][0]["frameworkName"], "G-Cloud 6")
+    assert_equal(res["documents"][0]["supplierName"], "Supplier Name")
+    assert_equal(res["documents"][0]["serviceName"], "Email Verification")
+    assert_equal(res["documents"][0]["serviceTypes"], [
         "Data management"
     ])
 
@@ -47,15 +47,15 @@ def test_should_build_search_response_from_es_response(services_mapping):
 def test_should_build_highlights_es_response(services_mapping):
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
     assert_equal(
-        res["services"][0]["highlight"]["serviceName"],
+        res["documents"][0]["highlight"]["serviceName"],
         ["Email Verification"])
-    assert_equal(res["services"][0]["highlight"]["serviceFeatures"], [
+    assert_equal(res["documents"][0]["highlight"]["serviceFeatures"], [
         "Verify email addresses at the point of entry",
         "Validate email address format",
         "Live email account",
         "Safe to email"
     ])
-    assert_equal(res["services"][0]["highlight"]["serviceBenefits"], [
+    assert_equal(res["documents"][0]["highlight"]["serviceBenefits"], [
         "Increase email deliverability"
     ])
 
@@ -64,7 +64,7 @@ def test_should_not_include_highlights_if_not_in_es_results(services_mapping):
     copy = SEARCH_RESULTS_JSON
     del copy["hits"]["hits"][0]["highlight"]
     res = convert_es_results(services_mapping, copy, {"category": "some catergory"})
-    assert_equal("highlight" in res["services"][0], False)
+    assert_equal("highlight" in res["documents"][0], False)
 
 
 def test_should_build_status_response_from_es_response():
