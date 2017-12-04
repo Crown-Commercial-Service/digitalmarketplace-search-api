@@ -43,20 +43,20 @@ def _convert_es_result(mapping, es_result):
 
 
 def convert_es_results(mapping, results, query_args):
-    services = []
+    documents = []
 
-    for service in results["hits"]["hits"]:
+    for document in results["hits"]["hits"]:
         if 'idOnly' in query_args:
-            services.append({"id": service["_id"]})
+            documents.append({"id": document["_id"]})
         else:
-            # populate result from service["_source"] object
-            result = _convert_es_result(mapping, service["_source"])
+            # populate result from document["_source"] object
+            result = _convert_es_result(mapping, document["_source"])
 
-            if "highlight" in service:
+            if "highlight" in document:
                 # perform the same conversion for any highlight terms
-                result["highlight"] = _convert_es_result(mapping, service["highlight"])
+                result["highlight"] = _convert_es_result(mapping, document["highlight"])
 
-            services.append(result)
+            documents.append(result)
 
     return {
         "meta": {
@@ -64,7 +64,7 @@ def convert_es_results(mapping, results, query_args):
             "total": results["hits"]["total"],
             "took": results["took"],
         },
-        "services": services,
+        "documents": documents,
     }
 
 
