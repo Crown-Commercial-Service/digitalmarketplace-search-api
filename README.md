@@ -99,7 +99,7 @@ has been generated (and has been deployed to the Search API server), this can be
 existing index endpoint:
 
 ```
-PUT /g-cloud-index HTTP/1.1
+PUT /<index_name> HTTP/1.1
 Authorization: Bearer myToken
 Content-Type: application/json
 
