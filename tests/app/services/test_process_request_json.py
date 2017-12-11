@@ -157,6 +157,17 @@ def test_missing_field_in_transformation(services_mapping):
                 ]
             }
         },
+        {
+            "update_conditionally": {
+                "field": "supplierName",
+                "any_of": [
+                    "foo",
+                ],
+                "update_value": [
+                    "bar"
+                ]
+            }
+        }
     ]
     request = {
         "serviceFeatures": ["wibble"],
@@ -196,6 +207,148 @@ def test_create_new_field_in_transformation(services_mapping):
         "dmtext_serviceTypes": ["bar"],
         "dmfilter_serviceTypes": ["bar"],
     }
+
+
+class TestUpdateConditionally():
+    def test_updates_source_field_when_no_target(self, services_mapping):
+        services_mapping.transform_fields = [
+            {
+                "update_conditionally": {
+                    "field": "supplierName",
+                    "any_of": [
+                        "Red",
+                        "Orange",
+                        "Yellow"
+                    ],
+                    "update_value": [
+                        "Green"
+                    ]
+                }
+            }
+        ]
+
+        request = {
+            "supplierName": ["Red"],
+        }
+
+        result = convert_request_json_into_index_json(services_mapping, request)
+
+        assert result == {
+            "dmtext_supplierName": ["Green"]
+        }
+
+    def test_updates_target_field(self, services_mapping):
+        services_mapping.transform_fields = [
+            {
+                "update_conditionally": {
+                    "field": "supplierName",
+                    "target_field": "serviceTypes",
+                    "any_of": [
+                        "Blue",
+                        "Indigo",
+                        "Violet"
+                    ],
+                    "update_value": [
+                        "Pink"
+                    ]
+                }
+            }
+        ]
+
+        request = {
+            "supplierName": ["Violet"],
+            "serviceTypes": ["Brown"]
+        }
+
+        result = convert_request_json_into_index_json(services_mapping, request)
+
+        assert result == {
+            "dmtext_supplierName": ["Violet"],
+            "dmtext_serviceTypes": ["Pink"],
+            "dmfilter_serviceTypes": ["Pink"],
+        }
+
+    def test_creates_target_field_if_it_does_not_exist(self, services_mapping):
+        services_mapping.transform_fields = [
+            {
+                "update_conditionally": {
+                    "field": "supplierName",
+                    "target_field": "serviceTypes",
+                    "any_of": [
+                        "Blue",
+                        "Indigo",
+                        "Violet"
+                    ],
+                    "update_value": [
+                        "Pink"
+                    ]
+                }
+            }
+        ]
+
+        request = {
+            "supplierName": ["Violet"],
+        }
+
+        result = convert_request_json_into_index_json(services_mapping, request)
+
+        assert result == {
+            "dmtext_supplierName": ["Violet"],
+            "dmtext_serviceTypes": ["Pink"],
+            "dmfilter_serviceTypes": ["Pink"],
+        }
+
+    def test_does_not_update_if_value_does_not_match(self, services_mapping):
+        services_mapping.transform_fields = [
+            {
+                "update_conditionally": {
+                    "field": "supplierName",
+                    "any_of": [
+                        "Grey",
+                        "Black",
+                        "White"
+                    ],
+                    "update_value": [
+                        "Gold"
+                    ]
+                }
+            }
+        ]
+
+        request = {
+            "supplierName": ["Silver"],
+        }
+
+        result = convert_request_json_into_index_json(services_mapping, request)
+
+        assert result == {
+            "dmtext_supplierName": ["Silver"],
+        }
+
+    def test_works_if_source_field_is_a_string(self, services_mapping):
+        services_mapping.transform_fields = [
+            {
+                "update_conditionally": {
+                    "field": "supplierName",
+                    "any_of": [
+                        "Red",
+                        "Orange",
+                        "Yellow"
+                    ],
+                    "update_value": "Green"
+                }
+            }
+        ]
+
+        request = {
+            "supplierName": "Orange",
+        }
+
+        result = convert_request_json_into_index_json(services_mapping, request)
+
+        assert result == {
+            "dmtext_supplierName": "Green"
+        }
 
 
 def test_service_id_hash_added_if_id_present(services_mapping):

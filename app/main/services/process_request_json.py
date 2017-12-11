@@ -51,8 +51,28 @@ def _hash_to(arguments, document):
         document[target_field] = hashlib.sha256((six.text_type(document[source_field])).encode('utf-8')).hexdigest()
 
 
+def _update_conditionally(arguments, document):
+    """
+    A transformation processor that updates field values in "target field" when
+    certain values are present in "field". The example use case is when
+    we are converting awarded, unsuccessful or cancelled brief status to closed.
+    :param arguments: dict -- the parameters to the processor as specified in configuration
+    :param document: dict -- the submitted document that we are transforming
+    """
+    source_field = arguments['field']
+    target_field = arguments.get('target_field') or source_field
+
+    if source_field in document:
+        source_values = _ensure_value_list(document[source_field])
+        source_values_set = set(source_values)
+
+        if any(value in source_values_set for value in arguments['any_of']):
+            document[target_field] = arguments['update_value']
+
+
 TRANSFORMATION_PROCESSORS = {
     'append_conditionally': _append_conditionally,
+    'update_conditionally': _update_conditionally,
     'hash_to': _hash_to,
 }
 
