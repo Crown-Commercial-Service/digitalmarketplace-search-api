@@ -158,12 +158,12 @@ def test_missing_field_in_transformation(services_mapping):
             }
         },
         {
-            "update_conditionally": {
+            "set_conditionally": {
                 "field": "supplierName",
                 "any_of": [
                     "foo",
                 ],
-                "update_value": [
+                "set_value": [
                     "bar"
                 ]
             }
@@ -209,18 +209,18 @@ def test_create_new_field_in_transformation(services_mapping):
     }
 
 
-class TestUpdateConditionally():
+class TestSetConditionally():
     def test_updates_source_field_when_no_target(self, services_mapping):
         services_mapping.transform_fields = [
             {
-                "update_conditionally": {
+                "set_conditionally": {
                     "field": "supplierName",
                     "any_of": [
                         "Red",
                         "Orange",
                         "Yellow"
                     ],
-                    "update_value": [
+                    "set_value": [
                         "Green"
                     ]
                 }
@@ -240,7 +240,7 @@ class TestUpdateConditionally():
     def test_updates_target_field(self, services_mapping):
         services_mapping.transform_fields = [
             {
-                "update_conditionally": {
+                "set_conditionally": {
                     "field": "supplierName",
                     "target_field": "serviceTypes",
                     "any_of": [
@@ -248,7 +248,7 @@ class TestUpdateConditionally():
                         "Indigo",
                         "Violet"
                     ],
-                    "update_value": [
+                    "set_value": [
                         "Pink"
                     ]
                 }
@@ -271,7 +271,7 @@ class TestUpdateConditionally():
     def test_creates_target_field_if_it_does_not_exist(self, services_mapping):
         services_mapping.transform_fields = [
             {
-                "update_conditionally": {
+                "set_conditionally": {
                     "field": "supplierName",
                     "target_field": "serviceTypes",
                     "any_of": [
@@ -279,7 +279,7 @@ class TestUpdateConditionally():
                         "Indigo",
                         "Violet"
                     ],
-                    "update_value": [
+                    "set_value": [
                         "Pink"
                     ]
                 }
@@ -301,14 +301,14 @@ class TestUpdateConditionally():
     def test_does_not_update_if_value_does_not_match(self, services_mapping):
         services_mapping.transform_fields = [
             {
-                "update_conditionally": {
+                "set_conditionally": {
                     "field": "supplierName",
                     "any_of": [
                         "Grey",
                         "Black",
                         "White"
                     ],
-                    "update_value": [
+                    "set_value": [
                         "Gold"
                     ]
                 }
@@ -328,14 +328,14 @@ class TestUpdateConditionally():
     def test_works_if_source_field_is_a_string(self, services_mapping):
         services_mapping.transform_fields = [
             {
-                "update_conditionally": {
+                "set_conditionally": {
                     "field": "supplierName",
                     "any_of": [
                         "Red",
                         "Orange",
                         "Yellow"
                     ],
-                    "update_value": "Green"
+                    "set_value": "Green"
                 }
             }
         ]

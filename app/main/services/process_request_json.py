@@ -22,17 +22,17 @@ def _append_conditionally(arguments, document):
     :param arguments: dict -- the parameters to the processor as specified in configuration
     :param document: dict -- the submitted document that we are transforming
     """
-    _update_conditionally(arguments, document, append=True)
+    _set_conditionally(arguments, document, append=True)
 
 
-def _update_conditionally(arguments, document, append=False):
+def _set_conditionally(arguments, document, append=False):
     """
-    A transformation processor that updates field values in "target field" when
+    A transformation processor that sets field values in "target field" when
     certain values are present in "field". The example use case is when
     we are converting awarded, unsuccessful or cancelled brief status to closed.
     :param arguments: dict -- the parameters to the processor as specified in configuration
     :param document: dict -- the submitted document that we are transforming
-    :param append: bool -- if true, then the target field is appended to instead updated. See the function above.
+    :param append: bool -- if true, then the target field is appended to instead of set. See the function above.
     """
 
     source_field = arguments['field']
@@ -49,7 +49,7 @@ def _update_conditionally(arguments, document, append=False):
                 # "append_value" key singular despite being a list, consistent with Elasticsearch practice
                 document[target_field] = target_values
             else:
-                document[target_field] = arguments['update_value']
+                document[target_field] = arguments['set_value']
 
 
 def _hash_to(arguments, document):
@@ -69,7 +69,7 @@ def _hash_to(arguments, document):
 
 TRANSFORMATION_PROCESSORS = {
     'append_conditionally': _append_conditionally,
-    'update_conditionally': _update_conditionally,
+    'set_conditionally': _set_conditionally,
     'hash_to': _hash_to,
 }
 
