@@ -27,7 +27,7 @@
         "_": "DO NOT UPDATE BY HAND",
         "version": "10.0.0",
         "generated_from_framework": "digital-outcomes-and-specialists-2",
-        "generated_by": "/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
         "generated_time": "2017-12-11T11:51:11.845511",
         "dm_sort_clause": [
           "sortonly_statusOrder",
