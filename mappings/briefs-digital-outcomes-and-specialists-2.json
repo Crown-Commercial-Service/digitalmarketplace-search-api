@@ -28,7 +28,7 @@
         "version": "10.1.0",
         "generated_from_framework": "digital-outcomes-and-specialists-2",
         "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-12-12T16:20:22.603265",
+        "generated_time": "2017-12-12T16:28:55.688469",
         "dm_sort_clause": [
           "sortonly_statusOrder",
           "sortonly_publishedAt",
@@ -151,6 +151,10 @@
         },
         "dmtext_status": {
           "type": "keyword"
+        },
+        "dmfilter_status": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
         },
         "sortonly_statusOrder": {
           "type": "byte"
