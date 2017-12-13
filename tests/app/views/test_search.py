@@ -80,7 +80,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
-                len(get_json_from_response(response)["services"]), 5)
+                len(get_json_from_response(response)["documents"]), 5)
 
     def test_should_get_pagination_links(self):
         with self.app.app_context():
@@ -103,7 +103,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
-                len(get_json_from_response(response)["services"]), 5)
+                len(get_json_from_response(response)["documents"]), 5)
 
     def test_should_get_no_services_on_out_of_bounds_from(self):
         with self.app.app_context():
@@ -114,7 +114,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
-                len(get_json_from_response(response)["services"]), 0)
+                len(get_json_from_response(response)["documents"]), 0)
 
     def test_should_get_400_response__on_negative_page(self):
         with self.app.app_context():
@@ -144,7 +144,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         assert_response_status(response, 200)
         search_results = get_json_from_response(
             response
-        )["services"]
+        )["documents"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
             highlighted_summary
@@ -160,7 +160,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             query_string='q=storing'
         )
         assert_response_status(response, 200)
-        search_results = get_json_from_response(response)["services"]
+        search_results = get_json_from_response(response)["documents"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
             "accessing, <mark class='search-result-highlighted-text'>" +
@@ -178,7 +178,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             query_string='q=oY'
         )
         assert_response_status(response, 200)
-        search_results = get_json_from_response(response)["services"]
+        search_results = get_json_from_response(response)["documents"]
         assert_equal(
             search_results[0]["highlight"]["serviceSummary"][0],
             "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
@@ -200,7 +200,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         )
         assert_response_status(response, 200)
 
-        search_results = get_json_from_response(response)["services"]
+        search_results = get_json_from_response(response)["documents"]
         # Get the first with a matching value from a list
         search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
         assert_true(490 < len(search_result["highlight"]["serviceSummary"][0]) < 510)
@@ -221,7 +221,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response_json = get_json_from_response(response)
 
             assert_response_status(response, 200)
-            assert_equal(len(response_json['services']), expected_count)
+            assert_equal(len(response_json['documents']), expected_count)
 
     def test_only_ids_returned_for_id_only_request(self):
         with self.app.app_context():
@@ -230,7 +230,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response_json = get_json_from_response(response)
 
             assert_response_status(response, 200)
-            assert_equal(set(response_json['services'][0].keys()), {'id'})
+            assert_equal(set(response_json['documents'][0].keys()), {'id'})
 
 
 class TestFetchById(BaseApplicationTestWithIndex):
@@ -337,7 +337,7 @@ class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
             assert_response_status(response, 200)
             assert_equal(get_json_from_response(response)["meta"]["total"], 10)
 
-        ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['services']]
+        ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['documents']]
         assert ordered_service_ids == ['5', '6', '2', '7', '1', '0', '3', '4', '8', '9']  # fixture for sha256 ordering
 
 

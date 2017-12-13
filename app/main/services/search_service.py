@@ -145,7 +145,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
 
         response = {
             "meta": results['meta'],
-            "services": results['services'],
+            "documents": results['documents'],
             "links": generate_pagination_links(
                 query_args, results['meta']['total'],
                 page_size, url_for_search

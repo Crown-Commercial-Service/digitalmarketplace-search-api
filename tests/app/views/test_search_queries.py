@@ -31,149 +31,148 @@ def test_single_filter_queries(query, expected_result_count, match_fields):
 
 
 def test_basic_aggregations():
-    yield check_aggregations_query, '', 120, {'PaaS': (30).__eq__, 'SaaS': (30).__eq__, 'IaaS': (30).__eq__,
-                                              'SCS': (30).__eq__}
-    yield check_aggregations_query, 'filter_lot=SaaS', 30, {'SaaS': (30).__eq__}
-    yield check_aggregations_query, 'filter_minimumContractPeriod=Hour,Day', 80, {'PaaS': (20).__eq__,
-                                                                                  'SaaS': (20).__eq__,
-                                                                                  'IaaS': (20).__eq__,
-                                                                                  'SCS': (20).__eq__}
-    yield check_aggregations_query, 'filter_lot=SaaS&filter_minimumContractPeriod=Hour,Day', 20, {'SaaS': (20).__eq__}
+    check_aggregations_query(
+        '',
+        120,
+        {'PaaS': (30).__eq__, 'SaaS': (30).__eq__, 'IaaS': (30).__eq__, 'SCS': (30).__eq__}
+    )
+    check_aggregations_query('filter_lot=SaaS', 30, {'SaaS': (30).__eq__})
+    check_aggregations_query(
+        'filter_minimumContractPeriod=Hour,Day',
+        80,
+        {'PaaS': (20).__eq__, 'SaaS': (20).__eq__, 'IaaS': (20).__eq__, 'SCS': (20).__eq__}
+    )
+    check_aggregations_query('filter_lot=SaaS&filter_minimumContractPeriod=Hour,Day', 20, {'SaaS': (20).__eq__})
 
 
 def test_or_filters():
-    yield (check_query, 'filter_lot=SaaS,PaaS',
-           60, {'lot': ['SaaS', 'PaaS'].__contains__})
-    yield check_query, 'filter_minimumContractPeriod=Hour,Day', 80, {}
-    yield (check_query, 'filter_datacentreTier=tia-942 tier 1,tia-942 tier 2',
-           120, {})
-    yield (check_query, 'filter_datacentreTier=tia-942 tier 3,tia-942 tier 2',
-           0, {})
-    yield (check_query,
-           'filter_minimumContractPeriod=Hour,Day&filter_datacentreTier=tia-942 tier 3,tia-942 tier 2',
-           0, {})
+    check_query('filter_lot=SaaS,PaaS', 60, {'lot': ['SaaS', 'PaaS'].__contains__})
+    check_query('filter_minimumContractPeriod=Hour,Day', 80, {})
+    check_query('filter_datacentreTier=tia-942 tier 1,tia-942 tier 2', 120, {})
+    check_query('filter_datacentreTier=tia-942 tier 3,tia-942 tier 2', 0, {})
+    check_query('filter_minimumContractPeriod=Hour,Day&filter_datacentreTier=tia-942 tier 3,tia-942 tier 2', 0, {})
 
 
 def test_and_filters():
-    yield (check_query,
-           'filter_serviceTypes=Planning&filter_serviceTypes=Testing',
-           24, {'serviceTypes': ['Planning', 'Testing'].__eq__})
+    check_query(
+        'filter_serviceTypes=Planning&filter_serviceTypes=Testing',
+        24, {'serviceTypes': ['Planning', 'Testing'].__eq__}
+    )
 
-    yield (check_query,
-           'filter_serviceTypes=Planning&filter_serviceTypes=Implementation',
-           0, {})
+    check_query(
+        'filter_serviceTypes=Planning&filter_serviceTypes=Implementation',
+        0, {}
+    )
 
-    yield check_query, 'filter_lot=SaaS&filter_lot=PaaS', 0, {}
+    check_query('filter_lot=SaaS&filter_lot=PaaS', 0, {})
 
 
 def test_filter_combinations():
-    yield (check_query,
-           'filter_minimumContractPeriod=Hour&filter_phoneSupport=false',
-           20, {'id': even})
+    check_query(
+        'filter_minimumContractPeriod=Hour&filter_phoneSupport=false',
+        20, {'id': even}
+    )
 
-    yield (check_query,
-           'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false',
-           40, {'id': even})
+    check_query(
+        'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false',
+        40, {'id': even}
+    )
 
-    yield (check_query,
-           'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false&filter_lot=SaaS',
-           20, {'id': even})
+    check_query(
+        'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false&filter_lot=SaaS',
+        20, {'id': even}
+    )
 
-    yield (check_query,
-           'filter_minimumContractPeriod=Hour&filter_lot=SaaS',
-           10, {'lot': 'SaaS'.__eq__})
+    check_query(
+        'filter_minimumContractPeriod=Hour&filter_lot=SaaS',
+        10, {'lot': 'SaaS'.__eq__}
+    )
 
-    yield (check_query,
-           'q=12&filter_minimumContractPeriod=Hour&filter_lot=SaaS',
-           1, {'lot': 'SaaS'.__eq__, 'id': '12'.__eq__})
+    check_query(
+        'q=12&filter_minimumContractPeriod=Hour&filter_lot=SaaS',
+        1, {'lot': 'SaaS'.__eq__, 'id': '12'.__eq__}
+    )
 
-    yield (check_query,
-           'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {})
+    check_query(
+        'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {}
+    )
 
 
 def test_special_characters():
     # Elasticserch reserved characters:
     #   + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
 
-    yield (check_query, 'q=Service%3D1', 1, {})  # =
-    yield (check_query, 'q=Service%211', 1, {})  # !
-    yield (check_query, 'q=Service%5E1', 1, {})  # ^
-    yield (check_query, 'q=Service%7E1', 1, {})  # ~
-    yield (check_query, 'q=Service%3F1', 1, {})  # ?
-    yield (check_query, 'q=Service%3A1', 1, {})  # :
-    yield (check_query, 'q=Service%5C 1', 1, {})  # \
-    yield (check_query, 'q=Service%2F1', 1, {})  # /
-    yield (check_query, 'q=Service%26%261', 1, {})  # &&
-    yield (check_query, 'q=Service 1*', 1, {})
+    check_query('q=Service%3D1', 1, {})  # =
+    check_query('q=Service%211', 1, {})  # !
+    check_query('q=Service%5E1', 1, {})  # ^
+    check_query('q=Service%7E1', 1, {})  # ~
+    check_query('q=Service%3F1', 1, {})  # ?
+    check_query('q=Service%3A1', 1, {})  # :
+    check_query('q=Service%5C 1', 1, {})  # \
+    check_query('q=Service%2F1', 1, {})  # /
+    check_query('q=Service%26%261', 1, {})  # &&
+    check_query('q=Service 1*', 1, {})
 
-    yield (check_query, 'q=Service>1', 1, {})
-    yield (check_query, 'q=Service<1', 1, {})
+    check_query('q=Service>1', 1, {})
+    check_query('q=Service<1', 1, {})
 
-    yield (check_query, 'q=Service(1', 1, {})
-    yield (check_query, 'q=Service)1', 1, {})
+    check_query('q=Service(1', 1, {})
+    check_query('q=Service)1', 1, {})
 
-    yield (check_query, 'q=Service{1', 1, {})
-    yield (check_query, 'q=Service}1', 1, {})
+    check_query('q=Service{1', 1, {})
+    check_query('q=Service}1', 1, {})
 
-    yield (check_query, 'q=Service[1', 1, {})
-    yield (check_query, 'q=Service]1', 1, {})
+    check_query('q=Service[1', 1, {})
+    check_query('q=Service]1', 1, {})
 
-    yield (check_query, 'q=id%3A1', 0, {})
+    check_query('q=id%3A1', 0, {})
 
 
 def test_basic_keyword_search():
-    yield (check_query,
-           'q=Service',
-           120, {})
+    check_query('q=Service', 120, {})
 
 
 def test_and_keyword_search():
-    yield (check_query,
-           'q=Service 1',
-           1, {})
+    check_query('q=Service 1', 1, {})
 
-    yield (check_query, 'q=Service 1 2 3', 0, {})
+    check_query('q=Service 1 2 3', 0, {})
 
-    yield (check_query, 'q=+Service +1', 1, {})
-    yield (check_query, 'q=Service %26100', 1, {})
-    yield (check_query, 'q=Service %26 100', 0, {})
-    yield (check_query, 'q=Service %26%26100', 1, {})
-    yield (check_query, 'q=Service %26%26 100', 0, {})
+    check_query('q=+Service +1', 1, {})
+    check_query('q=Service %26100', 1, {})
+    check_query('q=Service %26 100', 0, {})
+    check_query('q=Service %26%26100', 1, {})
+    check_query('q=Service %26%26 100', 0, {})
 
 
 def test_phrase_keyword_search():
-    yield (check_query, 'q="Service 12"', 1, {})
+    check_query('q="Service 12"', 1, {})
 
-    yield (check_query, 'q="Service -12"', 1, {})
-    yield (check_query, 'q=Service -12"', 119, {})
-    yield (check_query, 'q="Service -12', 119, {})
+    check_query('q="Service -12"', 1, {})
+    check_query('q=Service -12"', 119, {})
+    check_query('q="Service -12', 119, {})
 
-    yield (check_query, 'q="Service | -12"', 1, {})
-    yield (check_query, 'q="Service %26 12"', 1, {})
+    check_query('q="Service | -12"', 1, {})
+    check_query('q="Service %26 12"', 1, {})
 
 
 def test_negated_keyword_search():
-    yield (check_query,
-           'q=Service -12',
-           119, {})
+    check_query('q=Service -12', 119, {})
 
-    yield (check_query, 'q=12 -12', 0, {})
+    check_query('q=12 -12', 0, {})
 
 
 def test_or_keyword_search():
-    yield (check_query,
-           'q=Service || 12',
-           120, {})
+    check_query('q=Service || 12', 120, {})
 
-    yield (check_query, 'q=missing | 12', 1, {})
-    yield (check_query, 'q=missing || 12', 1, {})
+    check_query('q=missing | 12', 1, {})
+    check_query('q=missing || 12', 1, {})
 
 
 def test_escaped_characters():
-    yield (check_query, 'q=\\"Service | 12\\"', 120, {})
-    yield (check_query, 'q=\-12', 1, {})
-    yield (check_query, 'q=Service \|12', 1, {})
-    yield (check_query, 'q=Service \| 12', 0, {})
+    check_query('q=\\"Service | 12\\"', 120, {})
+    check_query('q=\-12', 1, {})
+    check_query('q=Service \|12', 1, {})
+    check_query('q=Service \| 12', 0, {})
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -254,7 +253,7 @@ def count_for_query(query, expected_count):
 
 
 def result_fields_check(query, check_fns):
-    services = query['services']
+    services = query['documents']
     for field in check_fns:
         ok_(all(check_fns[field](service[field]) for service in services),
             "Field '{}' check '{}' failed for search results:\n{}".format(

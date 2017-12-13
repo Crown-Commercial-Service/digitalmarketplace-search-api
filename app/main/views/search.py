@@ -12,7 +12,7 @@ def search(index_name, doc_type):
 
     if status_code == 200:
         return jsonify(meta=result['meta'],
-                       services=result['services'],
+                       documents=result["documents"],
                        links=result['links']), status_code
     else:
         return api_response(result, status_code)
