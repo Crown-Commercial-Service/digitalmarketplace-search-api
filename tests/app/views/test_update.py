@@ -41,8 +41,11 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             get_json_from_response(response)["status"]["num_docs"],
             1)
 
-    @mock.patch('app.main.views.update.index', return_value=(NewConnectionError('', EXAMPLE_CONNECTION_ERROR), 'N/A'))
-    def test_index_document_handles_connection_error(self, ind, default_service):
+    @mock.patch('app.main.views.update.index')
+    @mock.patch('app.main.services.response_formatters.current_app')
+    @pytest.mark.parametrize('error_status_code', ['N/A', 'something_other_than_N/A'])
+    def test_index_document_handles_connection_error(self, current_app, index, error_status_code, default_service):
+        index.return_value = (NewConnectionError('', self.EXAMPLE_CONNECTION_ERROR), error_status_code)
         service = default_service
 
         response = self.client.put(
@@ -51,19 +54,9 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             content_type='application/json'
         )
         assert_response_status(response, 500)
-
-    @mock.patch(
-        'app.main.views.update.index',
-        return_value=(NewConnectionError('', EXAMPLE_CONNECTION_ERROR), 'something_other_than_N/A')
-    )
-    def test_index_document_does_not_pass_on_non_NA_status_code(self, ind, default_service):
-        service = default_service
-        with pytest.raises(TypeError):
-            self.client.put(
-                make_search_api_url(service),
-                data=json.dumps(service),
-                content_type='application/json'
-            )
+        current_app.logger.error.assert_called_once_with(
+            f'API response error: ": {self.EXAMPLE_CONNECTION_ERROR}" Unexpected status code: "{error_status_code}"'
+        )
 
     def test_should_index_a_document_with_missing_fields(self, default_service):
         service = default_service

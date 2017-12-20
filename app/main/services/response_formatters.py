@@ -1,6 +1,6 @@
 import math
 
-from flask import jsonify
+from flask import current_app, jsonify
 
 
 def convert_es_status(index_name, status_response, info_response=None):
@@ -86,13 +86,14 @@ def api_response(data, status_code, key='message'):
 
     See http://elasticsearch-py.readthedocs.io/en/master/exceptions.html#elasticsearch.TransportError.status_code for
     an explaination of 'N/A' status code. elasticsearch-py client returns 'N/A' as status code if ES server cannot be
-    reached
+    reached, which is caught by `except TypeError` below.
+    It's possible that the ElasticSearch library can also return other unexpected non-integer status codes, which will
+    also get caught here, logged, and returned as part of the JSON.
     """
     try:
         if status_code // 100 == 2:
             return jsonify({key: data}), status_code
-    except TypeError as e:
-        if status_code == 'N/A':
-            return jsonify(error=str(data)), 500
-        raise e
+    except TypeError:
+        current_app.logger.error(f'API response error: "{str(data)}" Unexpected status code: "{status_code}"')
+        return jsonify(error=str(data), unexpectedStatusCode=status_code), 500
     return jsonify(error=data), status_code

@@ -29,15 +29,10 @@ def services_mapping_definition():
         yield mock_definition_loader.return_value
 
 
-@pytest.fixture(scope="function", params=['service', 'document'])
-def default_service(request):
+@pytest.fixture(scope="function")
+def default_service():
     """
-    A fixture for a service such as might be indexed in the Search API. For now, parameterized so that we can test
-    both the old style where the structure had a top-level dictionary key hard-coded to 'service', and the new
-    style where we just look for a key 'document', which could be a DOS brief or a G-Cloud service or anything else.
+    A fixture for a service such as might be indexed in the Search API.
     :return: dict
     """
-    service = make_standard_service()
-    if request.param != 'document':
-        service = {request.param: service['document']}
-    return service
+    return make_standard_service()
