@@ -87,8 +87,8 @@ def api_response(data, status_code, key='message'):
     See http://elasticsearch-py.readthedocs.io/en/master/exceptions.html#elasticsearch.TransportError.status_code for
     an explaination of 'N/A' status code. elasticsearch-py client returns 'N/A' as status code if ES server cannot be
     reached, which is caught by `except TypeError` below.
-    It's possible that ElasticSearch can also return other unexpected non-integer status codes, which will also get
-    caught here, and returned as part of the JSON.
+    It's possible that the ElasticSearch library can also return other unexpected non-integer status codes, which will
+    also get caught here, logged, and returned as part of the JSON.
     """
     try:
         if status_code // 100 == 2:
