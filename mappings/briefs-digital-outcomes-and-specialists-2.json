@@ -1,5 +1,8 @@
 {
   "settings": {
+    "index": {
+      "max_result_window": 10000
+    },
     "analysis": {
       "char_filter": {
         "nonalpha_removal": {
@@ -25,10 +28,10 @@
     "briefs": {
       "_meta": {
         "_": "DO NOT UPDATE BY HAND",
-        "version": "10.1.1",
+        "version": "10.2.1",
         "generated_from_framework": "digital-outcomes-and-specialists-2",
         "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-12-14T16:58:54.236771",
+        "generated_time": "2018-01-17T15:53:38.838590",
         "dm_sort_clause": [
           "sortonly_statusOrder",
           {

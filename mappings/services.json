@@ -1,5 +1,8 @@
 {
   "settings": {
+    "index": {
+      "max_result_window": 20000
+    },
     "analysis": {
       "analyzer": {
         "stemming_analyzer": {
@@ -45,17 +48,17 @@
   "mappings": {
     "services": {
       "_meta": {
+        "_": "DO NOT UPDATE BY HAND",
+        "version": "10.2.1",
+        "generated_from_framework": "g-cloud-9",
+        "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2018-01-17T15:53:05.466593",
         "dm_sort_clause": [
           "_score",
           {
             "sortonly_serviceIdHash": "desc"
           }
         ],
-        "_": "DO NOT UPDATE BY HAND",
-        "version": "9.3.0",
-        "generated_from_framework": "g-cloud-9",
-        "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2017-11-15T14:29:25.407239",
         "transformations": [
           {
             "hash_to": {
