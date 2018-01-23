@@ -13,15 +13,10 @@ pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 class TestIndexingDocuments(BaseApplicationTestWithIndex):
-
     EXAMPLE_CONNECTION_ERROR = (
         '<urllib3.connection.HTTPConnection object at 0x107626588>: '
         'Failed to establish a new connection: [Errno 61] Connection refused'
     )
-
-    def setup(self):
-        super(TestIndexingDocuments, self).setup()
-        self.create_index()
 
     def test_should_index_a_document(self, default_service):
         service = default_service
@@ -135,8 +130,6 @@ class TestDeleteById(BaseApplicationTestWithIndex):
         assert_equal(data['error']['found'], False)
 
     def test_should_return_404_if_no_service(self):
-        self.create_index()
-
         response = self.client.delete(
             '/index-to-create/delete/100')
 
