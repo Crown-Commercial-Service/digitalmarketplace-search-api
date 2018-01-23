@@ -22,8 +22,6 @@ def create_index(index_name, mapping_name):
         es.indices.create(index=index_name, body=mapping_definition)
         return "acknowledged", 200
     except TransportError as e:
-        if 'index_already_exists_exception' in _get_an_error_message(e):
-            return put_index_mapping(index_name, mapping_definition)
         current_app.logger.warning(
             "Failed to create the index %s: %s",
             index, _get_an_error_message(e)
@@ -46,24 +44,6 @@ def create_alias(alias_name, target_index):
         return "acknowledged", 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
-
-
-def put_index_mapping(index_name, definition):
-    for doc_type, mapping_for_type in definition["mappings"].items():
-        try:
-            es.indices.put_mapping(
-                index=index_name,
-                doc_type=doc_type,
-                body=mapping_for_type
-            )
-
-        except TransportError as e:
-            current_app.logger.error(
-                "Failed to update the index mapping for %s/%s: %s",
-                index, _get_an_error_message(e)
-            )
-            return _get_an_error_message(e), e.status_code
-    return "acknowledged", 200
 
 
 def delete_index(index_name):

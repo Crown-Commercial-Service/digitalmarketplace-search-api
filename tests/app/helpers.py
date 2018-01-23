@@ -49,7 +49,7 @@ class BaseApplicationTest(object):
     def do_not_provide_access_token(self):
         self.app.wsgi_app = self.app.wsgi_app.app
 
-    def create_index(self, index_name=None):
+    def create_index(self, index_name=None, expect_success=True):
         if index_name is None:
             index_name = self.default_index_name
 
@@ -57,7 +57,8 @@ class BaseApplicationTest(object):
             "type": "index",
             "mapping": self.default_mapping_name,
         }), content_type="application/json")
-        assert response.status_code in (200, 201)
+        if expect_success:
+            assert response.status_code in (200, 201)
         return response
 
     def teardown(self):

@@ -1,4 +1,3 @@
-import mock
 import pytest
 from flask import json
 from nose.tools import assert_equal
@@ -104,22 +103,13 @@ class TestSearchIndexes(BaseApplicationTest):
         assert_equal(status['index-to-create']['aliases'], [])
         assert_equal(status['index-to-create-2']['aliases'], ['index-alias'])
 
-    def test_creating_existing_index_updates_mapping(self):
+    def test_creating_existing_index_fails(self):
         self.create_index()
 
-        with self.app.app_context():
-            with mock.patch(
-                'app.main.services.search_service.es.indices.put_mapping'
-            ) as es_mock:
-                response = self.create_index()
+        response = self.create_index(expect_success=False)
 
-        assert_response_status(response, 200)
-        assert_equal("acknowledged", get_json_from_response(response)["message"])
-        es_mock.assert_called_with(
-            index='index-to-create',
-            doc_type='services',
-            body=mock.ANY
-        )
+        assert_response_status(response, 400)
+        assert get_json_from_response(response)["error"].startswith("index_already_exists_exception:")
 
     def test_should_not_be_able_delete_index_twice(self):
         self.create_index()
