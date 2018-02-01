@@ -2,6 +2,13 @@ from itertools import chain
 
 
 def construct_query(mapping, query_args, aggregations=[], page_size=100):
+    """
+        :param mapping: index's mapping as returned by `app.mapping.get_mapping`
+        :param query_args: a MultiDict of request arguments
+        :param aggregations: sequence of aggregations request arguments
+        :param page_size: desired number of results per page. falsey values cause page & sorting-related parameters to
+            be omitted (useful for e.g. `count` requests)
+    """
     if not is_filtered(mapping, query_args):
         query = {
             "query": build_keywords_query(mapping, query_args)
@@ -16,7 +23,8 @@ def construct_query(mapping, query_args, aggregations=[], page_size=100):
             }
         }
 
-    query["size"] = page_size
+    if page_size:
+        query["size"] = page_size
 
     if aggregations:
         aggregations = set(aggregations)
@@ -32,15 +40,13 @@ def construct_query(mapping, query_args, aggregations=[], page_size=100):
             for x in aggregations
         }
 
-    else:
-        if 'idOnly' in query_args:
-            query['_source'] = False
+    elif 'idOnly' in query_args:
+        query['_source'] = False
+    elif page_size:
+        query["highlight"] = highlight_clause(mapping)
+        query['sort'] = mapping.sort_clause
 
-        else:
-            query["highlight"] = highlight_clause(mapping)
-            query['sort'] = mapping.sort_clause
-
-    if "page" in query_args:
+    if page_size and "page" in query_args:
         try:
             query["from"] = (int(query_args.get("page")) - 1) * page_size
         except ValueError:
