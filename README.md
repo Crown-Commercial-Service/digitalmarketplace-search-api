@@ -7,6 +7,7 @@ API to handle interactions between the digitalmarketplace applications and searc
 
 Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 5.x series; ideally 5.4 which is what we run on live systems.
 ```
+brew update
 brew cask install java
 cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
 git fetch --unshallow
