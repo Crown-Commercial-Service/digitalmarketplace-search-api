@@ -20,7 +20,7 @@ def create_app(config_name):
 
     if application.config['VCAP_SERVICES']:
         cf_services = json.loads(application.config['VCAP_SERVICES'])
-        application.config['ELASTICSEARCH_HOST'] = cf_services['elasticsearch'][0]['credentials']['uri']
+        application.config['ELASTICSEARCH_HOST'] = cf_services['elasticsearch'][0]['credentials']['uris']
 
         with open(application.config['DM_ELASTICSEARCH_CERT_PATH'], 'wb') as es_certfile:
             es_certfile.write(base64.b64decode(cf_services['elasticsearch'][0]['credentials']['ca_certificate_base64']))
