@@ -103,6 +103,10 @@ def status_for_all_indexes():
         return _get_an_error_message(e), e.status_code
 
 
+def _page_404_response(requested_page):
+    return "Page {} does not exist for this search".format(requested_page), 404
+
+
 def core_search_and_aggregate(index_name, doc_type, query_args, search=False, aggregations=[]):
     try:
         mapping = app.mapping.get_mapping(index_name, doc_type)
@@ -141,6 +145,26 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         return response, 200
 
     except TransportError as e:
+        root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
+        if root_causes and root_causes[0].get("reason").startswith("Result window is too large"):
+            # in this case we have to fire off another request to determine how we should handle this error...
+            # (note minor race condition possible if index is modified between the original call and this one)
+            try:
+                result_count = es.count(
+                    index=index_name,
+                    doc_type=doc_type,
+                    body=construct_query(mapping, query_args, page_size=None),
+                )["count"]
+            except TransportError as e:
+                return _get_an_error_message(e), e.status_code
+            else:
+                expected_page_count = (result_count // page_size) + (0 if result_count % page_size else 1)
+                requested_page = int(query_args.get("page", 1))
+                if expected_page_count < requested_page:
+                    # there genuinely aren't enough results for this number of pages, so this should be a 404
+                    return _page_404_response(requested_page)
+                # else fall through and allow this to 500 - we probably don't have max_result_window set high enough
+                # for the number of results it's possible to access using this index.
         return _get_an_error_message(e), e.status_code
 
     except ValueError as e:

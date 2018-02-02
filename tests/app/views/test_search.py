@@ -116,6 +116,13 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_equal(
                 len(get_json_from_response(response)["documents"]), 0)
 
+    def test_should_get_404_on_massively_out_of_bounds_page(self):
+        with self.app.app_context():
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = '50'
+            response = self.client.get(
+                '/index-to-create/services/search?q=serviceName&page=1000000')
+            assert_response_status(response, 404)
+
     def test_should_get_400_response__on_negative_page(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
