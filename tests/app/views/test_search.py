@@ -98,29 +98,31 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
-                '/index-to-create/services/search?q=serviceName&from=5')
+                '/index-to-create/services/search?q=serviceName')
             assert_response_status(response, 200)
             assert_equal(
                 get_json_from_response(response)["meta"]["total"], 10)
             assert_equal(
                 len(get_json_from_response(response)["documents"]), 5)
 
-    def test_should_get_no_services_on_out_of_bounds_from(self):
+    @pytest.mark.parametrize("page_size,page", (
+        (5, 3,),
+        (6, 3,),
+        (6, 4,),
+        (10, 2,),
+        (15, 2,),
+        (15, 20,),
+        # the following are massively out of bounds pages that should be comfortably beyond our ES max_result_window yet
+        # should display the same behaviour
+        (5, 1000000,),
+        (20, 10000000,),
+    ))
+    def test_should_get_404_on_out_of_bounds_page(self, page_size, page):
         with self.app.app_context():
-            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
+            self.app.config['DM_SEARCH_PAGE_SIZE'] = str(page_size)
             response = self.client.get(
-                '/index-to-create/services/search?q=serviceName&page=3')
-            assert_response_status(response, 200)
-            assert_equal(
-                get_json_from_response(response)["meta"]["total"], 10)
-            assert_equal(
-                len(get_json_from_response(response)["documents"]), 0)
-
-    def test_should_get_404_on_massively_out_of_bounds_page(self):
-        with self.app.app_context():
-            self.app.config['DM_SEARCH_PAGE_SIZE'] = '50'
-            response = self.client.get(
-                '/index-to-create/services/search?q=serviceName&page=1000000')
+                '/index-to-create/services/search?q=serviceName&page={}'.format(page)
+            )
             assert_response_status(response, 404)
 
     def test_should_get_400_response__on_negative_page(self):
