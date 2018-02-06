@@ -94,17 +94,6 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             assert_in("page=1", response_json['links']['prev'])
             assert_in("page=3", response_json['links']['next'])
 
-    def test_should_get_services_next_page_of_services(self):
-        with self.app.app_context():
-            self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
-            response = self.client.get(
-                '/index-to-create/services/search?q=serviceName')
-            assert_response_status(response, 200)
-            assert_equal(
-                get_json_from_response(response)["meta"]["total"], 10)
-            assert_equal(
-                len(get_json_from_response(response)["documents"]), 5)
-
     @pytest.mark.parametrize("page_size,page", (
         (5, 3,),
         (6, 3,),
