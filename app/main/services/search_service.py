@@ -103,6 +103,12 @@ def status_for_all_indexes():
         return _get_an_error_message(e), e.status_code
 
 
+def _page_404_response(requested_page):
+    return "{} does not exist for this search".format(
+        "This page" if requested_page is None else "Page {}".format(requested_page)
+    ), 404
+
+
 def core_search_and_aggregate(index_name, doc_type, query_args, search=False, aggregations=[]):
     try:
         mapping = app.mapping.get_mapping(index_name, doc_type)
@@ -111,10 +117,11 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             page_size *= int(current_app.config['DM_ID_ONLY_SEARCH_PAGE_SIZE_MULTIPLIER'])
 
         es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
+        constructed_query = construct_query(mapping, query_args, aggregations, page_size)
         res = es.search(
             index=index_name,
             doc_type=doc_type,
-            body=construct_query(mapping, query_args, aggregations, page_size),
+            body=constructed_query,
             **es_search_kwargs
         )
 
@@ -133,14 +140,39 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         }
 
         if aggregations:
-            response['aggregations'] = {}
             # Return aggregations in a slightly cleaner format.
-            for k, v in res.get('aggregations', {}).items():
-                response['aggregations'][k] = {d['key']: d['doc_count'] for d in v['buckets']}
+            response['aggregations'] = {
+                k: {d['key']: d['doc_count'] for d in v['buckets']}
+                for k, v in res.get('aggregations', {}).items()
+            }
+
+        # determine whether we're actually off the end of the results. ES handles this as a result-less-yet-happy
+        # response, but we probably want to turn it into a 404 not least so we can match our behaviour when fetching
+        # beyond the `max_result_window` below
+        if search and constructed_query.get("from") and not response["documents"]:
+            return _page_404_response(query_args.get("page", None))
 
         return response, 200
 
     except TransportError as e:
+        root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
+        if root_causes and root_causes[0].get("reason").startswith("Result window is too large"):
+            # in this case we have to fire off another request to determine how we should handle this error...
+            # (note minor race condition possible if index is modified between the original call and this one)
+            try:
+                result_count = es.count(
+                    index=index_name,
+                    doc_type=doc_type,
+                    body=construct_query(mapping, query_args, page_size=None),
+                )["count"]
+            except TransportError as e:
+                return _get_an_error_message(e), e.status_code
+            else:
+                if result_count < constructed_query.get("from", 0):
+                    # there genuinely aren't enough results for this number of pages, so this should be a 404
+                    return _page_404_response(query_args.get("page", None))
+                # else fall through and allow this to 500 - we probably don't have max_result_window set high enough
+                # for the number of results it's possible to access using this index.
         return _get_an_error_message(e), e.status_code
 
     except ValueError as e:
