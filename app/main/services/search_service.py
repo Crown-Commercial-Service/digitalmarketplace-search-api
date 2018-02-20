@@ -155,7 +155,12 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         return response, 200
 
     except TransportError as e:
-        root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
+        try:
+            root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
+        except AttributeError as e:
+            # Catch if the contents of 'info' has no ability to get attributes
+            return _get_an_error_message(e), e.status
+
         if root_causes and root_causes[0].get("reason").startswith("Result window is too large"):
             # in this case we have to fire off another request to determine how we should handle this error...
             # (note minor race condition possible if index is modified between the original call and this one)
