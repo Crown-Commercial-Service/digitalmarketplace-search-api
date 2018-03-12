@@ -49,10 +49,10 @@
     "briefs": {
       "_meta": {
         "_": "DO NOT UPDATE BY HAND",
-        "version": "10.5.0",
+        "version": "10.8.0",
         "generated_from_framework": "digital-outcomes-and-specialists-2",
-        "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2018-02-26T09:48:21.152711",
+        "generated_by": "/Users/brendanbutler/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "generated_time": "2018-03-12T17:29:23.097131",
         "dm_sort_clause": [
           "sortonly_statusOrder",
           {
@@ -65,6 +65,29 @@
             "hash_to": {
               "field": "id",
               "target_field": "idHash"
+            }
+          },
+          {
+            "set_conditionally": {
+              "field": "status",
+              "target_field": "statusOpenClosed",
+              "any_of": [
+                "live"
+              ],
+              "set_value": "open"
+            }
+          },
+          {
+            "set_conditionally": {
+              "field": "status",
+              "target_field": "statusOpenClosed",
+              "any_of": [
+                "awarded",
+                "cancelled",
+                "closed",
+                "unsuccessful"
+              ],
+              "set_value": "closed"
             }
           },
           {
@@ -194,6 +217,10 @@
           "type": "keyword"
         },
         "dmfilter_status": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_statusOpenClosed": {
           "type": "keyword",
           "normalizer": "filter_normalizer"
         },
