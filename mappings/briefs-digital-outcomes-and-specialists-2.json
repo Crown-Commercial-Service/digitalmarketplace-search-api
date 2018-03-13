@@ -49,10 +49,10 @@
     "briefs": {
       "_meta": {
         "_": "DO NOT UPDATE BY HAND",
-        "version": "10.8.0",
+        "version": "11.0.0",
         "generated_from_framework": "digital-outcomes-and-specialists-2",
         "generated_by": "/Users/brendanbutler/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2018-03-12T17:29:23.097131",
+        "generated_time": "2018-03-13T14:53:51.783965",
         "dm_sort_clause": [
           "sortonly_statusOrder",
           {
@@ -86,17 +86,6 @@
                 "cancelled",
                 "closed",
                 "unsuccessful"
-              ],
-              "set_value": "closed"
-            }
-          },
-          {
-            "set_conditionally": {
-              "field": "status",
-              "any_of": [
-                "awarded",
-                "unsuccessful",
-                "cancelled"
               ],
               "set_value": "closed"
             }
