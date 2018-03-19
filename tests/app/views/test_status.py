@@ -27,4 +27,4 @@ class TestStatus(BaseApplicationTest):
             assert_equal(response.status_code, 500)
 
             data = json.loads(response.data.decode('utf-8'))
-            assert_equal(data['es_status']['message'], "FOO")
+            assert_equal(data['message'], ['Error connecting to elasticsearch (status_code: 500, message: FOO)'])
