@@ -109,27 +109,35 @@ Content-Type: application/json
 
 If the mapping cannot be updated in-place, [zero-downtime mapping update process](https://www.elastic.co/blog/changing-mapping-with-zero-downtime) should be used instead:
 
-1. Create a new index, using the `index-name-YYYY-MM-DD` pattern for the new index name, and the mapping named
-   'services'
-   ```
-   PUT /g-cloud-2015-09-29 HTTP/1.1
-   Authorization: Bearer myToken
-   Content-Type: application/json
+### Indexing data
 
-   {"type": "index", "mapping": "services"}
-   ```
-2. Reindex documents into the new index using existing index document endpoints with the new index name
-3. Once the indexing is finished, update the index alias to point to the new index:
-   ```
-   PUT /g-cloud HTTP/1.1
-   Authorization: Bearer myToken
-   Content-Type: application/json
+On preview, staging and production, the overnight Jenkins jobs do not create new indices, but instead
+overwrite whichever index the alias currently points to.
 
-   {"type": "alias", "target": "g-cloud-2015-09-29"}
+New indices are only created and aliased if the entire data set needs to be reindexed, e.g. following a
+database reset or a change in the mapping. This is done with two scripts for each framework:
+
+1. [index-to-search-service.py](https://github.com/alphagov/digitalmarketplace-scripts/blob/master/scripts/index-to-search-service.py)
+
+   Create a new index, using the `index-name-YYYY-MM-DD` pattern for the new index name.
+
+   ```
+   ./scripts/index-to-search-service.py services dev
+                                        --index=g-cloud-9-2018-01-01
+                                        --frameworks=g-cloud-9
+                                        --create-with-mapping=services
+   ./scripts/index-to-search-service.py briefs dev
+                                        --index=briefs-digital-outcomes-and-specialists-2018-01-01
+                                        --frameworks=digital-outcomes-and-specialists
+                                        --create-with-mapping=briefs-digital-outcomes-and-specialists-2
+   ```
+2. [update-index-alias.py](https://github.com/alphagov/digitalmarketplace-scripts/blob/master/scripts/update-index-alias.py)
+
+   Update the alias to point to the new index (that has the date suffix):
+
+   ```
+   ./scripts/update-index-alias.py g-cloud-9 g-cloud-9-2018-01-01 <search-api-url>
+   ./scripts/update-index-alias.py briefs-digital-outcomes-and-specialists briefs-digital-outcomes-and-specialists-2018-01-01 <search-api-url>
    ```
 
-4. Once the alias is updated the old index can be removed:
-   ```
-   DELETE /g-cloud-index HTTP/1.1
-   Authorization: Bearer myToken
-   ```
+   This script also deletes the old index.
