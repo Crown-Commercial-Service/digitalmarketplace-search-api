@@ -5,7 +5,7 @@ from ..helpers import BaseApplicationTestWithIndex
 class TestMeta(BaseApplicationTestWithIndex):
     def test_home(self):
         with self.app.app_context():
-            self.client.put('/{}'.format('index-alias'), data=json.dumps({
+            self.client.put('/index-alias', data=json.dumps({
                 "type": "alias",
                 "target": "index-to-create",
             }), content_type="application/json")
@@ -23,4 +23,5 @@ class TestMeta(BaseApplicationTestWithIndex):
             assert frozenset(response_data['field-mappings']) == frozenset((
                 'services',
                 'briefs-digital-outcomes-and-specialists-2',
+                'services-g-cloud-10',
             ))
