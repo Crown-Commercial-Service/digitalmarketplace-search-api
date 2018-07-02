@@ -157,7 +157,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
     except TransportError as e:
         try:
             root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
-        except AttributeError as e:
+        except AttributeError:
             # Catch if the contents of 'info' has no ability to get attributes
             return _get_an_error_message(e), e.status
 
