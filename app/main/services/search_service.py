@@ -156,7 +156,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         return response, 200
 
     except TransportError as e:
-        error_message, status_code = _get_an_error_message(e), e.status
+        error_message, status_code = _get_an_error_message(e), e.status_code
         # Check if the error message matches 'not enough results exist for page number requested'
         pagination_error_re = '^.*?: (Result window is too large).*? \(.*?\)$'
         if re.match(pagination_error_re, error_message):
