@@ -1,3 +1,4 @@
+import re
 from flask import current_app, url_for
 from elasticsearch import TransportError
 
@@ -155,30 +156,19 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         return response, 200
 
     except TransportError as e:
-        try:
-            root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
-        except AttributeError:
-            # Catch if the contents of 'info' has no ability to get attributes
-            return _get_an_error_message(e), e.status
-
-        if root_causes and root_causes[0].get("reason").startswith("Result window is too large"):
-            # in this case we have to fire off another request to determine how we should handle this error...
-            # (note minor race condition possible if index is modified between the original call and this one)
+        error_message, status_code = _get_an_error_message(e), e.status
+        # Check if the error message matches 'not enough results exist for page number requested'
+        pagination_error_re = '^.*?: (Result window is too large).*? \(.*?\)$'
+        if re.match(pagination_error_re, error_message):
+            body = construct_query(mapping, query_args, page_size=None)
             try:
-                result_count = es.count(
-                    index=index_name,
-                    doc_type=doc_type,
-                    body=construct_query(mapping, query_args, page_size=None),
-                )["count"]
+                result_count = es.count(index=index_name, doc_type=doc_type, body=body)["count"]
             except TransportError as e:
                 return _get_an_error_message(e), e.status_code
-            else:
-                if result_count < constructed_query.get("from", 0):
-                    # there genuinely aren't enough results for this number of pages, so this should be a 404
-                    return _page_404_response(query_args.get("page", None))
-                # else fall through and allow this to 500 - we probably don't have max_result_window set high enough
-                # for the number of results it's possible to access using this index.
-        return _get_an_error_message(e), e.status_code
+            if result_count < constructed_query.get("from", 0):
+                # there genuinely aren't enough results for this number of pages, so this should be a 404
+                return _page_404_response(query_args.get("page", None))
+        return error_message, status_code
 
     except ValueError as e:
         return str(e), 400
