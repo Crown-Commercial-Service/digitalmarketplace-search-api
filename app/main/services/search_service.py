@@ -1,10 +1,11 @@
+import re
 from flask import current_app, url_for
 from elasticsearch import TransportError
 
 from ... import elasticsearch_client as es
 import app.mapping
 from app.main.services.response_formatters import \
-    convert_es_status, convert_es_results, generate_pagination_links
+    convert_es_status, convert_es_results, generate_pagination_links_for_url
 from app.main.services.query_builder import construct_query
 
 
@@ -118,67 +119,45 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
 
         es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
         constructed_query = construct_query(mapping, query_args, aggregations, page_size)
-        res = es.search(
+        response = es.search(
             index=index_name,
             doc_type=doc_type,
             body=constructed_query,
             **es_search_kwargs
         )
 
-        results = convert_es_results(mapping, res, query_args)
-
-        def url_for_search(**kwargs):
-            return url_for('.search', index_name=index_name, doc_type=doc_type, _external=True, **kwargs)
-
-        response = {
-            "meta": results['meta'],
-            "documents": results['documents'],
-            "links": generate_pagination_links(
-                query_args, results['meta']['total'],
-                page_size, url_for_search
-            ),
-        }
-
-        if aggregations:
-            # Return aggregations in a slightly cleaner format.
-            response['aggregations'] = {
-                k: {d['key']: d['doc_count'] for d in v['buckets']}
-                for k, v in res.get('aggregations', {}).items()
-            }
-
-        # determine whether we're actually off the end of the results. ES handles this as a result-less-yet-happy
-        # response, but we probably want to turn it into a 404 not least so we can match our behaviour when fetching
-        # beyond the `max_result_window` below
-        if search and constructed_query.get("from") and not response["documents"]:
+        if search and constructed_query.get("from") and not response["hits"]["hits"]:
             return _page_404_response(query_args.get("page", None))
 
-        return response, 200
+        total_results = float(response["hits"]["total"])
+        current_page = int(query_args.get('page', 1))
+        url_method = lambda page: url_for(
+            '.search',
+            index_name=index_name,
+            doc_type=doc_type,
+            _external=True,
+            page=page,
+            **{k: v for k, v in query_args.items() if k != 'page'}
+        )
+        links = generate_pagination_links_for_url(url_method, current_page, page_size, total_results)
+        data = convert_es_results(mapping, response, query_args, aggregations, links=links)
+
+        return data, 200
 
     except TransportError as e:
-        try:
-            root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
-        except AttributeError as e:
-            # Catch if the contents of 'info' has no ability to get attributes
-            return _get_an_error_message(e), e.status
-
-        if root_causes and root_causes[0].get("reason").startswith("Result window is too large"):
-            # in this case we have to fire off another request to determine how we should handle this error...
-            # (note minor race condition possible if index is modified between the original call and this one)
+        error_message, status_code = _get_an_error_message(e), e.status_code
+        # Check if the error message matches 'not enough results exist for page number requested'
+        pagination_error_re = '^.*?: (Result window is too large).*? \(.*?\)$'
+        if re.match(pagination_error_re, error_message):
+            body = construct_query(mapping, query_args, page_size=None)
             try:
-                result_count = es.count(
-                    index=index_name,
-                    doc_type=doc_type,
-                    body=construct_query(mapping, query_args, page_size=None),
-                )["count"]
+                result_count = es.count(index=index_name, doc_type=doc_type, body=body)["count"]
             except TransportError as e:
                 return _get_an_error_message(e), e.status_code
-            else:
-                if result_count < constructed_query.get("from", 0):
-                    # there genuinely aren't enough results for this number of pages, so this should be a 404
-                    return _page_404_response(query_args.get("page", None))
-                # else fall through and allow this to 500 - we probably don't have max_result_window set high enough
-                # for the number of results it's possible to access using this index.
-        return _get_an_error_message(e), e.status_code
+            if result_count < constructed_query.get("from", 0):
+                # there genuinely aren't enough results for this number of pages, so this should be a 404
+                return _page_404_response(query_args.get("page", None))
+        return error_message, status_code
 
     except ValueError as e:
         return str(e), 400
