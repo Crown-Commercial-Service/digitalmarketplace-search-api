@@ -5,7 +5,7 @@ from elasticsearch import TransportError
 from ... import elasticsearch_client as es
 import app.mapping
 from app.main.services.response_formatters import \
-    convert_es_status, convert_es_results, generate_pagination_links
+    convert_es_status, convert_es_results, generate_pagination_links_for_url
 from app.main.services.query_builder import construct_query
 
 
@@ -119,34 +119,30 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
 
         es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
         constructed_query = construct_query(mapping, query_args, aggregations, page_size)
-        res = es.search(
+        response = es.search(
             index=index_name,
             doc_type=doc_type,
             body=constructed_query,
             **es_search_kwargs
         )
 
-        response = convert_es_results(mapping, res, query_args, aggregations)
-
-        def url_for_search(**kwargs):
-            return url_for('.search', index_name=index_name, doc_type=doc_type, _external=True, **kwargs)
-
-        response.update({
-            "links": generate_pagination_links(
-                query_args,
-                response['meta']['total'],
-                page_size,
-                url_for_search
-            )
-        })
-
-        # determine whether we're actually off the end of the results. ES handles this as a result-less-yet-happy
-        # response, but we probably want to turn it into a 404 not least so we can match our behaviour when fetching
-        # beyond the `max_result_window` below
-        if search and constructed_query.get("from") and not response["documents"]:
+        if search and constructed_query.get("from") and not response["hits"]["hits"]:
             return _page_404_response(query_args.get("page", None))
 
-        return response, 200
+        total_results = float(response["hits"]["total"])
+        current_page = int(query_args.get('page', 1))
+        url_method = lambda page: url_for(
+            '.search',
+            index_name=index_name,
+            doc_type=doc_type,
+            _external=True,
+            page=page,
+            **{k: v for k, v in query_args.items() if k != 'page'}
+        )
+        links = generate_pagination_links_for_url(url_method, current_page, page_size, total_results)
+        data = convert_es_results(mapping, response, query_args, aggregations, links=links)
+
+        return data, 200
 
     except TransportError as e:
         error_message, status_code = _get_an_error_message(e), e.status_code

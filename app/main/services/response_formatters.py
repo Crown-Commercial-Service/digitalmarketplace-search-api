@@ -42,14 +42,15 @@ def _convert_es_result(mapping, es_result):
     }
 
 
-def convert_es_results(mapping, results, query_args, aggregations=False):
+def convert_es_results(mapping, results, query_args, aggregations=None, links=None):
     response = {
         "meta": {
             "query": query_args,
             "total": results["hits"]["total"],
             "took": results["took"],
         },
-        "documents": []
+        "documents": [],
+        "links": links
     }
 
     for document in results["hits"]["hits"]:
@@ -71,16 +72,15 @@ def convert_es_results(mapping, results, query_args, aggregations=False):
         }
     return response
 
-def generate_pagination_links(query_args, total, page_size, url_for_search):
-    page = int(query_args.get('page', 1))
-    max_page = int(math.ceil(float(total) / page_size))
-    args_no_page = {k: v for k, v in query_args.lists() if k != 'page'}
+
+def generate_pagination_links_for_url(url_method, current_page, page_size, total_results):
+    max_page = int(math.ceil(total_results / page_size))
 
     links = dict()
-    if page > 1:
-        links['prev'] = url_for_search(page=page - 1, **args_no_page)
-    if page < max_page:
-        links['next'] = url_for_search(page=page + 1, **args_no_page)
+    if current_page > 1:
+        links['prev'] = url_method(page=current_page - 1)
+    if current_page < max_page:
+        links['next'] = url_method(page=current_page + 1)
     return links
 
 
