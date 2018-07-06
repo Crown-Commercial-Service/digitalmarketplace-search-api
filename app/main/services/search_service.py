@@ -126,26 +126,19 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             **es_search_kwargs
         )
 
-        results = convert_es_results(mapping, res, query_args)
+        response = convert_es_results(mapping, res, query_args, aggregations)
 
         def url_for_search(**kwargs):
             return url_for('.search', index_name=index_name, doc_type=doc_type, _external=True, **kwargs)
 
-        response = {
-            "meta": results['meta'],
-            "documents": results['documents'],
+        response.update({
             "links": generate_pagination_links(
-                query_args, results['meta']['total'],
-                page_size, url_for_search
-            ),
-        }
-
-        if aggregations:
-            # Return aggregations in a slightly cleaner format.
-            response['aggregations'] = {
-                k: {d['key']: d['doc_count'] for d in v['buckets']}
-                for k, v in res.get('aggregations', {}).items()
-            }
+                query_args,
+                response['meta']['total'],
+                page_size,
+                url_for_search
+            )
+        })
 
         # determine whether we're actually off the end of the results. ES handles this as a result-less-yet-happy
         # response, but we probably want to turn it into a 404 not least so we can match our behaviour when fetching

@@ -42,12 +42,19 @@ def _convert_es_result(mapping, es_result):
     }
 
 
-def convert_es_results(mapping, results, query_args):
-    documents = []
+def convert_es_results(mapping, results, query_args, aggregations=False):
+    response = {
+        "meta": {
+            "query": query_args,
+            "total": results["hits"]["total"],
+            "took": results["took"],
+        },
+        "documents": []
+    }
 
     for document in results["hits"]["hits"]:
         if 'idOnly' in query_args:
-            documents.append({"id": document["_id"]})
+            response["documents"].append({"id": document["_id"]})
         else:
             # populate result from document["_source"] object
             result = _convert_es_result(mapping, document["_source"])
@@ -56,17 +63,13 @@ def convert_es_results(mapping, results, query_args):
                 # perform the same conversion for any highlight terms
                 result["highlight"] = _convert_es_result(mapping, document["highlight"])
 
-            documents.append(result)
-
-    return {
-        "meta": {
-            "query": query_args,
-            "total": results["hits"]["total"],
-            "took": results["took"],
-        },
-        "documents": documents,
-    }
-
+            response["documents"].append(result)
+    if aggregations:
+        response['aggregations'] = {
+            k: {d['key']: d['doc_count'] for d in v['buckets']}
+            for k, v in results.get('aggregations', {}).items()
+        }
+    return response
 
 def generate_pagination_links(query_args, total, page_size, url_for_search):
     page = int(query_args.get('page', 1))
