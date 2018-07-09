@@ -159,7 +159,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             root_causes = getattr(e, "info", {}).get("error", {}).get("root_cause", {})
         except AttributeError:
             # Catch if the contents of 'info' has no ability to get attributes
-            return _get_an_error_message(e), e.status
+            return _get_an_error_message(e), e.status_code
 
         if root_causes and root_causes[0].get("reason").startswith("Result window is too large"):
             # in this case we have to fire off another request to determine how we should handle this error...
