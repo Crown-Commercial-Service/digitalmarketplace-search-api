@@ -4,7 +4,8 @@
 Flask==0.10.1
 
 git+https://github.com/madzak/python-json-logger.git@v0.1.3#egg=python-json-logger==v0.1.3
-git+https://github.com/alphagov/digitalmarketplace-utils.git@39.3.0#egg=digitalmarketplace-utils==39.3.0
+git+https://github.com/alphagov/digitalmarketplace-utils.git@40.6.1#egg=digitalmarketplace-utils==40.6.1
+git+https://github.com/alphagov/Flask-FeatureFlags.git@1.0#egg=Flask-FeatureFlags==1.0
 
 # Elasticsearch 5.0
 elasticsearch==5.4.0
