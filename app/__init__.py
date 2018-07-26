@@ -9,6 +9,16 @@ feature_flags = flask_featureflags.FeatureFlag()
 elasticsearch_client = FlaskElasticsearch()
 
 
+def get_service_by_name_from_vcap_services(vcap_services, name):
+    """Returns the first service from a VCAP_SERVICES json object that has name"""
+    for services in vcap_services.values():
+        for service in services:
+            if service['name'] == name:
+                return service
+
+    raise RuntimeError(f"Unable to find service with name {name} in VCAP_SERVICES")
+
+
 def create_app(config_name):
     application = Flask(__name__)
 
@@ -20,12 +30,15 @@ def create_app(config_name):
 
     if application.config['VCAP_SERVICES']:
         cf_services = json.loads(application.config['VCAP_SERVICES'])
+        service = get_service_by_name_from_vcap_services(
+            cf_services, application.config['DM_ELASTICSEARCH_SERVICE_NAME'])
+
         application.config['ELASTICSEARCH_HOST'] = \
-            cf_services['elasticsearch-compose'][0]['credentials']['uris']
+            service['credentials']['uris']
 
         with open(application.config['DM_ELASTICSEARCH_CERT_PATH'], 'wb') as es_certfile:
             es_certfile.write(
-                base64.b64decode(cf_services['elasticsearch-compose'][0]['credentials']['ca_certificate_base64'])
+                base64.b64decode(service['credentials']['ca_certificate_base64'])
             )
 
     elasticsearch_client.init_app(

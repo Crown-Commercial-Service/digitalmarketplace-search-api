@@ -29,6 +29,7 @@ class Config:
     RAISE_ERROR_ON_MISSING_FEATURES = True
 
     VCAP_SERVICES = None
+    DM_ELASTICSEARCH_SERVICE_NAME = "search_api_elasticsearch"
 
     @staticmethod
     def init_app(app):
