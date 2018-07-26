@@ -30,7 +30,8 @@ def create_app(config_name):
 
     if application.config['VCAP_SERVICES']:
         cf_services = json.loads(application.config['VCAP_SERVICES'])
-        service = get_service_by_name_from_vcap_services(cf_services, 'search_api_elasticsearch')
+        service = get_service_by_name_from_vcap_services(
+            cf_services, application.config['DM_ELASTICSEARCH_SERVICE_NAME'])
 
         application.config['ELASTICSEARCH_HOST'] = \
             service['credentials']['uris']
