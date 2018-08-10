@@ -33,8 +33,13 @@ def create_app(config_name):
         service = get_service_by_name_from_vcap_services(
             cf_services, application.config['DM_ELASTICSEARCH_SERVICE_NAME'])
 
-        application.config['ELASTICSEARCH_HOST'] = \
-            service['credentials']['uris']
+        try:
+            application.config['ELASTICSEARCH_HOST'] = \
+                service['credentials']['uris']
+        except KeyError:
+            # uri is deprecated in favour of uris, but not all services respect this
+            application.config['ELASTICSEARCH_HOST'] = \
+                service['credentials']['uri']
 
         with open(application.config['DM_ELASTICSEARCH_CERT_PATH'], 'wb') as es_certfile:
             es_certfile.write(
