@@ -25,9 +25,6 @@ class Config:
     DM_PLAIN_TEXT_LOGS = False
     DM_LOG_PATH = None
 
-    # Feature Flags
-    RAISE_ERROR_ON_MISSING_FEATURES = True
-
     VCAP_SERVICES = None
     DM_ELASTICSEARCH_SERVICE_NAME = "search_api_elasticsearch"
 
