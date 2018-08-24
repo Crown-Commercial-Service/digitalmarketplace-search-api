@@ -3,9 +3,8 @@ import base64
 import json
 from config import config as configs
 from flask.ext.elasticsearch import FlaskElasticsearch
-from dmutils import init_app, flask_featureflags
+from dmutils import init_app
 
-feature_flags = flask_featureflags.FeatureFlag()
 elasticsearch_client = FlaskElasticsearch()
 
 
@@ -25,7 +24,6 @@ def create_app(config_name):
     init_app(
         application,
         configs[config_name],
-        feature_flags=feature_flags
     )
 
     if application.config['VCAP_SERVICES']:
