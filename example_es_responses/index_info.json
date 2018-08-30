@@ -21,6 +21,7 @@
             "index":{
                 "number_of_shards":"5",
                 "provided_name":"g-cloud-9",
+                "max_result_window": 20000,
                 "creation_date":"1507755616736",
                 "analysis":{
                     "filter":{

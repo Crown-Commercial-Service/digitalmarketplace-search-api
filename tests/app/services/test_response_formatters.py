@@ -66,6 +66,8 @@ def test_should_build_status_response_from_es_response():
         "num_docs": 19676,
         "primary_size": "52mb",
         "mapping_version": "9.0.0",
+        "mapping_generated_from_framework": "g-cloud-9",
+        "max_result_window": 20000,
         "aliases": ["galias"],
     }
 
@@ -77,6 +79,8 @@ def test_should_build_status_response_from_es_response_with_empty_index():
     assert res == {
         "aliases": [],
         "mapping_version": None,
+        "mapping_generated_from_framework": None,
+        "max_result_window": None,
         "num_docs": None,
         "primary_size": "52mb",
     }
