@@ -7,7 +7,7 @@
             "services":{
                 "dynamic":"strict",
                 "_meta":{
-                    "generated_by":"/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+                    "generated_by":"/TestUser/scripts/generate-search-config.py",
                     "transformations":[],
                     "version":"9.0.0",
                     "generated_from_framework":"g-cloud-9",

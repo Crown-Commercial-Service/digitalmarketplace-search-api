@@ -19,7 +19,10 @@ def _convert_es_index_status(index_name, status_response, info_response):
         return index_status
 
     index_settings = info_response.get(index_name, {}).get('settings', {})
-    index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
+    # Mapping will be either 'briefs' or 'services'
+    service_index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
+    brief_index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("briefs", {})
+    index_mapping = service_index_mapping or brief_index_mapping
     index_aliases = info_response.get(index_name, {}).get('aliases', {})
 
     return {
