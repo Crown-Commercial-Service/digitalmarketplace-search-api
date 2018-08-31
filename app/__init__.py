@@ -3,7 +3,7 @@ import base64
 import json
 from config import config as configs
 from flask_elasticsearch import FlaskElasticsearch
-from dmutils import init_app, flask_featureflags
+from dmutils import init_app
 
 elasticsearch_client = FlaskElasticsearch()
 
