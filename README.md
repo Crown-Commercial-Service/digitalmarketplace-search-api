@@ -16,11 +16,6 @@ HOMEBREW_NO_AUTO_UPDATE=1 brew install elasticsearch
 git reset --hard master
 ```
 
-Install [Virtualenv](https://virtualenv.pypa.io/en/latest/)
-```
-sudo easy_install virtualenv
-```
-
 ### Install/Upgrade dependencies
 
 Install Python dependencies with pip
