@@ -1,7 +1,3 @@
-from nose.tools import (
-    assert_equal, assert_in, assert_not_in,
-    assert_false, assert_true
-)
 import pytest
 from app.main.services.query_builder import construct_query, is_filtered
 from app.main.services.query_builder import (
@@ -17,45 +13,43 @@ pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 def test_should_have_correct_root_element(services_mapping):
-    assert_equal("query" in construct_query(services_mapping, build_query_params()), True)
+    assert "query" in construct_query(services_mapping, build_query_params())
 
 
 def test_should_have_page_size_set(services_mapping):
-    assert_equal(construct_query(services_mapping, build_query_params())["size"], 100)
+    assert construct_query(services_mapping, build_query_params())["size"] == 100
 
 
 def test_should_be_able_to_override_pagesize(services_mapping):
-    assert_equal(construct_query(services_mapping, build_query_params(), page_size=10)["size"], 10)
+    assert construct_query(services_mapping, build_query_params(), page_size=10)["size"] == 10
 
 
 def test_page_should_set_from_parameter(services_mapping):
-    assert_equal(
-        construct_query(services_mapping, build_query_params(page=2))["from"], 100)
+    assert construct_query(services_mapping, build_query_params(page=2))["from"] == 100
 
 
 def test_should_have_no_from_by_default(services_mapping):
-    assert_false("from" in construct_query(services_mapping, build_query_params()))
+    assert "from" not in construct_query(services_mapping, build_query_params())
 
 
 def test_should_have_match_all_query_if_no_params(services_mapping):
-    assert_equal("query" in construct_query(services_mapping, build_query_params()), True)
-    assert_equal("match_all" in
-                 construct_query(services_mapping, build_query_params())["query"], True)
+    assert "query" in construct_query(services_mapping, build_query_params())
+    assert "match_all" in construct_query(services_mapping, build_query_params())["query"]
 
 
-@pytest.mark.parametrize('aggregations, equality', (([], False), (['lot'], True)))
-def test_aggregations_root_element_present_if_appropriate(services_mapping, aggregations, equality):
-    assert_equal('aggregations' in construct_query(services_mapping, build_query_params(), aggregations=aggregations),
-                 equality)
-    assert_equal('aggregations' in construct_query(services_mapping, build_query_params(), aggregations=aggregations),
-                 equality)
+def test_aggregations_root_element_present_if_aggregations(services_mapping):
+    assert 'aggregations' in construct_query(services_mapping, build_query_params(), aggregations=['lot'])
+
+
+def test_aggregations_root_element_not_present_if_no_aggregations(services_mapping):
+    assert 'aggregations' not in construct_query(services_mapping, build_query_params(), aggregations=[])
 
 
 @pytest.mark.parametrize('aggregations', ((['lot']), (['lot', 'serviceCategories'])))
 def test_aggregations_terms_added_for_each_param(services_mapping, aggregations):
     query = construct_query(services_mapping, build_query_params(), aggregations=aggregations)
 
-    assert_equal(set(aggregations), {x for x in query['aggregations']})
+    assert set(aggregations) == {x for x in query['aggregations']}
     assert {"_".join(("dmagg", x)) for x in aggregations} == {
         v['terms']['field'] for k, v in query['aggregations'].items()
     }
@@ -69,11 +63,11 @@ def test_aggregation_throws_error_if_not_implemented(services_mapping):
 def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
     keywords = "these are my keywords"
     query = construct_query(services_mapping, build_query_params(keywords))
-    assert_equal("query" in query, True)
-    assert_in("simple_query_string", query["query"])
+    assert "query" in query
+    assert "simple_query_string" in query["query"]
     query_string_clause = query["query"]["simple_query_string"]
-    assert_equal(query_string_clause["query"], keywords)
-    assert_equal(query_string_clause["default_operator"], "and")
+    assert query_string_clause["query"] == keywords
+    assert query_string_clause["default_operator"] == "and"
     assert frozenset(query_string_clause["fields"]) == frozenset(
         "_".join(("dmtext", f)) for f in services_mapping.fields_by_prefix["dmtext"]
     )
@@ -87,36 +81,36 @@ def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
     (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
 ))
 def test_should_identify_filter_search_from_query_params(services_mapping, query, expected):
-    return assert_equal, is_filtered(services_mapping, query), expected, query
+    assert is_filtered(services_mapping, query) == expected, query
 
 
 def test_should_have_filtered_root_element_if_service_types_search(services_mapping):
     query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
-    assert_equal("query" in query, True)
-    assert_equal("bool" in query["query"], True)
-    assert_equal("must" in query["query"]["bool"], True)
+    assert "query" in query
+    assert "bool" in query["query"]
+    assert "must" in query["query"]["bool"]
 
 
 def test_should_have_filtered_root_element_if_lot_search(services_mapping):
     query = construct_query(services_mapping, build_query_params(filters={'lot': "SaaS"}))
-    assert_equal("query" in query, True)
-    assert_equal("bool" in query["query"], True)
-    assert_equal("must" in query["query"]["bool"], True)
+    assert "query" in query
+    assert "bool" in query["query"]
+    assert "must" in query["query"]["bool"]
 
 
 def test_should_have_filtered_root_element_and_match_all_if_no_keywords(services_mapping):
     query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["my serviceTypes"]}))
-    assert_equal("match_all" in query["query"]["bool"]["must"], True)
+    assert "match_all" in query["query"]["bool"]["must"]
 
 
 def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords",
                                                                  filters={'serviceTypes': ["my serviceTypes"]})
                             )["query"]["bool"]["must"]
-    assert_in("simple_query_string", query)
+    assert "simple_query_string" in query
     query_string_clause = query["simple_query_string"]
-    assert_equal(query_string_clause["query"], "some keywords")
-    assert_equal(query_string_clause["default_operator"], "and")
+    assert query_string_clause["query"] == "some keywords"
+    assert query_string_clause["default_operator"] == "and"
     assert frozenset(query_string_clause["fields"]) == frozenset(
         "_".join(("dmtext", f)) for f in services_mapping.fields_by_prefix["dmtext"]
     )
@@ -124,31 +118,22 @@ def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
 
 def test_should_have_filtered_term_service_types_clause(services_mapping):
     query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
-    assert_equal("term" in
-                 query["query"]["bool"]["filter"]["bool"]["must"][0], True)
-    assert_equal(
-        query["query"]["bool"]["filter"]
-        ["bool"]["must"][0]["term"]["dmfilter_serviceTypes"],
-        "serviceTypes")
+    assert "term" in query["query"]["bool"]["filter"]["bool"]["must"][0]
+    assert query["query"]["bool"]["filter"]["bool"]["must"][0]["term"]["dmfilter_serviceTypes"] == "serviceTypes"
 
 
 def test_should_have_filtered_term_lot_clause(services_mapping):
     query = construct_query(services_mapping, build_query_params(filters={'lot': "SaaS"}))
-    assert_equal(
-        "term" in query["query"]["bool"]["filter"]["bool"]["must"][0],
-        True)
-    assert_equal(
-        query["query"]["bool"]["filter"]
-        ["bool"]["must"][0]["term"]["dmfilter_lot"],
-        "SaaS")
+    assert "term" in query["query"]["bool"]["filter"]["bool"]["must"][0]
+    assert query["query"]["bool"]["filter"]["bool"]["must"][0]["term"]["dmfilter_lot"] == "SaaS"
 
 
 def test_should_have_filtered_term_for_lot_and_service_types_clause(services_mapping):
     query = construct_query(services_mapping,
                             build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]}))
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
-    assert_in({"term": {'dmfilter_serviceTypes': 'serviceTypes'}}, terms)
-    assert_in({"term": {'dmfilter_lot': 'SaaS'}}, terms)
+    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes'}} in terms
+    assert {"term": {'dmfilter_lot': 'SaaS'}} in terms
 
 
 def test_should_not_filter_on_unknown_keys(services_mapping):
@@ -156,9 +141,9 @@ def test_should_not_filter_on_unknown_keys(services_mapping):
     params.add("this", "that")
     query = construct_query(services_mapping, params)
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
-    assert_in({"term": {'dmfilter_serviceTypes': 'serviceTypes'}}, terms)
-    assert_in({"term": {'dmfilter_lot': 'SaaS'}}, terms)
-    assert_not_in({"term": {'unknown': 'something to ignore'}}, terms)
+    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes'}} in terms
+    assert {"term": {'dmfilter_lot': 'SaaS'}} in terms
+    assert {"term": {'unknown': 'something to ignore'}} not in terms
 
 
 def test_should_have_filtered_term_for_multiple_service_types_clauses(services_mapping):
@@ -166,27 +151,27 @@ def test_should_have_filtered_term_for_multiple_service_types_clauses(services_m
                             build_query_params(filters={
                                 'serviceTypes': ["serviceTypes1", "serviceTypes2", "serviceTypes3"]}))
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
-    assert_in({"term": {'dmfilter_serviceTypes': 'serviceTypes1'}}, terms)
-    assert_in({"term": {'dmfilter_serviceTypes': 'serviceTypes2'}}, terms)
-    assert_in({"term": {'dmfilter_serviceTypes': 'serviceTypes3'}}, terms)
+    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes1'}} in terms
+    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes2'}} in terms
+    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes3'}} in terms
 
 
 def test_should_have_highlight_block_on_keyword_search(services_mapping):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
-    assert_equal("highlight" in query, True)
+    assert "highlight" in query
 
 
 def test_should_have_highlight_block_on_filtered_search(services_mapping):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
-    assert_equal("highlight" in query, True)
+    assert "highlight" in query
 
 
 def test_highlight_block_sets_encoder_to_html(services_mapping):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
-    assert_equal(query["highlight"]["encoder"], "html")
+    assert query["highlight"]["encoder"] == "html"
 
 
 def test_service_id_hash_not_in_searched_fields(services_mapping):
@@ -204,108 +189,79 @@ def test_sort_results_by_score_and_service_id_hash(services_mapping):
     assert query['sort'] == ['_score', {"sortonly_serviceIdHash": 'desc'}]
 
 
-@pytest.mark.parametrize('example, expected', (
-    ("id", True),
-    ("lot", True),
-    ("serviceName", True),
-    ("serviceSummary", True),
-    ("serviceFeatures", True),
-    ("serviceBenefits", True),
-    ("serviceTypes", True),
-    ("supplierName", True)
+@pytest.mark.parametrize('example', (
+    'id',
+    'lot',
+    'serviceName',
+    'serviceSummary',
+    'serviceFeatures',
+    'serviceBenefits',
+    'serviceTypes',
+    'supplierName'
 ))
-def test_highlight_block_contains_correct_fields(services_mapping, example, expected):
+def test_highlight_block_contains_correct_fields(services_mapping, example):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
-    assert_equal("highlight" in query, True)
-
-    assert_equal, \
-        example in query["highlight"]["fields"], \
-        expected, \
-        example
+    assert "highlight" in query
+    assert 'dmtext_' + example in query["highlight"]["fields"], example
 
 
 class TestFieldFilters(object):
     def test_field_is_or_filter(self):
-        assert_true(field_is_or_filter(['a,b']))
+        assert field_is_or_filter(['a,b'])
 
     def test_field_is_or_filter_no_comma(self):
-        assert_false(field_is_or_filter(['a']))
+        assert not field_is_or_filter(['a'])
 
     def test_field_is_or_filter_multiple_values_no_comma(self):
-        assert_false(field_is_or_filter(['a', 'b']))
+        assert not field_is_or_filter(['a', 'b'])
 
     def test_field_is_or_filter_multiple_values(self):
-        assert_false(field_is_or_filter(['a,b', 'b,c']))
+        assert not field_is_or_filter(['a,b', 'b,c'])
 
     def test_or_field_filters(self, services_mapping):
-        assert_equal(
-            field_filters(services_mapping, 'filterName', ['Aa bb,Bb cc']),
-            [{"terms": {"dmfilter_filterName": ['Aa bb', 'Bb cc']}}]
-        )
+        expected_value = [{"terms": {"dmfilter_filterName": ['Aa bb', 'Bb cc']}}]
+        assert field_filters(services_mapping, 'filterName', ['Aa bb,Bb cc']) == expected_value
 
     def test_and_field_filters(self, services_mapping):
-        assert_equal(
-            field_filters(services_mapping, 'filterName', ['Aa bb', 'Bb cc']),
-            [
-                {"term": {"dmfilter_filterName": 'Aa bb'}},
-                {"term": {"dmfilter_filterName": 'Bb cc'}}
-            ]
-        )
+        expected_value = [
+            {"term": {"dmfilter_filterName": 'Aa bb'}},
+            {"term": {"dmfilter_filterName": 'Bb cc'}}
+        ]
+        assert field_filters(services_mapping, 'filterName', ['Aa bb', 'Bb cc']) == expected_value
 
     def test_field_filters_single_value(self, services_mapping):
-        assert_equal(
-            field_filters(services_mapping, 'filterName', ['Aa Bb']),
-            [{"term": {"dmfilter_filterName": 'Aa Bb'}}]
-        )
+        assert field_filters(services_mapping, 'filterName', ['Aa Bb']) == [{"term": {"dmfilter_filterName": 'Aa Bb'}}]
 
     def test_field_filters_multiple_and_values(self, services_mapping):
-        assert_equal(
-            field_filters(services_mapping, 'filterName', ['Aa bb', 'Bb,Cc']),
-            [
-                {"term": {"dmfilter_filterName": 'Aa bb'}},
-                {"term": {"dmfilter_filterName": 'Bb,Cc'}}
-            ]
-        )
+        expected_value = [
+            {"term": {"dmfilter_filterName": 'Aa bb'}},
+            {"term": {"dmfilter_filterName": 'Bb,Cc'}}
+        ]
+        assert field_filters(services_mapping, 'filterName', ['Aa bb', 'Bb,Cc']) == expected_value
 
     def test_field_filters_or_value(self, services_mapping):
-        assert_equal(
-            field_filters(services_mapping, 'filterName', ['Aa,Bb']),
-            [{"terms": {"dmfilter_filterName": ['Aa', 'Bb']}}]
-        )
+        expected_value = [{"terms": {"dmfilter_filterName": ['Aa', 'Bb']}}]
+        assert field_filters(services_mapping, 'filterName', ['Aa,Bb']) == expected_value
 
 
 class TestFilterClause(object):
     def test_filter_ignores_non_filter_query_args(self, services_mapping):
-        assert_equal(
-            filter_clause(
-                services_mapping,
-                MultiDict({'fieldName': ['Aa bb'], 'lot': ['saas']}),
-            ),
+        assert (
+            filter_clause(services_mapping, MultiDict({'fieldName': ['Aa bb'], 'lot': ['saas']})) ==
             {'bool': {'must': []}}
         )
 
     def test_single_and_field(self, services_mapping):
-        assert_equal(
-            filter_clause(
-                services_mapping,
-                MultiDict({'filter_fieldName': ['Aa bb'], 'lot': 'saas'}),
-            ),
-            {'bool': {
-                'must': [
-                    {"term": {"dmfilter_fieldName": 'Aa bb'}},
-                ]
-            }}
+        assert (
+            filter_clause(services_mapping, MultiDict({'filter_fieldName': ['Aa bb'], 'lot': 'saas'})) ==
+            {'bool': {'must': [{"term": {"dmfilter_fieldName": 'Aa bb'}}]}}
         )
 
     def test_single_or_field(self, services_mapping):
-        assert_equal(
-            filter_clause(services_mapping, MultiDict({'filter_fieldName': ['Aa,Bb']})),
-            {'bool': {
-                'must': [
-                    {"terms": {"dmfilter_fieldName": ['Aa', 'Bb']}},
-                ]
-            }}
+        assert (
+            filter_clause(services_mapping, MultiDict({'filter_fieldName': ['Aa,Bb']})) ==
+            {'bool': {'must': [{"terms": {"dmfilter_fieldName": ['Aa', 'Bb']}}]}}
         )
 
     def test_or_and_combination(self, services_mapping):
@@ -314,17 +270,6 @@ class TestFilterClause(object):
             'filter_orFieldName': ['Aa,Bb']
         }))
 
-        assert_in(
-            {"terms": {"dmfilter_orFieldName": ['Aa', 'Bb']}},
-            bool_filter['bool']['must']
-        )
-
-        assert_in(
-            {"term": {"dmfilter_andFieldName": 'Aa'}},
-            bool_filter['bool']['must']
-        )
-
-        assert_in(
-            {"term": {"dmfilter_andFieldName": 'bb'}},
-            bool_filter['bool']['must']
-        )
+        assert {"terms": {"dmfilter_orFieldName": ['Aa', 'Bb']}} in bool_filter['bool']['must']
+        assert {"term": {"dmfilter_andFieldName": 'Aa'}} in bool_filter['bool']['must']
+        assert {"term": {"dmfilter_andFieldName": 'bb'}} in bool_filter['bool']['must']

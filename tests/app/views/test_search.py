@@ -1,7 +1,6 @@
 import mock
 import pytest
 from flask import json
-from nose.tools import assert_equal, assert_in, assert_true
 from werkzeug import MultiDict
 
 from app import elasticsearch_client as es
@@ -54,8 +53,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response = self.client.get(
                 '/index-to-create/services/search?q=serviceName')
             assert_response_status(response, 200)
-            assert_equal(
-                get_json_from_response(response)["meta"]["total"], 10)
+            assert get_json_from_response(response)["meta"]["total"] == 10
 
     def test_keyword_search_via_alias(self):
         with self.app.app_context():
@@ -66,8 +64,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response = self.client.get(
                 '/index-alias/services/search?q=serviceName')
             assert_response_status(response, 200)
-            assert_equal(
-                get_json_from_response(response)["meta"]["total"], 10)
+            assert get_json_from_response(response)["meta"]["total"] == 10
 
     def test_should_get_services_up_to_page_size(self):
         with self.app.app_context():
@@ -77,10 +74,9 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
                 '/index-to-create/services/search?q=serviceName'
             )
             assert_response_status(response, 200)
-            assert_equal(
-                get_json_from_response(response)["meta"]["total"], 10)
-            assert_equal(
-                len(get_json_from_response(response)["documents"]), 5)
+
+            assert get_json_from_response(response)["meta"]["total"] == 10
+            assert len(get_json_from_response(response)["documents"]) == 5
 
     def test_should_get_pagination_links(self):
         with self.app.app_context():
@@ -91,8 +87,8 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response_json = get_json_from_response(response)
 
             assert_response_status(response, 200)
-            assert_in("page=1", response_json['links']['prev'])
-            assert_in("page=3", response_json['links']['next'])
+            assert "page=1" in response_json['links']['prev']
+            assert "page=3" in response_json['links']['next']
 
     @pytest.mark.parametrize("page_size,page", (
         (5, 3,),
@@ -143,10 +139,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         search_results = get_json_from_response(
             response
         )["documents"]
-        assert_equal(
-            search_results[0]["highlight"]["serviceSummary"][0],
-            highlighted_summary
-        )
+        assert search_results[0]["highlight"]["serviceSummary"][0] == highlighted_summary
 
     def test_highlighting_should_escape_html(self):
         service = make_standard_service(
@@ -159,11 +152,11 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         )
         assert_response_status(response, 200)
         search_results = get_json_from_response(response)["documents"]
-        assert_equal(
-            search_results[0]["highlight"]["serviceSummary"][0],
-            "accessing, <mark class='search-result-highlighted-text'>" +
-            "storing</mark> &lt;h1&gt;and retaining&lt;&#x2F;h1&gt; email"
+        expected_string = (
+            "accessing, <mark class='search-result-highlighted-text'>storing</mark> &lt;h1&gt;and retaining"
+            "&lt;&#x2F;h1&gt; email"
         )
+        assert search_results[0]["highlight"]["serviceSummary"][0] == expected_string
 
     def test_unhighlighted_result_should_escape_html(self):
         service = make_standard_service(
@@ -177,10 +170,8 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         )
         assert_response_status(response, 200)
         search_results = get_json_from_response(response)["documents"]
-        assert_equal(
-            search_results[0]["highlight"]["serviceSummary"][0],
-            "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
-        )
+        expected_string = "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
+        assert search_results[0]["highlight"]["serviceSummary"][0] == expected_string
 
     def test_highlight_service_summary_limited_if_no_matches(self):
 
@@ -201,7 +192,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         search_results = get_json_from_response(response)["documents"]
         # Get the first with a matching value from a list
         search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
-        assert_true(490 < len(search_result["highlight"]["serviceSummary"][0]) < 510)
+        assert 490 < len(search_result["highlight"]["serviceSummary"][0]) < 510
 
     @pytest.mark.parametrize('page_size, multiplier, expected_count',
                              (
@@ -219,7 +210,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response_json = get_json_from_response(response)
 
             assert_response_status(response, 200)
-            assert_equal(len(response_json['documents']), expected_count)
+            assert len(response_json['documents']) == expected_count
 
     def test_only_ids_returned_for_id_only_request(self):
         with self.app.app_context():
@@ -228,7 +219,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response_json = get_json_from_response(response)
 
             assert_response_status(response, 200)
-            assert_equal(set(response_json['documents'][0].keys()), {'id'})
+            assert set(response_json['documents'][0].keys()) == {'id'}
 
 
 class TestFetchById(BaseApplicationTestWithIndex):
@@ -273,7 +264,7 @@ class TestFetchById(BaseApplicationTestWithIndex):
         for key in cases:
             original = service.get('document', service.get('service'))[key]  # TODO remove compat shim
             indexed = data['services']["_source"]["dmtext_" + key]
-            assert_equal(original, indexed)
+            assert original == indexed
 
     def test_service_should_have_all_exact_match_fields(self, default_service):
         service = default_service
@@ -298,9 +289,10 @@ class TestFetchById(BaseApplicationTestWithIndex):
         ]
 
         for key in cases:
-            assert_equal(
-                data['services']["_source"]["dmfilter_" + key],
-                service.get('document', service.get('service'))[key])  # TODO remove shim
+            assert (
+                data['services']["_source"]["dmfilter_" + key] ==
+                service.get('document', service.get('service'))[key]
+            )
 
 
 class TestSearchType(BaseApplicationTestWithIndex):
@@ -333,7 +325,7 @@ class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
         with self.app.app_context():
             response = self.client.get('/index-to-create/services/search')
             assert_response_status(response, 200)
-            assert_equal(get_json_from_response(response)["meta"]["total"], 10)
+            assert get_json_from_response(response)["meta"]["total"] == 10
 
         ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['documents']]
         assert ordered_service_ids == ['5', '6', '2', '7', '1', '0', '3', '4', '8', '9']  # fixture for sha256 ordering
