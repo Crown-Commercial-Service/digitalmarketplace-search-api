@@ -2,7 +2,6 @@ import pytest
 
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
-from nose.tools import assert_equal
 
 
 pytestmark = pytest.mark.usefixtures("services_mapping")
@@ -15,12 +14,12 @@ def test_should_add_filter_fields_to_index_json(services_mapping):
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
-    assert_equal(result, {
+    assert result == {
         "dmagg_lot": "SaaS",
         "dmtext_lot": "SaaS",
         "dmfilter_lot": "SaaS",
         "dmfilter_phoneSupport": True,
-    })
+    }
 
 
 def test_should_make__match_array_fields(services_mapping):
@@ -31,14 +30,14 @@ def test_should_make__match_array_fields(services_mapping):
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
-    assert_equal(result, {
+    assert result == {
         "dmagg_lot": "SaaS",
         "dmtext_lot": "SaaS",
         "dmfilter_lot": "SaaS",
         "dmtext_serviceTypes": ["One", "Two", "Three"],
         "dmfilter_serviceTypes": ["One", "Two", "Three"],
         "dmfilter_networksConnected": ["Internet", "PSN"],
-    })
+    }
 
 
 def test_should_ignore_non_filter_and_non_text_fields(services_mapping):
@@ -48,11 +47,11 @@ def test_should_ignore_non_filter_and_non_text_fields(services_mapping):
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
-    assert_equal(result, {
+    assert result == {
         "dmagg_lot": "SaaS",
         "dmtext_lot": "SaaS",
         "dmfilter_lot": "SaaS",
-    })
+    }
 
 
 def test_should_add_parent_category(services_mapping):

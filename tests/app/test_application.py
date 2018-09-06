@@ -6,7 +6,6 @@ import pytest
 
 from flask import json
 from elasticsearch.exceptions import ConnectionError
-from nose.tools import assert_equal
 
 from .helpers import BaseApplicationTest
 
@@ -36,7 +35,7 @@ class TestApplication(BaseApplicationTest):
 
     def test_ttl_is_not_set(self):
         response = self.client.get('/')
-        assert_equal(None, response.cache_control.max_age)
+        assert response.cache_control.max_age is None
 
     @mock.patch('elasticsearch.transport.Urllib3HttpConnection.perform_request', side_effect=ConnectionError(500))
     def test_elastic_search_client_performs_retries_on_connection_error(self, perform_request):

@@ -1,7 +1,6 @@
 import mock
 import pytest
 from flask import json
-from nose.tools import assert_equal
 from urllib3.exceptions import NewConnectionError
 
 from app.main.services import search_service
@@ -32,9 +31,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             search_service.refresh('index-to-create')
         response = self.client.get('/index-to-create')
         assert_response_status(response, 200)
-        assert_equal(
-            get_json_from_response(response)["status"]["num_docs"],
-            1)
+        assert get_json_from_response(response)["status"]["num_docs"] == 1
 
     @mock.patch('app.main.views.update.index')
     @mock.patch('app.main.services.response_formatters.current_app')
@@ -122,12 +119,12 @@ class TestDeleteById(BaseApplicationTestWithIndex):
 
         data = get_json_from_response(response)
         assert_response_status(response, 200)
-        assert_equal(data['message']['found'], True)
+        assert data['message']['found'] is True
 
         response = self.client.get(make_search_api_url(service),)
         data = get_json_from_response(response)
         assert_response_status(response, 404)
-        assert_equal(data['error']['found'], False)
+        assert data['error']['found'] is False
 
     def test_should_return_404_if_no_service(self):
         response = self.client.delete(
@@ -135,4 +132,4 @@ class TestDeleteById(BaseApplicationTestWithIndex):
 
         data = get_json_from_response(response)
         assert_response_status(response, 404)
-        assert_equal(data['error']['found'], False)
+        assert data['error']['found'] is False

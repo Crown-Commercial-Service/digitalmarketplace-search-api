@@ -1,6 +1,5 @@
 from app.main.services import search_service
 from flask import json
-from nose.tools import assert_equal, ok_
 import pytest
 
 from app import create_app
@@ -243,10 +242,10 @@ def aggregations_results(query):
 # Result checker functions
 
 def count_for_query(query, expected_count):
-    assert_equal(
-        query['meta']['total'], expected_count,
+    assert query['meta']['total'] == expected_count, (
         "Unexpected number of results. Expected {}, received {}:\n{}".format(
-            expected_count, query['meta']['total'],
+            expected_count,
+            query['meta']['total'],
             json.dumps(query, indent=2)
         )
     )
@@ -255,19 +254,23 @@ def count_for_query(query, expected_count):
 def result_fields_check(query, check_fns):
     services = query['documents']
     for field in check_fns:
-        ok_(all(check_fns[field](service[field]) for service in services),
+        assert all(check_fns[field](service[field]) for service in services), (
             "Field '{}' check '{}' failed for search results:\n{}".format(
                 field, check_fns[field].__doc__,
-                json.dumps(query, indent=2)))
+                json.dumps(query, indent=2)
+            )
+        )
 
 
 def aggregation_fields_check(query, check_fns):
     aggregations = query['aggregations']
     for field in check_fns:
-        ok_(all(check_fns[field](aggregations[agg][field]) for agg in aggregations),
+        assert all(check_fns[field](aggregations[agg][field]) for agg in aggregations), (
             "Field '{}' check '{}' failed for aggregation results:\n{}".format(
                 field, check_fns[field].__doc__,
-                json.dumps(query, indent=2)))
+                json.dumps(query, indent=2)
+            )
+        )
 
 
 def check_query(query, expected_result_count, match_fields):
