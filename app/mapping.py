@@ -5,6 +5,9 @@ from operator import or_
 
 from flask import json
 from werkzeug.exceptions import BadRequest
+
+from dmutils.timing import logged_duration_for_external_request
+
 from app import elasticsearch_client as es
 
 
@@ -65,7 +68,8 @@ def get_mapping(index_name, document_type):
     try:
         # es.indices.get_mapping has a key for the index name, regardless of any alias we may be going via, so rather
         # than use index_name, we access the one and only value in the dictionary using next(iter).
-        mapping_data = next(iter(es.indices.get_mapping(index=index_name, doc_type=document_type).values()))
+        with logged_duration_for_external_request('es'):
+            mapping_data = next(iter(es.indices.get_mapping(index=index_name, doc_type=document_type).values()))
 
         # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going
         # away, see <https://www.elastic.co/guide/en/elasticsearch/reference/5.6/removal-of-types.html>. For us,
