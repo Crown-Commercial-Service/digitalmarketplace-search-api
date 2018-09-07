@@ -1,11 +1,11 @@
-from flask import current_app, url_for
 from elasticsearch import TransportError
+from flask import current_app, url_for
+
+import app.mapping
+from app.main.services.response_formatters import convert_es_status, convert_es_results, generate_pagination_links
+from app.main.services.query_builder import construct_query
 
 from ... import elasticsearch_client as es
-import app.mapping
-from app.main.services.response_formatters import \
-    convert_es_status, convert_es_results, generate_pagination_links
-from app.main.services.query_builder import construct_query
 
 
 def refresh(index_name):
