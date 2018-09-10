@@ -74,11 +74,6 @@ make freeze-requirements
 
 `requirements.txt` should be committed alongside `requirements-app.txt` changes.
 
-### Using FeatureFlags
-
-To use feature flags, check out the documentation in (the README of)
-[digitalmarketplace-utils](https://github.com/alphagov/digitalmarketplace-utils#using-featureflags).
-
 ### Updating the index mapping
 
 The mapping JSON file is generated from framework data, and the originals reside alongside the framework data for the
