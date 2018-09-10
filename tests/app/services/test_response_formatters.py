@@ -12,8 +12,11 @@ pytestmark = pytest.mark.usefixtures("services_mapping")
 with open("example_es_responses/stats.json") as services:
     STATS_JSON = json.load(services)
 
-with open("example_es_responses/index_info.json") as services:
-    INDEX_INFO_JSON = json.load(services)
+with open("example_es_responses/services_index_info.json") as services:
+    SERVICES_INDEX_INFO_JSON = json.load(services)
+
+with open("example_es_responses/briefs_index_info.json") as briefs:
+    BRIEFS_INDEX_INFO_JSON = json.load(briefs)
 
 with open("example_es_responses/search_results.json") as search_results:
     SEARCH_RESULTS_JSON = json.load(search_results)
@@ -61,11 +64,25 @@ def test_should_not_include_highlights_if_not_in_es_results(services_mapping):
 
 
 def test_should_build_status_response_from_es_response():
-    res = convert_es_status("g-cloud-9", STATS_JSON, INDEX_INFO_JSON)
+    res = convert_es_status("g-cloud-9", STATS_JSON, SERVICES_INDEX_INFO_JSON)
     assert res == {
         "num_docs": 19676,
         "primary_size": "52mb",
         "mapping_version": "9.0.0",
+        "mapping_generated_from_framework": "g-cloud-9",
+        "max_result_window": 20000,
+        "aliases": ["galias"],
+    }
+
+
+def test_should_build_status_response_from_briefs_es_response():
+    res = convert_es_status("briefs-digital-outcomes-and-specialists", STATS_JSON, BRIEFS_INDEX_INFO_JSON)
+    assert res == {
+        "num_docs": 1653,
+        "primary_size": "52mb",
+        "mapping_version": "11.0.0",
+        "mapping_generated_from_framework": "digital-outcomes-and-specialists-2",
+        "max_result_window": 10000,
         "aliases": ["galias"],
     }
 
@@ -77,6 +94,8 @@ def test_should_build_status_response_from_es_response_with_empty_index():
     assert res == {
         "aliases": [],
         "mapping_version": None,
+        "mapping_generated_from_framework": None,
+        "max_result_window": None,
         "num_docs": None,
         "primary_size": "52mb",
     }

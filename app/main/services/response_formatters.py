@@ -18,13 +18,19 @@ def _convert_es_index_status(index_name, status_response, info_response):
     if not index_status:
         return index_status
 
-    index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
+    index_settings = info_response.get(index_name, {}).get('settings', {})
+    # Mapping will be either 'briefs' or 'services'
+    service_index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
+    brief_index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("briefs", {})
+    index_mapping = service_index_mapping or brief_index_mapping
     index_aliases = info_response.get(index_name, {}).get('aliases', {})
 
     return {
         'num_docs': index_status["primaries"].get("docs", {}).get("count"),
         'primary_size': index_status["primaries"]["store"]["size"],
         'mapping_version': index_mapping.get('_meta', {}).get('version'),
+        'max_result_window': index_settings.get('index', {}).get('max_result_window'),
+        'mapping_generated_from_framework': index_mapping.get('_meta', {}).get('generated_from_framework'),
         'aliases': list(index_aliases.keys()),
     }
 

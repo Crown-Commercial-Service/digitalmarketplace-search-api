@@ -7,7 +7,7 @@
             "services":{
                 "dynamic":"strict",
                 "_meta":{
-                    "generated_by":"/Users/samuelwilliams/git/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+                    "generated_by":"/TestUser/scripts/generate-search-config.py",
                     "transformations":[],
                     "version":"9.0.0",
                     "generated_from_framework":"g-cloud-9",
@@ -21,6 +21,7 @@
             "index":{
                 "number_of_shards":"5",
                 "provided_name":"g-cloud-9",
+                "max_result_window": 20000,
                 "creation_date":"1507755616736",
                 "analysis":{
                     "filter":{
