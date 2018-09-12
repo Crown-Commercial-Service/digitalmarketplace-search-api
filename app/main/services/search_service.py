@@ -1,19 +1,16 @@
-from elasticsearch import TransportError
 from flask import current_app, url_for
-
-from dmutils.timing import logged_duration_for_external_request
-
-import app.mapping
-from app.main.services.response_formatters import convert_es_status, convert_es_results, generate_pagination_links
-from app.main.services.query_builder import construct_query
+from elasticsearch import TransportError
 
 from ... import elasticsearch_client as es
+import app.mapping
+from app.main.services.response_formatters import \
+    convert_es_status, convert_es_results, generate_pagination_links
+from app.main.services.query_builder import construct_query
 
 
 def refresh(index_name):
     try:
-        with logged_duration_for_external_request('es'):
-            es.indices.refresh(index_name)
+        es.indices.refresh(index_name)
         return "acknowledged", 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -22,8 +19,7 @@ def refresh(index_name):
 def create_index(index_name, mapping_name):
     mapping_definition = app.mapping.load_mapping_definition(mapping_name)
     try:
-        with logged_duration_for_external_request('es'):
-            es.indices.create(index=index_name, body=mapping_definition)
+        es.indices.create(index=index_name, body=mapping_definition)
         return "acknowledged", 200
     except TransportError as e:
         current_app.logger.warning(
@@ -41,11 +37,10 @@ def create_alias(alias_name, target_index):
     """
 
     try:
-        with logged_duration_for_external_request('es'):
-            es.indices.update_aliases({"actions": [
-                {"remove": {"index": "_all", "alias": alias_name}},
-                {"add": {"index": target_index, "alias": alias_name}}
-            ]})
+        es.indices.update_aliases({"actions": [
+            {"remove": {"index": "_all", "alias": alias_name}},
+            {"add": {"index": target_index, "alias": alias_name}}
+        ]})
         return "acknowledged", 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -53,8 +48,7 @@ def create_alias(alias_name, target_index):
 
 def delete_index(index_name):
     try:
-        with logged_duration_for_external_request('es'):
-            es.indices.delete(index=index_name)
+        es.indices.delete(index=index_name)
         return "acknowledged", 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -62,8 +56,7 @@ def delete_index(index_name):
 
 def fetch_by_id(index_name, doc_type, document_id):
     try:
-        with logged_duration_for_external_request('es'):
-            res = es.get(index_name, document_id, doc_type)
+        res = es.get(index_name, document_id, doc_type)
         return res, 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -71,8 +64,7 @@ def fetch_by_id(index_name, doc_type, document_id):
 
 def delete_by_id(index_name, doc_type, document_id):
     try:
-        with logged_duration_for_external_request('es'):
-            res = es.delete(index_name, doc_type, document_id)
+        res = es.delete(index_name, doc_type, document_id)
         return res, 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -80,13 +72,12 @@ def delete_by_id(index_name, doc_type, document_id):
 
 def index(index_name, doc_type, document, document_id):
     try:
-        with logged_duration_for_external_request('es'):
-            es.index(
-                index=index_name,
-                id=document_id,
-                doc_type=doc_type,
-                body=document)
-            return "acknowledged", 200
+        es.index(
+            index=index_name,
+            id=document_id,
+            doc_type=doc_type,
+            body=document)
+        return "acknowledged", 200
     except TransportError as e:
         current_app.logger.error(
             "Failed to index the document %s: %s",
@@ -97,10 +88,8 @@ def index(index_name, doc_type, document, document_id):
 
 def status_for_index(index_name):
     try:
-        with logged_duration_for_external_request('es'):
-            res = es.indices.stats(index=index_name, human=True)
-        with logged_duration_for_external_request('es'):
-            info = es.indices.get(index_name)
+        res = es.indices.stats(index=index_name, human=True)
+        info = es.indices.get(index_name)
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
 
@@ -129,8 +118,12 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
 
         es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
         constructed_query = construct_query(mapping, query_args, aggregations, page_size)
-        with logged_duration_for_external_request('es'):
-            res = es.search(index=index_name, doc_type=doc_type, body=constructed_query, **es_search_kwargs)
+        res = es.search(
+            index=index_name,
+            doc_type=doc_type,
+            body=constructed_query,
+            **es_search_kwargs
+        )
 
         results = convert_es_results(mapping, res, query_args)
 
@@ -172,13 +165,11 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             # in this case we have to fire off another request to determine how we should handle this error...
             # (note minor race condition possible if index is modified between the original call and this one)
             try:
-                body = construct_query(mapping, query_args, page_size=None),
-                with logged_duration_for_external_request('es'):
-                    result_count = es.count(
-                        index=index_name,
-                        doc_type=doc_type,
-                        body=body
-                    )["count"]
+                result_count = es.count(
+                    index=index_name,
+                    doc_type=doc_type,
+                    body=construct_query(mapping, query_args, page_size=None),
+                )["count"]
             except TransportError as e:
                 return _get_an_error_message(e), e.status_code
             else:

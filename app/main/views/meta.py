@@ -1,7 +1,5 @@
 from flask import jsonify, url_for
 
-from dmutils.timing import logged_duration_for_external_request
-
 from app.main import main
 from app import elasticsearch_client as es
 
@@ -11,14 +9,9 @@ import app.mapping
 @main.route('/')
 def root():
     """Entry point for the API, show the resources that are available."""
-    with logged_duration_for_external_request('es'):
-        es_indices = es.indices.get_mapping().items()
-
-    types_by_index_name = {
-        index_name: index_info['mappings'].keys()
-        for index_name, index_info in es_indices
-        if not index_name.startswith('.')
-    }
+    types_by_index_name = {index_name: index_info['mappings'].keys()
+                           for index_name, index_info in es.indices.get_mapping().items()
+                           if not index_name.startswith('.')}
     links = list()
     for index_name, types in types_by_index_name.items():
         for type_name in types:
@@ -29,10 +22,7 @@ def root():
                                 doc_type=type_name,
                                 _external=True)})
 
-    with logged_duration_for_external_request('es'):
-        es_alias_json = es.cat.aliases(format='json')
-
-    aliases = {info['alias']: info['index'] for info in es_alias_json}
+    aliases = {info['alias']: info['index'] for info in es.cat.aliases(format='json')}
     for alias_name, index_name in aliases.items():
         for type_name in types_by_index_name[index_name]:
             links.append({
