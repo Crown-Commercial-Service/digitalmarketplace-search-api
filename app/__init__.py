@@ -2,7 +2,7 @@ from flask import Flask
 import base64
 import json
 from config import config as configs
-from flask.ext.elasticsearch import FlaskElasticsearch
+from flask_elasticsearch import FlaskElasticsearch
 from dmutils import init_app
 
 elasticsearch_client = FlaskElasticsearch()
