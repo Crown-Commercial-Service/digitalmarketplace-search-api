@@ -172,7 +172,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             # in this case we have to fire off another request to determine how we should handle this error...
             # (note minor race condition possible if index is modified between the original call and this one)
             try:
-                body = construct_query(mapping, query_args, page_size=None),
+                body = construct_query(mapping, query_args, page_size=None)
                 with logged_duration_for_external_request('es'):
                     result_count = es.count(
                         index=index_name,
