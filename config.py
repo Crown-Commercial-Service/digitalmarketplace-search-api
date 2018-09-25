@@ -13,8 +13,6 @@ class Config:
 
     ELASTICSEARCH_HOST = 'localhost:9200'
 
-    DM_ELASTICSEARCH_CERT_PATH = None
-
     DM_SEARCH_API_AUTH_TOKENS = None
 
     DM_SEARCH_PAGE_SIZE = 100
@@ -53,7 +51,6 @@ class Live(Config):
     DEBUG = False
 
     DM_LOG_PATH = '/var/log/digitalmarketplace/application.log'
-    DM_ELASTICSEARCH_CERT_PATH = '/tmp/elasticsearch-certificate'
 
 
 config = {

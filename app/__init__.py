@@ -31,33 +31,11 @@ def create_app(config_name):
         service = get_service_by_name_from_vcap_services(
             cf_services, application.config['DM_ELASTICSEARCH_SERVICE_NAME'])
 
-        service_provider = 'aiven'
-
-        if 'compose' in service['tags']:
-            service_provider = 'compose'
-
-        # remove switch block and DM_ELASTICSEARCH_CERT_PATH
-        # once ElasticSearch migration has been fully completed
-        if service_provider == 'aiven':
-            application.config['ELASTICSEARCH_HOST'] = \
-                service['credentials']['uri']
-
-            application.config['DM_ELASTICSEARCH_CERT_PATH'] = None
-
-        elif service_provider == 'compose':
-            application.config['ELASTICSEARCH_HOST'] = \
-                service['credentials']['uris']
-
-            # Compose PaaS service uses self-signed cert
-            with open(application.config['DM_ELASTICSEARCH_CERT_PATH'], 'wb') as es_certfile:
-                es_certfile.write(
-                    base64.b64decode(service['credentials']['ca_certificate_base64'])
-                )
+        application.config['ELASTICSEARCH_HOST'] = service['credentials']['uri']
 
     elasticsearch_client.init_app(
         application,
         verify_certs=True,
-        ca_certs=application.config['DM_ELASTICSEARCH_CERT_PATH']
     )
 
     from .main import main as main_blueprint
