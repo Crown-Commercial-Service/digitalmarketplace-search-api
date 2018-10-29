@@ -3,6 +3,7 @@
 # with package version changes made in requirements-app.txt
 
 Flask==1.0.2
+itsdangerous==0.24
 
 git+https://github.com/madzak/python-json-logger.git@v0.1.3#egg=python-json-logger==v0.1.3
 git+https://github.com/alphagov/digitalmarketplace-utils.git@44.0.1#egg=digitalmarketplace-utils==44.0.1
@@ -26,9 +27,8 @@ docutils==0.14
 Flask-Login==0.4.1
 Flask-Script==2.0.6
 Flask-WTF==0.14.2
-future==0.16.0
+future==0.17.0
 idna==2.7
-ItsDangerous==1.0.0
 Jinja2==2.10
 jmespath==0.9.3
 mailchimp3==2.0.11
@@ -39,7 +39,7 @@ notifications-python-client==4.1.0
 odfpy==1.3.6
 pycparser==2.19
 PyJWT==1.6.4
-python-dateutil==2.7.3
+python-dateutil==2.7.5
 pytz==2015.4
 requests==2.20.0
 s3transfer==0.1.13
