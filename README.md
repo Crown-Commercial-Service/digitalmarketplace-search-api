@@ -1,4 +1,7 @@
 # digitalmarketplace-search-api
+
+[![Requirements Status](https://requires.io/github/alphagov/digitalmarketplace-search-api/requirements.svg?branch=master)](https://requires.io/github/alphagov/digitalmarketplace-search-api/requirements/?branch=master)
+
 API to handle interactions between the digitalmarketplace applications and search.
 
 - Python app, based on the [Flask framework](http://flask.pocoo.org/)
