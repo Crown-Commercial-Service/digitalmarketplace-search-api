@@ -1,6 +1,7 @@
 # digitalmarketplace-search-api
 
 [![Requirements Status](https://requires.io/github/alphagov/digitalmarketplace-search-api/requirements.svg?branch=master)](https://requires.io/github/alphagov/digitalmarketplace-search-api/requirements/?branch=master)
+![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)
 
 API to handle interactions between the digitalmarketplace applications and search.
 
