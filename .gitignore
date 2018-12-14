@@ -2,6 +2,7 @@ venv*
 .elasticbeanstalk/
 *.pyc
 __pycache__
+local_es_home
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

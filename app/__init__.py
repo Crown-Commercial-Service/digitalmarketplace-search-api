@@ -3,7 +3,8 @@ import base64
 import json
 from config import config as configs
 from flask_elasticsearch import FlaskElasticsearch
-from dmutils import init_app
+
+from dmutils.flask_init import init_app, api_error_handlers
 
 elasticsearch_client = FlaskElasticsearch()
 
@@ -24,6 +25,7 @@ def create_app(config_name):
     init_app(
         application,
         configs[config_name],
+        error_handlers=api_error_handlers,
     )
 
     if application.config['VCAP_SERVICES']:
