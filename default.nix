@@ -48,7 +48,7 @@ in (with args; {
         ${pythonPackages.python}/bin/python -m venv $VIRTUALENV_ROOT
       fi
       source $VIRTUALENV_ROOT/bin/activate
-      make -C ${(./.)} requirements${pkgs.stdenv.lib.optionalString forDev "-dev"}
+      make -C ${toString (./.)} requirements${pkgs.stdenv.lib.optionalString forDev "-dev"}
     '' + pkgs.stdenv.lib.optionalString withLocalES ''
       init-local-es-home
     '';
