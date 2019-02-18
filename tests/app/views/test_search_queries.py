@@ -168,10 +168,10 @@ def test_or_keyword_search():
 
 
 def test_escaped_characters():
-    check_query('q=\\"Service | 12\\"', 120, {})
-    check_query('q=\-12', 1, {})
-    check_query('q=Service \|12', 1, {})
-    check_query('q=Service \| 12', 0, {})
+    check_query(r'q=\"Service | 12\"', 120, {})
+    check_query(r'q=\-12', 1, {})
+    check_query(r'q=Service \|12', 1, {})
+    check_query(r'q=Service \| 12', 0, {})
 
 
 @pytest.fixture(scope='module', autouse=True)

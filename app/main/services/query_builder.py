@@ -89,7 +89,7 @@ def build_keywords_query(mapping, query_args):
 
 
 def multi_match_clause(mapping, keywords):
-    """Builds a query string supporting basic query syntax.
+    r"""Builds a query string supporting basic query syntax.
 
     Uses "simple_query_string" with a predefined list of supported flags:
 
