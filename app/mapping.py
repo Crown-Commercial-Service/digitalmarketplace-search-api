@@ -4,6 +4,8 @@ from itertools import groupby
 from operator import or_
 
 from flask import json
+
+from elasticsearch.exceptions import NotFoundError
 from werkzeug.exceptions import BadRequest
 
 from dmutils.timing import logged_duration_for_external_request
@@ -70,15 +72,20 @@ def get_mapping(index_name, document_type):
         # than use index_name, we access the one and only value in the dictionary using next(iter).
         with logged_duration_for_external_request('es'):
             mapping_data = next(iter(es.indices.get_mapping(index=index_name, doc_type=document_type).values()))
-
-        # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going
-        # away, see <https://www.elastic.co/guide/en/elasticsearch/reference/5.6/removal-of-types.html>. For us,
-        # document_type === mapping_type, and there will be only one per index.
-        return Mapping(mapping_data, mapping_type=document_type)
-
+    except NotFoundError as e:
+        if e.error == "type_missing_exception":
+            raise MappingNotFound("Document type '{}' is not valid in index '{}' - no mapping found.".format(
+                document_type, index_name))
+        else:
+            raise
     except StopIteration:
         raise MappingNotFound("Document type '{}' is not valid in index '{}' - no mapping found.".format(
             document_type, index_name))
+
+    # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going
+    # away, see <https://www.elastic.co/guide/en/elasticsearch/reference/5.6/removal-of-types.html>. For us,
+    # document_type === mapping_type, and there will be only one per index.
+    return Mapping(mapping_data, mapping_type=document_type)
 
 
 def load_mapping_definition(mapping_name):
