@@ -49,10 +49,10 @@
     "services": {
       "_meta": {
         "_": "DO NOT UPDATE BY HAND",
-        "version": "12.2.0",
+        "version": "15.0.0",
         "generated_from_framework": "g-cloud-10",
         "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2018-06-27T16:13:14.577338",
+        "generated_time": "2019-03-06T09:18:21.596263",
         "dm_sort_clause": [
           "_score",
           {
@@ -694,8 +694,7 @@
           "type": "keyword"
         },
         "sortonly_serviceIdHash": {
-          "type": "keyword",
-          "include_in_all": false
+          "type": "keyword"
         },
         "dmagg_lot": {
           "type": "keyword"
