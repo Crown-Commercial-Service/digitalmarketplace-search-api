@@ -30,11 +30,11 @@
             "Untraceable ping of the account"
           ],
           "dmtext_serviceName": "Email Verification",
-          "dmtext_serviceSummary": "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as they’re typed, or in bulk.\r\nOur cloud-based technology uses self-learning algorithms so that it constantly evolves to deliver the most accurate results without requiring you to make any updates.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as they’re typed, or in bulk.\r\nOur cloud-based technology uses self-learning algorithms so that it constantly evolves to deliver the most accurate results without requiring you to make any updates.",
+          "dmtext_serviceCategories": [
             "Data management"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "datamanagement"
           ],
           "dmtext_supplierName": "Supplier Name"
@@ -53,7 +53,7 @@
           "dmtext_serviceName": [
             "Email Verification"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as"
           ]
         }
@@ -85,15 +85,15 @@
             "Content Calendar Planning"
           ],
           "dmtext_serviceName": "Email Marketing",
-          "dmtext_serviceSummary": "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of services from email design and build, targeting and data segmentation through to distribution, testing, deployment and reporting.  Our experience includes working with renown brands on multilingual Pan-European and Global eCRM campaigns.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of services from email design and build, targeting and data segmentation through to distribution, testing, deployment and reporting.  Our experience includes working with renown brands on multilingual Pan-European and Global eCRM campaigns.",
+          "dmtext_serviceCategories": [
             "Implementation",
             "Ongoing support",
             "Planning",
             "Testing",
             "Training"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "implementation",
             "ongoingsupport",
             "planning",
@@ -112,7 +112,7 @@
           "dmtext_serviceName": [
             "Email Marketing"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of",
             " services from email design and build, targeting and data segmentation through to distribution"
           ]
@@ -135,15 +135,15 @@
             "Notification emails"
           ],
           "dmtext_serviceName": "Manage Email",
-          "dmtext_serviceSummary": "Integration of email to enable documents to be emailed from the Store.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "Integration of email to enable documents to be emailed from the Store.",
+          "dmtext_serviceCategories": [
             "Implementation",
             "Ongoing support",
             "Planning",
             "Testing",
             "Training"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "implementation",
             "ongoingsupport",
             "planning",
@@ -163,7 +163,7 @@
           "dmtext_serviceName": [
             "Manage Email"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "Integration of email to enable documents to be emailed from the Store."
           ]
         }
@@ -188,11 +188,11 @@
             "Remote and Mobile access"
           ],
           "dmtext_serviceName": "Secure Email",
-          "dmtext_serviceSummary": "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders",
+          "dmtext_serviceCategories": [
             "Collaboration"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "collaboration"
           ],
           "dmtext_supplierName": "Supplier Name"
@@ -206,7 +206,7 @@
           "dmtext_serviceName": [
             "Secure Email"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It",
             " provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders"
           ]
@@ -240,11 +240,11 @@
             "Complete policy flexibility "
           ],
           "dmtext_serviceName": "Secure Email Archiving",
-          "dmtext_serviceSummary": "All archived mail is encrypted. Set policy levels, what mail requires archiving and who has access to the archive. Mail is stored in multiple geographically diverse locations within the UK. Archive all mail to or from a domain, individual users or groups of users with retention periods from one year. ",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "All archived mail is encrypted. Set policy levels, what mail requires archiving and who has access to the archive. Mail is stored in multiple geographically diverse locations within the UK. Archive all mail to or from a domain, individual users or groups of users with retention periods from one year. ",
+          "dmtext_serviceCategories": [
             "Ongoing support"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "ongoingsupport"
           ],
           "dmtext_supplierName": "Supplier Name"
@@ -286,11 +286,11 @@
             "Advance security options available "
           ],
           "dmtext_serviceName": "Microsoft Exchange Email Services",
-          "dmtext_serviceSummary": "As professionals you’re under pressure to cut costs, become more productive, whilst making yourself more available to clients and colleagues. So when the time comes to move to a Hosted Exchange platform, make sure you choose a platform that guarantees you peace of mind from a provider you can trust. ",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "As professionals you’re under pressure to cut costs, become more productive, whilst making yourself more available to clients and colleagues. So when the time comes to move to a Hosted Exchange platform, make sure you choose a platform that guarantees you peace of mind from a provider you can trust. ",
+          "dmtext_serviceCategories": [
             "Collaboration"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "collaboration"
           ],
           "dmtext_supplierName": "Supplier Name"
@@ -335,12 +335,12 @@
             "Work package:  Migration and deployment "
           ],
           "dmtext_serviceName": "Email Migration and Modernisation",
-          "dmtext_serviceSummary": "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email processes, and supports migration from earlier versions of Exchange/Lotus Domino/Notes to the latest version of Microsoft Exchange. Experience of 10M+ mailboxes, in highly regulated markets. Partnerships with VMware, RSA and Microsoft ensure highly scalable, secure and flexible deployments.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email processes, and supports migration from earlier versions of Exchange/Lotus Domino/Notes to the latest version of Microsoft Exchange. Experience of 10M+ mailboxes, in highly regulated markets. Partnerships with VMware, RSA and Microsoft ensure highly scalable, secure and flexible deployments.",
+          "dmtext_serviceCategories": [
             "Implementation",
             "Planning"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "implementation",
             "planning"
           ],
@@ -351,7 +351,7 @@
           "dmtext_serviceName": [
             "Email Migration and Modernisation"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email"
           ]
         }
@@ -387,14 +387,14 @@
             "Real-time monitoring with email & SMS alerting for  issues"
           ],
           "dmtext_serviceName": "Mimecast Email Security",
-          "dmtext_serviceSummary": "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on the market today. Mimecast’s massively scalable mail transfer agent with multiple layers of malware and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on the market today. Mimecast’s massively scalable mail transfer agent with multiple layers of malware and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network.",
+          "dmtext_serviceCategories": [
             "Data management",
             "IT management",
             "Legal",
             "Security"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "datamanagement",
             "itmanagement",
             "legal",
@@ -415,7 +415,7 @@
           "dmtext_serviceName": [
             "Mimecast Email Security"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on",
             " and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network."
           ]
@@ -441,8 +441,8 @@
             "Advanced reporting"
           ],
           "dmtext_serviceName": "Dyn Email Delivery",
-          "dmtext_serviceSummary": "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk/marketing campaign email. Along with sending email generated by an application, Dyn’s email solution is integrated with the leading marketing automation and email template/management solutions.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk/marketing campaign email. Along with sending email generated by an application, Dyn’s email solution is integrated with the leading marketing automation and email template/management solutions.",
+          "dmtext_serviceCategories": [
             "Business intelligence and analytics",
             "Customer relationship management (CRM)",
             "IT management",
@@ -450,7 +450,7 @@
             "Operations management",
             "Security"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "businessintelligenceandanalytics",
             "customerrelationshipmanagement(crm)",
             "itmanagement",
@@ -465,7 +465,7 @@
           "dmtext_serviceName": [
             "Dyn Email Delivery"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk",
             "/marketing campaign email. Along with sending email generated by an application, Dyn’s email",
             " solution is integrated with the leading marketing automation and email template/management solutions."
@@ -505,11 +505,11 @@
             "No additional on-premises hardware required"
           ],
           "dmtext_serviceName": "Mimecast Email Archiving",
-          "dmtext_serviceSummary": "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users a bottomless mailbox, while superior mailbox management capability helps reduce the load on Exchange. Compliance officers benefit from near real time searches.",
-          "dmtext_serviceTypes": [
+          "dmtext_serviceDescription": "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users a bottomless mailbox, while superior mailbox management capability helps reduce the load on Exchange. Compliance officers benefit from near real time searches.",
+          "dmtext_serviceCategories": [
             "Data management"
           ],
-          "dmtext_serviceTypesExact": [
+          "dmtext_serviceCategoriesExact": [
             "datamanagement"
           ],
           "dmtext_supplierName": "Supplier Name"
@@ -525,7 +525,7 @@
           "dmtext_serviceName": [
             "Mimecast Email Archiving"
           ],
-          "dmtext_serviceSummary": [
+          "dmtext_serviceDescription": [
             "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the",
             " complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users"
           ]

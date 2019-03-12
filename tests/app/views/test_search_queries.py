@@ -21,8 +21,8 @@ def even(result_field):
 @pytest.mark.parametrize('query, expected_result_count, match_fields', (
     ('', 120, {}),
     ('filter_lot=SaaS', 30, {'lot': "SaaS".__eq__}),
-    ('filter_serviceTypes=Implementation', 48, {'serviceTypes': lambda i: 'Implementation' in i}),
-    ('filter_minimumContractPeriod=Hour', 40, {}),
+    ('filter_serviceCategories=Implementation', 48, {'serviceCategories': lambda i: 'Implementation' in i}),
+    ('filter_webChatSupport=no', 40, {}),
     ('filter_phoneSupport=True', 60, {'id': odd}),
 ))
 def test_single_filter_queries(query, expected_result_count, match_fields):
@@ -37,29 +37,35 @@ def test_basic_aggregations():
     )
     check_aggregations_query('filter_lot=SaaS', 30, {'SaaS': (30).__eq__})
     check_aggregations_query(
-        'filter_minimumContractPeriod=Hour,Day',
+        'filter_webChatSupport=no,yes_extra_cost',
         80,
         {'PaaS': (20).__eq__, 'SaaS': (20).__eq__, 'IaaS': (20).__eq__, 'SCS': (20).__eq__}
     )
-    check_aggregations_query('filter_lot=SaaS&filter_minimumContractPeriod=Hour,Day', 20, {'SaaS': (20).__eq__})
+    check_aggregations_query('filter_lot=SaaS&filter_webChatSupport=no,yes_extra_cost', 20, {'SaaS': (20).__eq__})
 
 
 def test_or_filters():
     check_query('filter_lot=SaaS,PaaS', 60, {'lot': ['SaaS', 'PaaS'].__contains__})
-    check_query('filter_minimumContractPeriod=Hour,Day', 80, {})
-    check_query('filter_datacentreTier=tia-942 tier 1,tia-942 tier 2', 120, {})
-    check_query('filter_datacentreTier=tia-942 tier 3,tia-942 tier 2', 0, {})
-    check_query('filter_minimumContractPeriod=Hour,Day&filter_datacentreTier=tia-942 tier 3,tia-942 tier 2', 0, {})
+    check_query('filter_webChatSupport=no,yes_extra_cost', 80, {})
+    check_query('filter_staffSecurityClearanceChecks=none,staff_screening_not_bs_7858_2012', 120, {})
+    check_query(
+        'filter_staffSecurityClearanceChecks=staff_screening_to_bs_7858_2012,staff_screening_not_bs_7858_2012', 0, {})
+    check_query(
+        'filter_webChatSupport=no,yes_extra_cost'
+        '&filter_staffSecurityClearanceChecks=staff_screening_to_bs_7858_2012,staff_screening_not_bs_7858_2012',
+        0,
+        {}
+    )
 
 
 def test_and_filters():
     check_query(
-        'filter_serviceTypes=Planning&filter_serviceTypes=Testing',
-        24, {'serviceTypes': ['Planning', 'Testing'].__eq__}
+        'filter_serviceCategories=Planning&filter_serviceCategories=Testing',
+        24, {'serviceCategories': ['Planning', 'Testing'].__eq__}
     )
 
     check_query(
-        'filter_serviceTypes=Planning&filter_serviceTypes=Implementation',
+        'filter_serviceCategories=Planning&filter_serviceCategories=Implementation',
         0, {}
     )
 
@@ -68,32 +74,32 @@ def test_and_filters():
 
 def test_filter_combinations():
     check_query(
-        'filter_minimumContractPeriod=Hour&filter_phoneSupport=false',
+        'filter_webChatSupport=no&filter_phoneSupport=false',
         20, {'id': even}
     )
 
     check_query(
-        'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false',
+        'filter_webChatSupport=no,yes_extra_cost&filter_phoneSupport=false',
         40, {'id': even}
     )
 
     check_query(
-        'filter_minimumContractPeriod=Hour,Day&filter_phoneSupport=false&filter_lot=SaaS',
+        'filter_webChatSupport=no,yes_extra_cost&filter_phoneSupport=false&filter_lot=SaaS',
         20, {'id': even}
     )
 
     check_query(
-        'filter_minimumContractPeriod=Hour&filter_lot=SaaS',
+        'filter_webChatSupport=no&filter_lot=SaaS',
         10, {'lot': 'SaaS'.__eq__}
     )
 
     check_query(
-        'q=12&filter_minimumContractPeriod=Hour&filter_lot=SaaS',
+        'q=12&filter_webChatSupport=no&filter_lot=SaaS',
         1, {'lot': 'SaaS'.__eq__, 'id': '12'.__eq__}
     )
 
     check_query(
-        'q=12&filter_minimumContractPeriod=Hour&filter_lot=PaaS', 0, {}
+        'q=12&filter_webChatSupport=no&filter_lot=PaaS', 0, {}
     )
 
 
@@ -208,9 +214,10 @@ def create_services(number_of_services):
             id=str(i),
             serviceName="Service {}".format(i),
             phoneSupport=bool(i % 2),
-            minimumContractPeriod=["Hour", "Day", "Month"][i % 3],
+            webChatSupport=["no", "yes_extra_cost", "yes"][i % 3],
+            staffSecurityClearanceChecks="none",
             lot=["SaaS", "PaaS", "IaaS", "SCS"][i % 4],
-            serviceTypes=[
+            serviceCategories=[
                 "Implementation",
                 "Ongoing support",
                 "Planning",

@@ -41,7 +41,7 @@ def test_should_build_search_response_from_es_response(services_mapping):
     assert res["documents"][0]["frameworkName"] == "G-Cloud 6"
     assert res["documents"][0]["supplierName"] == "Supplier Name"
     assert res["documents"][0]["serviceName"] == "Email Verification"
-    assert res["documents"][0]["serviceTypes"] == ["Data management"]
+    assert res["documents"][0]["serviceCategories"] == ["Data management"]
 
 
 def test_should_build_highlights_es_response(services_mapping):

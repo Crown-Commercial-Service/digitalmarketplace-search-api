@@ -25,18 +25,19 @@ def test_should_add_filter_fields_to_index_json(services_mapping):
 def test_should_make__match_array_fields(services_mapping):
     request = {
         "lot": "SaaS",
-        "serviceTypes": ["One", "Two", "Three"],
-        "networksConnected": ["Internet", "PSN"],
+        "publicSectorNetworksTypes": ["Internet", "PSN"],
+        "serviceCategories": ["One", "Two", "Three"],
     }
 
     result = convert_request_json_into_index_json(services_mapping, request)
     assert result == {
         "dmagg_lot": "SaaS",
-        "dmtext_lot": "SaaS",
+        "dmagg_serviceCategories": ["One", "Two", "Three"],
         "dmfilter_lot": "SaaS",
-        "dmtext_serviceTypes": ["One", "Two", "Three"],
-        "dmfilter_serviceTypes": ["One", "Two", "Three"],
-        "dmfilter_networksConnected": ["Internet", "PSN"],
+        "dmfilter_publicSectorNetworksTypes": ["Internet", "PSN"],
+        "dmfilter_serviceCategories": ["One", "Two", "Three"],
+        "dmtext_lot": "SaaS",
+        "dmtext_serviceCategories": ["One", "Two", "Three"],
     }
 
 
@@ -188,7 +189,7 @@ def test_create_new_field_in_transformation(services_mapping):
                 "any_of": [
                     "foo",
                 ],
-                "target_field": "serviceTypes",
+                "target_field": "serviceCategories",
                 "append_value": [
                     "bar"
                 ]
@@ -202,9 +203,10 @@ def test_create_new_field_in_transformation(services_mapping):
     result = convert_request_json_into_index_json(services_mapping, request)
 
     assert result == {
+        "dmagg_serviceCategories": ["bar"],
         "dmtext_supplierName": ["foo"],
-        "dmtext_serviceTypes": ["bar"],
-        "dmfilter_serviceTypes": ["bar"],
+        "dmtext_serviceCategories": ["bar"],
+        "dmfilter_serviceCategories": ["bar"],
     }
 
 
@@ -241,7 +243,7 @@ class TestSetConditionally():
             {
                 "set_conditionally": {
                     "field": "supplierName",
-                    "target_field": "serviceTypes",
+                    "target_field": "serviceCategories",
                     "any_of": [
                         "Blue",
                         "Indigo",
@@ -256,15 +258,16 @@ class TestSetConditionally():
 
         request = {
             "supplierName": ["Violet"],
-            "serviceTypes": ["Brown"]
+            "serviceCategories": ["Brown"]
         }
 
         result = convert_request_json_into_index_json(services_mapping, request)
 
         assert result == {
+            "dmagg_serviceCategories": ["Pink"],
             "dmtext_supplierName": ["Violet"],
-            "dmtext_serviceTypes": ["Pink"],
-            "dmfilter_serviceTypes": ["Pink"],
+            "dmtext_serviceCategories": ["Pink"],
+            "dmfilter_serviceCategories": ["Pink"],
         }
 
     def test_creates_target_field_if_it_does_not_exist(self, services_mapping):
@@ -272,7 +275,7 @@ class TestSetConditionally():
             {
                 "set_conditionally": {
                     "field": "supplierName",
-                    "target_field": "serviceTypes",
+                    "target_field": "serviceCategories",
                     "any_of": [
                         "Blue",
                         "Indigo",
@@ -292,9 +295,10 @@ class TestSetConditionally():
         result = convert_request_json_into_index_json(services_mapping, request)
 
         assert result == {
+            "dmagg_serviceCategories": ["Pink"],
             "dmtext_supplierName": ["Violet"],
-            "dmtext_serviceTypes": ["Pink"],
-            "dmfilter_serviceTypes": ["Pink"],
+            "dmtext_serviceCategories": ["Pink"],
+            "dmfilter_serviceCategories": ["Pink"],
         }
 
     def test_does_not_update_if_value_does_not_match(self, services_mapping):

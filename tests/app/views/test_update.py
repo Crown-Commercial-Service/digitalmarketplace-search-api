@@ -86,7 +86,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
     def test_should_index_a_document_with_no_service_types(self, default_service):
         service = default_service
         service.get('document', service.get('service'))["serviceName"] = 123
-        del service.get('document', service.get('service'))["serviceTypes"]
+        del service.get('document', service.get('service'))["serviceCategories"]
 
         response = self.client.put(
             make_search_api_url(service),
