@@ -84,14 +84,12 @@ def make_standard_service(**kwargs):
         "id": "id",
         "lot": "LoT",
         "serviceName": "serviceName",
-        "serviceSummary": "serviceSummary",
+        "serviceDescription": "serviceDescription",
         "serviceBenefits": "serviceBenefits",
         "serviceFeatures": "serviceFeatures",
-        "serviceTypes": ["serviceTypes"],
+        "serviceCategories": ["serviceCategories"],
         "supplierName": "Supplier Name",
-        "minimumContractPeriod": "Month",
-        "networksConnected": ["PSN", "PNN"],
-        "datacentreTier": "tia-942 tier 1",
+        "publicSectorNetworksTypes": ["PSN", "PNN"],
     }
 
     service.update(kwargs)

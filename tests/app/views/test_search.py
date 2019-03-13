@@ -126,7 +126,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
 
     def test_highlighting_should_use_defined_html_tags(self):
         service = make_standard_service(
-            serviceSummary="Accessing, storing and retaining email"
+            serviceDescription="Accessing, storing and retaining email"
         )
         highlighted_summary = \
             "Accessing, <mark class='search-result-highlighted-text'>storing</mark> and retaining email"
@@ -139,11 +139,11 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         search_results = get_json_from_response(
             response
         )["documents"]
-        assert search_results[0]["highlight"]["serviceSummary"][0] == highlighted_summary
+        assert search_results[0]["highlight"]["serviceDescription"][0] == highlighted_summary
 
     def test_highlighting_should_escape_html(self):
         service = make_standard_service(
-            serviceSummary="accessing, storing <h1>and retaining</h1> email"
+            serviceDescription="accessing, storing <h1>and retaining</h1> email"
         )
 
         response = self._put_into_and_get_back_from_elasticsearch(
@@ -156,11 +156,11 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             "accessing, <mark class='search-result-highlighted-text'>storing</mark> &lt;h1&gt;and retaining"
             "&lt;&#x2F;h1&gt; email"
         )
-        assert search_results[0]["highlight"]["serviceSummary"][0] == expected_string
+        assert search_results[0]["highlight"]["serviceDescription"][0] == expected_string
 
     def test_unhighlighted_result_should_escape_html(self):
         service = make_standard_service(
-            serviceSummary='Oh <script>alert("Yo");</script>',
+            serviceDescription='Oh <script>alert("Yo");</script>',
             lot='oY'
         )
 
@@ -171,7 +171,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         assert_response_status(response, 200)
         search_results = get_json_from_response(response)["documents"]
         expected_string = "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
-        assert search_results[0]["highlight"]["serviceSummary"][0] == expected_string
+        assert search_results[0]["highlight"]["serviceDescription"][0] == expected_string
 
     def test_highlight_service_summary_limited_if_no_matches(self):
 
@@ -179,7 +179,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 12
 
         service = make_standard_service(
-            serviceSummary=really_long_service_summary,
+            serviceDescription=really_long_service_summary,
             lot='TaaS'
         )
         # Doesn't actually search by lot, returns all services
@@ -192,7 +192,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         search_results = get_json_from_response(response)["documents"]
         # Get the first with a matching value from a list
         search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
-        assert 490 < len(search_result["highlight"]["serviceSummary"][0]) < 510
+        assert 490 < len(search_result["highlight"]["serviceDescription"][0]) < 510
 
     @pytest.mark.parametrize('page_size, multiplier, expected_count',
                              (
@@ -252,10 +252,10 @@ class TestFetchById(BaseApplicationTestWithIndex):
         cases = (
             "lot",
             "serviceName",
-            "serviceSummary",
+            "serviceDescription",
             "serviceBenefits",
             "serviceFeatures",
-            "serviceTypes",
+            "serviceCategories",
             "supplierName",
         )
 
@@ -283,9 +283,8 @@ class TestFetchById(BaseApplicationTestWithIndex):
 
         cases = [
             "lot",
-            "serviceTypes",
-            "minimumContractPeriod",
-            "networksConnected",
+            "publicSectorNetworksTypes",
+            "serviceCategories",
         ]
 
         for key in cases:

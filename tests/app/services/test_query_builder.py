@@ -78,14 +78,14 @@ def test_should_make_multi_match_query_if_keywords_supplied(services_mapping):
     (build_query_params(keywords="lot"), False),
     (build_query_params(filters={'lot': "lot"}), True),
     (build_query_params(keywords="something", filters={'lot': "lot"}), True),
-    (build_query_params(filters={'serviceTypes': ["serviceTypes"]}), True)
+    (build_query_params(filters={'serviceCategories': ["serviceCategories"]}), True)
 ))
 def test_should_identify_filter_search_from_query_params(services_mapping, query, expected):
     assert is_filtered(services_mapping, query) == expected, query
 
 
 def test_should_have_filtered_root_element_if_service_types_search(services_mapping):
-    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
+    query = construct_query(services_mapping, build_query_params(filters={'serviceCategories': ["serviceCategories"]}))
     assert "query" in query
     assert "bool" in query["query"]
     assert "must" in query["query"]["bool"]
@@ -99,14 +99,22 @@ def test_should_have_filtered_root_element_if_lot_search(services_mapping):
 
 
 def test_should_have_filtered_root_element_and_match_all_if_no_keywords(services_mapping):
-    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["my serviceTypes"]}))
+    query = construct_query(
+        services_mapping,
+        build_query_params(filters={'serviceCategories': ["my serviceCategories"]})
+    )
     assert "match_all" in query["query"]["bool"]["must"]
 
 
 def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
-    query = construct_query(services_mapping, build_query_params(keywords="some keywords",
-                                                                 filters={'serviceTypes': ["my serviceTypes"]})
-                            )["query"]["bool"]["must"]
+    query = construct_query(
+        services_mapping,
+        build_query_params(
+            keywords="some keywords",
+            filters={'serviceCategories': ["my serviceCategories"]}
+        )
+    )["query"]["bool"]["must"]
+
     assert "simple_query_string" in query
     query_string_clause = query["simple_query_string"]
     assert query_string_clause["query"] == "some keywords"
@@ -117,9 +125,16 @@ def test_should_have_filtered_root_element_and_match_keywords(services_mapping):
 
 
 def test_should_have_filtered_term_service_types_clause(services_mapping):
-    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceTypes"]}))
+    query = construct_query(
+        services_mapping,
+        build_query_params(filters={'serviceCategories': ["serviceCategories"]})
+    )
     assert "term" in query["query"]["bool"]["filter"]["bool"]["must"][0]
-    assert query["query"]["bool"]["filter"]["bool"]["must"][0]["term"]["dmfilter_serviceTypes"] == "serviceTypes"
+    assert (
+        query["query"]["bool"]["filter"]["bool"]["must"][0]["term"]["dmfilter_serviceCategories"]
+        ==
+        "serviceCategories"
+    )
 
 
 def test_should_have_filtered_term_lot_clause(services_mapping):
@@ -130,30 +145,39 @@ def test_should_have_filtered_term_lot_clause(services_mapping):
 
 def test_should_have_filtered_term_for_lot_and_service_types_clause(services_mapping):
     query = construct_query(services_mapping,
-                            build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]}))
+                            build_query_params(filters={'lot': "SaaS", 'serviceCategories': ["serviceCategories"]}))
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
-    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes'}} in terms
+    assert {"term": {'dmfilter_serviceCategories': 'serviceCategories'}} in terms
     assert {"term": {'dmfilter_lot': 'SaaS'}} in terms
 
 
 def test_should_not_filter_on_unknown_keys(services_mapping):
-    params = build_query_params(filters={'lot': "SaaS", 'serviceTypes': ["serviceTypes"]})
+    params = build_query_params(filters={'lot': "SaaS", 'serviceCategories': ["serviceCategories"]})
     params.add("this", "that")
     query = construct_query(services_mapping, params)
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
-    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes'}} in terms
+    assert {"term": {'dmfilter_serviceCategories': 'serviceCategories'}} in terms
     assert {"term": {'dmfilter_lot': 'SaaS'}} in terms
     assert {"term": {'unknown': 'something to ignore'}} not in terms
 
 
 def test_should_have_filtered_term_for_multiple_service_types_clauses(services_mapping):
-    query = construct_query(services_mapping,
-                            build_query_params(filters={
-                                'serviceTypes': ["serviceTypes1", "serviceTypes2", "serviceTypes3"]}))
+    query = construct_query(
+        services_mapping,
+        build_query_params(
+            filters={
+                'serviceCategories': [
+                    "serviceCategories1",
+                    "serviceCategories2",
+                    "serviceCategories3"
+                ]
+            }
+        )
+    )
     terms = query["query"]["bool"]["filter"]["bool"]["must"]
-    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes1'}} in terms
-    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes2'}} in terms
-    assert {"term": {'dmfilter_serviceTypes': 'serviceTypes3'}} in terms
+    assert {"term": {'dmfilter_serviceCategories': 'serviceCategories1'}} in terms
+    assert {"term": {'dmfilter_serviceCategories': 'serviceCategories2'}} in terms
+    assert {"term": {'dmfilter_serviceCategories': 'serviceCategories3'}} in terms
 
 
 def test_should_have_highlight_block_on_keyword_search(services_mapping):
@@ -179,7 +203,7 @@ def test_service_id_hash_not_in_searched_fields(services_mapping):
 
     assert not any("serviceIdHash" in key for key in query['query']['simple_query_string']['fields'])
 
-    query = construct_query(services_mapping, build_query_params(filters={'serviceTypes': ["serviceType1"]}))
+    query = construct_query(services_mapping, build_query_params(filters={'serviceCategories': ["serviceType1"]}))
 
     assert not any("serviceIdHash" in key for key in query['highlight']['fields'])
 
@@ -193,10 +217,10 @@ def test_sort_results_by_score_and_service_id_hash(services_mapping):
     'id',
     'lot',
     'serviceName',
-    'serviceSummary',
+    'serviceDescription',
     'serviceFeatures',
     'serviceBenefits',
-    'serviceTypes',
+    'serviceCategories',
     'supplierName'
 ))
 def test_highlight_block_contains_correct_fields(services_mapping, example):

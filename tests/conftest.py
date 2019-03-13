@@ -10,7 +10,7 @@ import app.mapping
 from tests.app.helpers import make_standard_service
 
 
-with open(os.path.join(os.path.dirname(__file__), 'fixtures/mappings/services.json')) as f:
+with open(os.path.join(os.path.dirname(__file__), '../mappings/services.json')) as f:
     _services_mapping_definition = json.load(f)
 
 
