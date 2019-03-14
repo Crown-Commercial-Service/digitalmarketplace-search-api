@@ -105,7 +105,7 @@ class TestSearchIndexes(BaseApplicationTest):
         response = self.create_index(expect_success=False)
 
         assert response.status_code == 400
-        assert response.json["error"].startswith("index_already_exists_exception:")
+        assert "already_exists_exception" in response.json["error"]
 
     def test_should_not_be_able_delete_index_twice(self):
         self.create_index()

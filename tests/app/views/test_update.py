@@ -107,7 +107,7 @@ class TestDeleteById(BaseApplicationTestWithIndex):
 
         data = response.json
         assert response.status_code == 200
-        assert data['message']['found'] is True
+        assert data["message"]["result"] == "deleted"
 
         response = self.client.get(make_search_api_url(service),)
         data = response.json
@@ -118,9 +118,8 @@ class TestDeleteById(BaseApplicationTestWithIndex):
         response = self.client.delete(
             '/test-index/services/not-an-id-that-exists')
 
-        data = response.json
         assert response.status_code == 404
-        assert data['error']['found'] is False
+        assert response.json["error"]["result"] == "not_found"
 
     def test_should_raise_400_on_bad_doc_type(self, service):
         response = self.client.delete(
