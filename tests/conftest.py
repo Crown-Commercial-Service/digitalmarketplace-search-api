@@ -8,7 +8,7 @@ import app.mapping
 
 mappings_dir = (pathlib.Path(__file__).parent / "../mappings").resolve()
 services_mappings = (
-    "services",
+    "services-g-cloud-10",
 )
 
 
