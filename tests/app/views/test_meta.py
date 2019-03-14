@@ -7,14 +7,14 @@ class TestMeta(BaseApplicationTestWithIndex):
         with self.app.app_context():
             self.client.put('/index-alias', data=json.dumps({
                 "type": "alias",
-                "target": "index-to-create",
+                "target": "test-index",
             }), content_type="application/json")
 
             response = self.client.get('/')
             response_data = json.loads(response.get_data())
 
             assert response.status_code == 200
-            assert {"href": "http://localhost/index-to-create/services/search",
+            assert {"href": "http://localhost/test-index/services/search",
                     "rel": "query.gdm.index",
                     } in response_data['links']
             assert {"href": "http://localhost/index-alias/services/search",

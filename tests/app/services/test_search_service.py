@@ -12,7 +12,7 @@ class TestCoreSearchAndAggregate(BaseApplicationTestWithIndex):
     def test_correct_exception_is_logged_with_info_attribute(self, es_mock):
         es_mock.search.side_effect = TransportError(500, 'NewConnectionError', 'Temporary failure in name resolution')
 
-        response = self.client.get('/index-to-create/services/search')
+        response = self.client.get('/test-index/services/search')
         data = json.loads(response.get_data())
 
         assert response.status_code == 500
@@ -22,7 +22,7 @@ class TestCoreSearchAndAggregate(BaseApplicationTestWithIndex):
     def test_correct_exception_is_logged_without_info_attribute(self, es_mock):
         es_mock.search.side_effect = TransportError(500, 'NewConnectionError', None)
 
-        response = self.client.get('/index-to-create/services/search')
+        response = self.client.get('/test-index/services/search')
         data = json.loads(response.get_data())
 
         assert response.status_code == 500

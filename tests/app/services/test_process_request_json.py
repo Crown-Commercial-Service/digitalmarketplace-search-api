@@ -1,10 +1,6 @@
-import pytest
 
 from app.main.services.process_request_json import \
     convert_request_json_into_index_json
-
-
-pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 def test_should_add_filter_fields_to_index_json(services_mapping):

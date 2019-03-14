@@ -1,12 +1,7 @@
 from flask import json
 
-import pytest
-
 from app.main.services.response_formatters import \
     convert_es_status, convert_es_results
-
-
-pytestmark = pytest.mark.usefixtures("services_mapping")
 
 
 with open("example_es_responses/stats.json") as services:

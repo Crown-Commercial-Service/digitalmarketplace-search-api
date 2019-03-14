@@ -6,6 +6,9 @@ from werkzeug.datastructures import MultiDict
 from app import create_app
 from app import elasticsearch_client
 
+from ..conftest import (
+    make_service,
+)
 
 def build_query_params(keywords=None, page=None, filters=None):
     query_params = MultiDict()
@@ -40,7 +43,7 @@ class BaseApplicationTest(object):
     def setup(self):
         self.app = create_app('test')
         self.client = self.app.test_client()
-        self.default_index_name = "index-to-create"
+        self.default_index_name = "test-index"
         self.default_mapping_name = "services"
 
         setup_authorization(self.app)
@@ -62,7 +65,7 @@ class BaseApplicationTest(object):
 
     def teardown(self):
         with self.app.app_context():
-            elasticsearch_client.indices.delete('index-*')
+            elasticsearch_client.indices.delete('test-*')
 
 
 class BaseApplicationTestWithIndex(BaseApplicationTest):
@@ -78,36 +81,22 @@ def setup_authorization(app):
         HTTP_AUTHORIZATION='Bearer {}'.format(app.config['DM_SEARCH_API_AUTH_TOKENS']))
 
 
-def make_standard_service(**kwargs):
-    service = {
-        "id": "id",
-        "lot": "LoT",
-        "serviceName": "serviceName",
-        "serviceDescription": "serviceDescription",
-        "serviceBenefits": "serviceBenefits",
-        "serviceFeatures": "serviceFeatures",
-        "serviceCategories": ["serviceCategories"],
-        "supplierName": "Supplier Name",
-        "publicSectorNetworksTypes": ["PSN", "PNN"],
-    }
-
-    service.update(kwargs)
-
-    return {
-        "document": service
-    }
-
-
 def make_search_api_url(data, type_name='services'):
     # currently, data may contain either "document" or "service" (as a backward compatibility shim)
-    return '/index-to-create/{}/{}'.format(type_name, str(data.get('document', data.get('service'))['id']))
+    return '/test-index/{}/{}'.format(type_name, str(data.get('document', data.get('service'))['id']))
 
 
 def assert_response_status(response, expected_status):
+    __tracebackhide__ = True
     assert response.status_code == expected_status, "Expected {} response; got {}. {}".format(
         expected_status, response.status_code, response.get_data(as_text=True)
     )
 
 
-def get_json_from_response(response):
-    return json.loads(response.get_data())
+def create_services(number_of_services):
+    services = []
+    for i in range(number_of_services):
+        service = make_service(id=str(i))
+        services.append(service)
+
+    return services
