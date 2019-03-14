@@ -1,20 +1,29 @@
 
-
 import pytest
-import os
+import pathlib
 import json
 
 import app.mapping
 
 
-with open(os.path.join(os.path.dirname(__file__), '../mappings/services.json')) as f:
-    _services_mapping_definition = json.load(f)
+mappings_dir = (pathlib.Path(__file__).parent / "../mappings").resolve()
+services_mappings = (
+    "services",
+)
+
+
+@pytest.fixture(scope="module", params=services_mappings)
+def services_mapping_file_name_and_path(request):
+    return (request.param, mappings_dir / f"{request.param}.json")
 
 
 @pytest.fixture()
-def services_mapping():
+def services_mapping(services_mapping_file_name_and_path):
     """Fixture that provides an Elastic Search mapping, for unit testing functions that expect to be passed one."""
-    return app.mapping.Mapping(_services_mapping_definition, 'services')
+    services_mapping_dict = json.loads(services_mapping_file_name_and_path[1].read_text())
+    return app.mapping.Mapping(services_mapping_dict, "services")
+
+
 def make_service(**kwargs):
     service = {
         "id": "id",

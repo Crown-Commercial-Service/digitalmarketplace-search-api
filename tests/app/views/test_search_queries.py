@@ -7,7 +7,7 @@ from ..helpers import setup_authorization, make_service
 
 
 @pytest.fixture(scope='module', autouse=True)
-def dummy_services():
+def dummy_services(services_mapping_file_name_and_path):
     """Fixture that indexes a bunch of fake G-Cloud services so that searching can be tested."""
 
     app = create_app('test')
@@ -17,7 +17,7 @@ def dummy_services():
     with app.app_context():
         response = test_client.put(
             '/test-index',
-            data=json.dumps({"type": "index", "mapping": "services", }),
+            data=json.dumps({"type": "index", "mapping": services_mapping_file_name_and_path[0]}),
             content_type="application/json",
         )
         assert response.status_code in (200, 201)

@@ -8,7 +8,9 @@ from app import elasticsearch_client
 
 from ..conftest import (
     make_service,
+    services_mappings,
 )
+
 
 def build_query_params(keywords=None, page=None, filters=None):
     query_params = MultiDict()
@@ -44,7 +46,7 @@ class BaseApplicationTest(object):
         self.app = create_app('test')
         self.client = self.app.test_client()
         self.default_index_name = "test-index"
-        self.default_mapping_name = "services"
+        self.default_mapping_name = services_mappings[0]
 
         setup_authorization(self.app)
 
