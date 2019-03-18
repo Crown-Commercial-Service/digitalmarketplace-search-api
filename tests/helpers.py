@@ -6,9 +6,9 @@ from werkzeug.datastructures import MultiDict
 from app import create_app
 from app import elasticsearch_client
 
-from ..conftest import (
-    make_service,
-    services_mappings,
+
+services_mappings = (
+    "services-g-cloud-10",
 )
 
 
@@ -88,17 +88,21 @@ def make_search_api_url(data, type_name='services'):
     return '/test-index/{}/{}'.format(type_name, str(data.get('document', data.get('service'))['id']))
 
 
-def assert_response_status(response, expected_status):
-    __tracebackhide__ = True
-    assert response.status_code == expected_status, "Expected {} response; got {}. {}".format(
-        expected_status, response.status_code, response.get_data(as_text=True)
-    )
+def make_service(**kwargs):
+    service = {
+        "id": "id",
+        "lot": "LoT",
+        "serviceName": "serviceName",
+        "serviceDescription": "serviceDescription",
+        "serviceBenefits": "serviceBenefits",
+        "serviceFeatures": "serviceFeatures",
+        "serviceCategories": ["serviceCategories"],
+        "supplierName": "Supplier Name",
+        "publicSectorNetworksTypes": ["PSN", "PNN"],
+    }
 
+    service.update(kwargs)
 
-def create_services(number_of_services):
-    services = []
-    for i in range(number_of_services):
-        service = make_service(id=str(i))
-        services.append(service)
-
-    return services
+    return {
+        "document": service
+    }

@@ -3,7 +3,7 @@ from flask import json
 import pytest
 
 from app import create_app
-from ..helpers import setup_authorization, make_service
+from tests.helpers import setup_authorization, make_service
 
 
 @pytest.fixture(scope='module', autouse=True)

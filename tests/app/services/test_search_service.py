@@ -3,7 +3,7 @@ import mock
 
 from elasticsearch import TransportError
 
-from ..helpers import BaseApplicationTestWithIndex
+from tests.helpers import BaseApplicationTestWithIndex
 
 
 class TestCoreSearchAndAggregate(BaseApplicationTestWithIndex):

@@ -6,7 +6,7 @@ from app.main.services.query_builder import (
     filter_clause,
 )
 from werkzeug.datastructures import MultiDict
-from tests.app.helpers import build_query_params
+from tests.helpers import build_query_params
 
 
 def test_should_have_correct_root_element(services_mapping):

@@ -6,27 +6,30 @@ from werkzeug import MultiDict
 from app import elasticsearch_client as es
 from app.main.services import search_service
 from app.main.services.search_service import core_search_and_aggregate
-from ..helpers import (
+from tests.helpers import (
     BaseApplicationTestWithIndex,
-    assert_response_status,
-    create_services,
     make_search_api_url,
-    make_service,
+    make_service
 )
 
 
-class TestSearchEndpoint(BaseApplicationTestWithIndex):
+class BaseSearchTestWithServices(BaseApplicationTestWithIndex):
     def setup(self):
-        super(TestSearchEndpoint, self).setup()
+        super(BaseSearchTestWithServices, self).setup()
         with self.app.app_context():
-            services = create_services(10)
-            for service in services:
+            services = []
+            for i in range(10):
+                service = make_service(id=str(i))
+                services.append(service)
                 response = self.client.put(
                     make_search_api_url(service),
                     data=json.dumps(service),
                     content_type='application/json')
                 assert response.status_code == 200
             search_service.refresh('test-index')
+
+
+class TestSearchEndpoint(BaseSearchTestWithServices):
 
     def _put_into_and_get_back_from_elasticsearch(self, service, query_string):
 
@@ -52,7 +55,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
         with self.app.app_context():
             response = self.client.get(
                 '/test-index/services/search?q=serviceName')
-            assert_response_status(response, 200)
+            assert response.status_code == 200
             assert response.json["meta"]["total"] == 10
 
     def test_keyword_search_via_alias(self):
@@ -63,7 +66,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             }), content_type="application/json")
             response = self.client.get(
                 '/index-alias/services/search?q=serviceName')
-            assert_response_status(response, 200)
+            assert response.status_code == 200
             assert response.json["meta"]["total"] == 10
 
     def test_should_get_services_up_to_page_size(self):
@@ -73,7 +76,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response = self.client.get(
                 '/test-index/services/search?q=serviceName'
             )
-            assert_response_status(response, 200)
+            assert response.status_code == 200
 
             assert response.json["meta"]["total"] == 10
             assert len(response.json["documents"]) == 5
@@ -86,7 +89,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
                 '/test-index/services/search?q=serviceName&page=2')
             response_json = response.json
 
-            assert_response_status(response, 200)
+            assert response.status_code == 200
             assert "page=1" in response_json['links']['prev']
             assert "page=3" in response_json['links']['next']
 
@@ -108,21 +111,21 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             response = self.client.get(
                 '/test-index/services/search?q=serviceName&page={}'.format(page)
             )
-            assert_response_status(response, 404)
+            assert response.status_code == 404
 
     def test_should_get_400_response__on_negative_page(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
                 '/test-index/services/search?q=serviceName&page=-1')
-            assert_response_status(response, 400)
+            assert response.status_code == 400
 
     def test_should_get_400_response__on_non_numeric_page(self):
         with self.app.app_context():
             self.app.config['DM_SEARCH_PAGE_SIZE'] = '5'
             response = self.client.get(
                 '/test-index/services/search?q=serviceName&page=foo')
-            assert_response_status(response, 400)
+            assert response.status_code == 400
 
     def test_highlighting_should_use_defined_html_tags(self):
         service = make_service(
@@ -135,7 +138,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             service=service,
             query_string='q=storing'
         )
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         search_results = response.json["documents"]
         assert search_results[0]["highlight"]["serviceDescription"][0] == highlighted_summary
 
@@ -148,7 +151,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             service=service,
             query_string='q=storing'
         )
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         search_results = response.json["documents"]
         expected_string = (
             "accessing, <mark class='search-result-highlighted-text'>storing</mark> &lt;h1&gt;and retaining"
@@ -166,7 +169,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             service=service,
             query_string='q=oY'
         )
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         search_results = response.json["documents"]
         expected_string = "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
         assert search_results[0]["highlight"]["serviceDescription"][0] == expected_string
@@ -185,7 +188,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
             service=service,
             query_string='lot=TaaS'
         )
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
         search_results = response.json["documents"]
         # Get the first with a matching value from a list
@@ -207,7 +210,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
                 '/test-index/services/search?q=serviceName&idOnly=True')
             response_json = response.json
 
-            assert_response_status(response, 200)
+            assert response.status_code == 200
             assert len(response_json['documents']) == expected_count
 
     def test_only_ids_returned_for_id_only_request(self):
@@ -216,7 +219,7 @@ class TestSearchEndpoint(BaseApplicationTestWithIndex):
                 '/test-index/services/search?q=serviceName&idOnly=True')
             response_json = response.json
 
-            assert_response_status(response, 200)
+            assert response.status_code == 200
             assert set(response_json['documents'][0].keys()) == {'id'}
 
 
@@ -225,7 +228,7 @@ class TestFetchById(BaseApplicationTestWithIndex):
         response = self.client.get(
             '/test-index/services/100')
 
-        assert_response_status(response, 404)
+        assert response.status_code == 404
 
     def test_should_return_service_by_id(self, service):
         self.client.put(
@@ -240,7 +243,7 @@ class TestFetchById(BaseApplicationTestWithIndex):
         response = self.client.get(make_search_api_url(service))
 
         data = response.json
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
         original_service_id = service.get('document', service.get('service'))['id']  # TODO remove compat shim
         assert data['services']["_id"] == str(original_service_id)
@@ -275,7 +278,7 @@ class TestFetchById(BaseApplicationTestWithIndex):
         response = self.client.get(make_search_api_url(service))
 
         data = response.json
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
         cases = [
             "lot",
@@ -304,22 +307,12 @@ class TestSearchType(BaseApplicationTestWithIndex):
         assert es_search_mock.call_args[1]['body']['size'] == 0
 
 
-class TestSearchResultsOrdering(BaseApplicationTestWithIndex):
-    def setup(self):
-        super(TestSearchResultsOrdering, self).setup()
-        with self.app.app_context():
-            services = create_services(10)
-            for service in services:
-                self.client.put(
-                    make_search_api_url(service),
-                    data=json.dumps(service),
-                    content_type='application/json')
-            search_service.refresh('test-index')
+class TestSearchResultsOrdering(BaseSearchTestWithServices):
 
     def test_should_order_services_by_service_id_sha256(self):
         with self.app.app_context():
             response = self.client.get('/test-index/services/search')
-            assert_response_status(response, 200)
+            assert response.status_code == 200
             assert response.json["meta"]["total"] == 10
 
         ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['documents']]

@@ -4,7 +4,7 @@ from flask import json
 from urllib3.exceptions import NewConnectionError
 
 from app.main.services import search_service
-from tests.app.helpers import BaseApplicationTestWithIndex, make_search_api_url, assert_response_status
+from tests.helpers import BaseApplicationTestWithIndex, make_search_api_url
 
 
 class TestIndexingDocuments(BaseApplicationTestWithIndex):
@@ -19,12 +19,12 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
         with self.app.app_context():
             search_service.refresh('test-index')
         response = self.client.get('/test-index')
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         assert response.json["status"]["num_docs"] == 1
 
     @mock.patch('app.main.views.update.index')
@@ -38,7 +38,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json'
         )
-        assert_response_status(response, 500)
+        assert response.status_code == 500
         current_app.logger.error.assert_called_once_with(
             f'API response error: ": {self.EXAMPLE_CONNECTION_ERROR}" Unexpected status code: "{error_status_code}"'
         )
@@ -51,7 +51,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
     def test_should_index_a_document_with_extra_fields(self, service):
         service.get('document', service.get('service'))["randomField"] = "some random"
@@ -61,7 +61,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
     def test_should_index_a_document_with_incorrect_types(self, service):
         service.get('document', service.get('service'))["serviceName"] = 123
@@ -71,7 +71,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
     def test_should_index_a_document_with_no_service_types(self, service):
         service.get('document', service.get('service'))["serviceName"] = 123
@@ -82,7 +82,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
     def test_should_raise_400_on_bad_doc_type(self, service):
         response = self.client.put(
@@ -90,7 +90,7 @@ class TestIndexingDocuments(BaseApplicationTestWithIndex):
             data=json.dumps(service),
             content_type='application/json')
 
-        assert_response_status(response, 400)
+        assert response.status_code == 400
 
 
 class TestDeleteById(BaseApplicationTestWithIndex):
@@ -106,12 +106,12 @@ class TestDeleteById(BaseApplicationTestWithIndex):
         response = self.client.delete(make_search_api_url(service),)
 
         data = response.json
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         assert data['message']['found'] is True
 
         response = self.client.get(make_search_api_url(service),)
         data = response.json
-        assert_response_status(response, 404)
+        assert response.status_code == 404
         assert data['error']['found'] is False
 
     def test_should_return_404_if_no_service(self):
@@ -119,5 +119,5 @@ class TestDeleteById(BaseApplicationTestWithIndex):
             '/test-index/delete/100')
 
         data = response.json
-        assert_response_status(response, 404)
+        assert response.status_code == 404
         assert data['error']['found'] is False

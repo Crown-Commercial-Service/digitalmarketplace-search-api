@@ -1,5 +1,5 @@
 import json
-from ..helpers import BaseApplicationTestWithIndex
+from tests.helpers import BaseApplicationTestWithIndex
 
 
 class TestMeta(BaseApplicationTestWithIndex):
