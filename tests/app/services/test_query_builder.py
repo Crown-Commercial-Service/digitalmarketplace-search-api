@@ -9,9 +9,6 @@ from werkzeug.datastructures import MultiDict
 from tests.app.helpers import build_query_params
 
 
-pytestmark = pytest.mark.usefixtures("services_mapping")
-
-
 def test_should_have_correct_root_element(services_mapping):
     assert "query" in construct_query(services_mapping, build_query_params())
 

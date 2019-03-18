@@ -3,7 +3,33 @@ from flask import json
 import pytest
 
 from app import create_app
-from ..helpers import setup_authorization, make_standard_service
+from ..helpers import setup_authorization, make_service
+
+
+@pytest.fixture(scope='module', autouse=True)
+def dummy_services(services_mapping_file_name_and_path):
+    """Fixture that indexes a bunch of fake G-Cloud services so that searching can be tested."""
+
+    app = create_app('test')
+    test_client = app.test_client()
+
+    setup_authorization(app)
+    with app.app_context():
+        response = test_client.put(
+            '/test-index',
+            data=json.dumps({"type": "index", "mapping": services_mapping_file_name_and_path[0]}),
+            content_type="application/json",
+        )
+        assert response.status_code in (200, 201)
+        services = list(create_services(120))
+        for service in services:
+            test_client.put(
+                '/test-index/services/%s' % service["document"]["id"],
+                data=json.dumps(service), content_type='application/json'
+            )
+            search_service.refresh('test-index')
+    yield
+    test_client.delete('/test-index')
 
 
 # Helpers for 'result_fields_check'
@@ -180,37 +206,11 @@ def test_escaped_characters():
     check_query(r'q=Service \| 12', 0, {})
 
 
-@pytest.fixture(scope='module', autouse=True)
-def dummy_services(services_mapping_definition):
-    """Fixture that indexes a bunch of fake G-Cloud services so that searching can be tested."""
-
-    app = create_app('test')
-    test_client = app.test_client()
-
-    setup_authorization(app)
-    with app.app_context():
-        response = test_client.put(
-            '/index-to-create',
-            data=json.dumps({"type": "index", "mapping": "services", }),
-            content_type="application/json",
-        )
-        assert response.status_code in (200, 201)
-        services = list(create_services(120))
-        for service in services:
-            test_client.put(
-                '/index-to-create/services/%s' % service["document"]["id"],
-                data=json.dumps(service), content_type='application/json'
-            )
-            search_service.refresh('index-to-create')
-    yield
-    test_client.delete('/index-to-create')
-
-
 # '/search' request helpers
 
 def create_services(number_of_services):
     for i in range(number_of_services):
-        yield make_standard_service(
+        yield make_service(
             id=str(i),
             serviceName="Service {}".format(i),
             phoneSupport=bool(i % 2),
@@ -233,7 +233,7 @@ def search_results(query):
     test_client = app.test_client()
     setup_authorization(app)
 
-    response = test_client.get('/index-to-create/services/search?%s' % query)
+    response = test_client.get('/test-index/services/search?%s' % query)
     return json.loads(response.get_data())
 
 
@@ -242,7 +242,7 @@ def aggregations_results(query):
     test_client = app.test_client()
     setup_authorization(app)
 
-    response = test_client.get('/index-to-create/services/aggregations?{}&aggregations=lot'.format(query))
+    response = test_client.get('/test-index/services/aggregations?{}&aggregations=lot'.format(query))
     return json.loads(response.get_data())
 
 

@@ -1,38 +1,53 @@
-from __future__ import absolute_import
-
 
 import pytest
-import os
-import mock
+import pathlib
 import json
 
 import app.mapping
-from tests.app.helpers import make_standard_service
 
 
-with open(os.path.join(os.path.dirname(__file__), '../mappings/services.json')) as f:
-    _services_mapping_definition = json.load(f)
+mappings_dir = (pathlib.Path(__file__).parent / "../mappings").resolve()
+services_mappings = (
+    "services-g-cloud-10",
+)
 
 
-@pytest.fixture(scope="function")
-def services_mapping():
+@pytest.fixture(scope="module", params=services_mappings)
+def services_mapping_file_name_and_path(request):
+    return (request.param, mappings_dir / f"{request.param}.json")
+
+
+@pytest.fixture()
+def services_mapping(services_mapping_file_name_and_path):
     """Fixture that provides an Elastic Search mapping, for unit testing functions that expect to be passed one."""
-    return app.mapping.Mapping(_services_mapping_definition, 'services')
+    services_mapping_dict = json.loads(services_mapping_file_name_and_path[1].read_text())
+    return app.mapping.Mapping(services_mapping_dict, "services")
 
 
-@pytest.fixture(scope="module")
-def services_mapping_definition():
-    """Fixture that patches load_mapping_definition, to ensure our mapping fixture is used wherever an index is
-    created."""
-    with mock.patch('app.mapping.load_mapping_definition') as mock_definition_loader:
-        mock_definition_loader.return_value = _services_mapping_definition
-        yield mock_definition_loader.return_value
+def make_service(**kwargs):
+    service = {
+        "id": "id",
+        "lot": "LoT",
+        "serviceName": "serviceName",
+        "serviceDescription": "serviceDescription",
+        "serviceBenefits": "serviceBenefits",
+        "serviceFeatures": "serviceFeatures",
+        "serviceCategories": ["serviceCategories"],
+        "supplierName": "Supplier Name",
+        "publicSectorNetworksTypes": ["PSN", "PNN"],
+    }
+
+    service.update(kwargs)
+
+    return {
+        "document": service
+    }
 
 
-@pytest.fixture(scope="function")
-def default_service():
+@pytest.fixture()
+def service():
     """
     A fixture for a service such as might be indexed in the Search API.
     :return: dict
     """
-    return make_standard_service()
+    return make_service()
