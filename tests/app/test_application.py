@@ -7,7 +7,7 @@ import pytest
 from flask import json
 from elasticsearch.exceptions import ConnectionError
 
-from .helpers import BaseApplicationTest
+from tests.helpers import BaseApplicationTest
 
 
 class TestApplication(BaseApplicationTest):

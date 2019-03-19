@@ -3,7 +3,7 @@ import json
 import mock
 from elasticsearch import TransportError
 
-from ..helpers import BaseApplicationTest
+from tests.helpers import BaseApplicationTest
 
 
 class TestStatus(BaseApplicationTest):

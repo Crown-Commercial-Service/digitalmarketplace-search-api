@@ -1,23 +1,23 @@
 from flask import json
 
-from tests.app.helpers import BaseApplicationTest, assert_response_status
+from tests.helpers import BaseApplicationTest
 
 
 class TestSearchIndexes(BaseApplicationTest):
     def test_should_be_able_create_and_delete_index(self):
         response = self.create_index()
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         assert response.json["message"] == "acknowledged"
 
         response = self.client.get('/test-index')
-        assert_response_status(response, 200)
+        assert response.status_code == 200
 
         response = self.client.delete('/test-index')
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         assert response.json["message"] == "acknowledged"
 
         response = self.client.get('/test-index')
-        assert_response_status(response, 404)
+        assert response.status_code == 404
 
     def test_should_be_able_to_create_aliases(self):
         self.create_index()
@@ -26,7 +26,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "test-index"
         }), content_type="application/json")
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         assert response.json["message"] == "acknowledged"
 
     def test_should_not_be_able_to_delete_aliases(self):
@@ -38,7 +38,7 @@ class TestSearchIndexes(BaseApplicationTest):
 
         response = self.client.delete('/index-alias')
 
-        assert_response_status(response, 400)
+        assert response.status_code == 400
         assert response.json["error"] == "Cannot delete alias 'index-alias'"
 
     def test_should_not_be_able_to_delete_index_with_alias(self):
@@ -50,7 +50,7 @@ class TestSearchIndexes(BaseApplicationTest):
 
         response = self.client.delete('/test-index')
 
-        assert_response_status(response, 400)
+        assert response.status_code == 400
         assert (
             response.json["error"] ==
             "Index 'test-index' is aliased as 'index-alias' and cannot be deleted"
@@ -62,7 +62,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "test-index"
         }), content_type="application/json")
 
-        assert_response_status(response, 404)
+        assert response.status_code == 404
         assert response.json["error"].startswith(
             'index_not_found_exception: no such index')
 
@@ -73,7 +73,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "test-index"
         }), content_type="application/json")
 
-        assert_response_status(response, 400)
+        assert response.status_code == 400
 
         expected_string = (
             'invalid_alias_name_exception: Invalid alias name [test-index], an index exists with the same name '
@@ -94,7 +94,7 @@ class TestSearchIndexes(BaseApplicationTest):
             "target": "test-index-2"
         }), content_type="application/json")
 
-        assert_response_status(response, 200)
+        assert response.status_code == 200
         status = self.client.get('/_all').json["status"]
         assert status['test-index']['aliases'] == []
         assert status['test-index-2']['aliases'] == ['index-alias']
@@ -104,19 +104,19 @@ class TestSearchIndexes(BaseApplicationTest):
 
         response = self.create_index(expect_success=False)
 
-        assert_response_status(response, 400)
+        assert response.status_code == 400
         assert response.json["error"].startswith("index_already_exists_exception:")
 
     def test_should_not_be_able_delete_index_twice(self):
         self.create_index()
         self.client.delete('/test-index')
         response = self.client.delete('/test-index')
-        assert_response_status(response, 404)
+        assert response.status_code == 404
         assert response.json["error"] == 'index_not_found_exception: no such index (test-index)'
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist')
-        assert_response_status(response, 404)
+        assert response.status_code == 404
         assert (
             response.json["error"] ==
             "index_not_found_exception: no such index (index-does-not-exist)"
@@ -128,5 +128,5 @@ class TestSearchIndexes(BaseApplicationTest):
             "mapping": "some-bad-mapping"
         }), content_type="application/json")
 
-        assert_response_status(response, 400)
+        assert response.status_code == 400
         assert response.json["error"] == "Mapping definition named 'some-bad-mapping' not found."
