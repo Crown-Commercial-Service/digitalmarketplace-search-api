@@ -63,7 +63,7 @@ def delete_index(index_name):
 def fetch_by_id(index_name, doc_type, document_id):
     try:
         with logged_duration_for_external_request('es'):
-            res = es.get(index_name, document_id, doc_type)
+            res = es.get(index=index_name, doc_type=doc_type, id=document_id)
         return res, 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -72,7 +72,7 @@ def fetch_by_id(index_name, doc_type, document_id):
 def delete_by_id(index_name, doc_type, document_id):
     try:
         with logged_duration_for_external_request('es'):
-            res = es.delete(index_name, doc_type, document_id)
+            res = es.delete(index=index_name, doc_type=doc_type, id=document_id)
         return res, 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
