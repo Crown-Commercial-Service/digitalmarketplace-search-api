@@ -127,74 +127,6 @@ class TestSearchEndpoint(BaseSearchTestWithServices):
                 '/test-index/services/search?q=serviceName&page=foo')
             assert response.status_code == 400
 
-    def test_highlighting_should_use_defined_html_tags(self):
-        service = make_service(
-            serviceDescription="Accessing, storing and retaining email"
-        )
-        highlighted_summary = \
-            "Accessing, <mark class='search-result-highlighted-text'>storing</mark> and retaining email"
-
-        response = self._put_into_and_get_back_from_elasticsearch(
-            service=service,
-            query_string='q=storing'
-        )
-        assert response.status_code == 200
-        search_results = response.json["documents"]
-        assert search_results[0]["highlight"]["serviceDescription"][0] == highlighted_summary
-
-    def test_highlighting_should_escape_html(self):
-        service = make_service(
-            serviceDescription="accessing, storing <h1>and retaining</h1> email"
-        )
-
-        response = self._put_into_and_get_back_from_elasticsearch(
-            service=service,
-            query_string='q=storing'
-        )
-        assert response.status_code == 200
-        search_results = response.json["documents"]
-        expected_string = (
-            "accessing, <mark class='search-result-highlighted-text'>storing</mark> &lt;h1&gt;and retaining"
-            "&lt;&#x2F;h1&gt; email"
-        )
-        assert search_results[0]["highlight"]["serviceDescription"][0] == expected_string
-
-    def test_unhighlighted_result_should_escape_html(self):
-        service = make_service(
-            serviceDescription='Oh <script>alert("Yo");</script>',
-            lot='oY'
-        )
-
-        response = self._put_into_and_get_back_from_elasticsearch(
-            service=service,
-            query_string='q=oY'
-        )
-        assert response.status_code == 200
-        search_results = response.json["documents"]
-        expected_string = "Oh &lt;script&gt;alert(&quot;Yo&quot;);&lt;&#x2F;script&gt;"
-        assert search_results[0]["highlight"]["serviceDescription"][0] == expected_string
-
-    def test_highlight_service_summary_limited_if_no_matches(self):
-
-        # 120 words, 600 characters
-        really_long_service_summary = "This line has a total of 10 words, 50 characters. " * 12
-
-        service = make_service(
-            serviceDescription=really_long_service_summary,
-            lot='TaaS'
-        )
-        # Doesn't actually search by lot, returns all services
-        response = self._put_into_and_get_back_from_elasticsearch(
-            service=service,
-            query_string='lot=TaaS'
-        )
-        assert response.status_code == 200
-
-        search_results = response.json["documents"]
-        # Get the first with a matching value from a list
-        search_result = next((s for s in search_results if s['lot'] == 'TaaS'), None)
-        assert 490 < len(search_result["highlight"]["serviceDescription"][0]) < 510
-
     @pytest.mark.parametrize('page_size, multiplier, expected_count',
                              (
                                  ('1', '5', 5),
@@ -317,3 +249,111 @@ class TestSearchResultsOrdering(BaseSearchTestWithServices):
 
         ordered_service_ids = [service['id'] for service in json.loads(response.get_data(as_text=True))['documents']]
         assert ordered_service_ids == ['5', '6', '2', '7', '1', '0', '3', '4', '8', '9']  # fixture for sha256 ordering
+
+
+class TestHighlightedService(BaseApplicationTestWithIndex):
+
+    def setup(self):
+        super().setup()
+
+        def put(s):
+            response = self.client.put(
+                make_search_api_url(s),
+                data=json.dumps(s),
+                content_type="application/json",
+            )
+            assert response.status_code == 200
+            return response
+
+        with self.app.app_context():
+            put(make_service(
+                id="1",
+                serviceDescription="Accessing, storing and retaining email.",
+                lot="cloud-support",
+            ))
+            put(make_service(
+                id="2",
+                serviceDescription="The <em>quick</em> brown fox jumped over the <em>lazy</em> dog.",
+                lot="mother-goose",
+            ))
+            put(make_service(
+                id="3",
+                serviceDescription=(
+                    # serviceDescription is limited to 500 characters by validator in
+                    # digitalmarketplace-frameworks/frameworks/g-cloud-10/questions/services
+                    "This service description has 500 characters. "
+                    "It is made of 5 repetitions of a 100 character string.\n"
+                    * 5
+                ),
+                lot="long-text",
+            ))
+
+            search_service.refresh("test-index")
+
+    def test_search_results_have_highlighted_service_description(self):
+        search_results = self.client.get("/test-index/services/search").json["documents"]
+        assert all(doc["highlight"]["serviceDescription"] for doc in search_results)
+
+    def test_highlighted_service_description_has_list_containing_service_description(self):
+        search_results = self.client.get("/test-index/services/search").json["documents"]
+        cloud_support = [doc for doc in search_results if doc["id"] == "1"][0]["highlight"]["serviceDescription"][0]
+        assert (
+            cloud_support
+            ==
+            "Accessing, storing and retaining email."
+        )
+
+    @pytest.mark.parametrize(
+        "search_query",
+        (
+            "",
+            "?q=long-text",
+        )
+    )
+    def test_highlighted_service_description_always_contains_full_service_description(self, search_query):
+        search_results = self.client.get(f"/test-index/services/search{search_query}").json["documents"]
+        long_text = [doc for doc in search_results if doc["id"] == "3"][0]["highlight"]["serviceDescription"][0]
+        assert len(long_text) == 500
+
+    def test_search_terms_are_marked_in_highlighted_service_description(self):
+        search_results = self.client.get("test-index/services/search?q=storing").json["documents"]
+        marked_text = search_results[0]["highlight"]["serviceDescription"][0]
+        assert (
+            marked_text
+            ==
+            "Accessing, <mark class='search-result-highlighted-text'>storing</mark> and retaining email."
+        )
+
+    def test_highlighted_service_description_can_be_longer_than_500_characters_if_marked(self):
+        search_results = self.client.get("/test-index/services/search?q=repetitions").json["documents"]
+        long_text = [doc for doc in search_results if doc["id"] == "3"][0]["highlight"]["serviceDescription"][0]
+        assert (
+            long_text
+            ==
+            "This service description has 500 characters. "
+            "It is made of 5 "
+            "<mark class='search-result-highlighted-text'>repetitions</mark> "
+            "of a 100 character string.\n"
+            * 5
+        )
+        assert len(long_text) > 500
+
+    def test_html_in_highlighted_service_description_is_always_escaped(self):
+        search_results = self.client.get("test-index/services/search").json["documents"]
+        escaped_text = [doc for doc in search_results if doc["id"] == "2"][0]["highlight"]["serviceDescription"][0]
+        assert (
+            escaped_text
+            ==
+            "The &lt;em&gt;quick&lt;&#x2F;em&gt; brown fox "
+            "jumped over the &lt;em&gt;lazy&lt;&#x2F;em&gt; dog."
+        )
+
+        search_results = self.client.get("test-index/services/search?q=fox").json["documents"]
+        escaped_text = search_results[0]["highlight"]["serviceDescription"][0]
+        assert (
+            escaped_text
+            ==
+            "The &lt;em&gt;quick&lt;&#x2F;em&gt; brown "
+            "<mark class='search-result-highlighted-text'>fox</mark> "
+            "jumped over the &lt;em&gt;lazy&lt;&#x2F;em&gt; dog."
+        )
