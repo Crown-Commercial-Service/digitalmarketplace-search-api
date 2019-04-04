@@ -116,7 +116,7 @@ class TestDeleteById(BaseApplicationTestWithIndex):
 
     def test_should_return_404_if_no_service(self):
         response = self.client.delete(
-            '/test-index/delete/100')
+            '/test-index/services/not-an-id-that-exists')
 
         data = response.json
         assert response.status_code == 404
