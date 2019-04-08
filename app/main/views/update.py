@@ -10,9 +10,6 @@ from app.main.services.search_service import index, delete_by_id
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:document_id>', methods=['PUT'])
 def index_document(index_name, doc_type, document_id):
-    if doc_type not in current_app.config['DOC_TYPES']:
-        abort(400, "doc_type must be one of: {current_app.config['DOC_TYPES']}")
-
     payload = check_json_from_request(request)
     json_payload = payload.get('document') or payload.get('service')  # fallback to 'service' for backward-compat.
     if json_payload is None:
@@ -27,8 +24,8 @@ def index_document(index_name, doc_type, document_id):
 
 @main.route('/<string:index_name>/<string:doc_type>/<string:service_id>', methods=['DELETE'])
 def delete_service(index_name, doc_type, service_id):
-    if doc_type not in current_app.config['DOC_TYPES']:
-        abort(400, "doc_type must be one of: {current_app.config['DOC_TYPES']}")
+    # This checks that the index_name and doc_type exist or 400s
+    get_mapping(index_name, doc_type)
 
     result, status_code = delete_by_id(index_name, doc_type, service_id)
 
