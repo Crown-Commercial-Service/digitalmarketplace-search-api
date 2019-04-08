@@ -26,6 +26,8 @@ class Config:
     VCAP_SERVICES = None
     DM_ELASTICSEARCH_SERVICE_NAME = "search_api_elasticsearch"
 
+    DOC_TYPES = ['services', 'briefs']
+
     @staticmethod
     def init_app(app):
         pass
