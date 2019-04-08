@@ -121,3 +121,12 @@ class TestDeleteById(BaseApplicationTestWithIndex):
         data = response.json
         assert response.status_code == 404
         assert data['error']['found'] is False
+
+    def test_should_raise_400_on_bad_doc_type(self, service):
+        response = self.client.delete(
+            make_search_api_url(service, type_name='some-bad-type'),
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+
+        assert response.status_code == 400
