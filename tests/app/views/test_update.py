@@ -130,3 +130,12 @@ class TestDeleteById(BaseApplicationTestWithIndex):
         )
 
         assert response.status_code == 400
+
+    def test_shoould_raise_400_on_attempted_deletion_of_alias(self, service):
+        response = self.client.delete(
+            "/test-index/aliases/_all",
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+
+        assert response.status_code == 400
