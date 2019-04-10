@@ -116,8 +116,26 @@ class TestDeleteById(BaseApplicationTestWithIndex):
 
     def test_should_return_404_if_no_service(self):
         response = self.client.delete(
-            '/test-index/delete/100')
+            '/test-index/services/not-an-id-that-exists')
 
         data = response.json
         assert response.status_code == 404
         assert data['error']['found'] is False
+
+    def test_should_raise_400_on_bad_doc_type(self, service):
+        response = self.client.delete(
+            make_search_api_url(service, type_name='some-bad-type'),
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+
+        assert response.status_code == 400
+
+    def test_shoould_raise_400_on_attempted_deletion_of_alias(self, service):
+        response = self.client.delete(
+            "/test-index/aliases/_all",
+            data=json.dumps(service),
+            content_type='application/json'
+        )
+
+        assert response.status_code == 400
