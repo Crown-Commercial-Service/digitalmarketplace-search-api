@@ -56,18 +56,14 @@ def construct_query(mapping, query_args, aggregations=[], page_size=100):
 
 
 def highlight_clause(mapping):
-    # Only fields with an entry in 'fields' will be returned as part of the highlighted key regardless of their value
-    # Here we attach all fields to take advantage of highlighting and html escaping.
+    # Highlight all fields to take advantage of highlighting and html escaping.
     highlights = {
+        "fields": {f"{mapping.text_search_field_prefix}_*": {}},
         "number_of_fragments": 0,
         "no_match_size": 500,
         "encoder": "html",
         "pre_tags": ["<mark class='search-result-highlighted-text'>"],
         "post_tags": ["</mark>"],
-        "fields": {
-            f"{mapping.text_search_field_prefix}_{field}": {}
-            for field in mapping.fields_by_prefix.get(mapping.text_search_field_prefix, ())
-        }
     }
 
     return highlights
