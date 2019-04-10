@@ -312,48 +312,53 @@ class TestHighlightedService(BaseApplicationTestWithIndex):
     )
     def test_highlighted_service_description_always_contains_full_service_description(self, search_query):
         search_results = self.client.get(f"/test-index/services/search{search_query}").json["documents"]
-        long_text = [doc for doc in search_results if doc["id"] == "3"][0]["highlight"]["serviceDescription"][0]
-        assert len(long_text) == 500
+        got = [doc for doc in search_results if doc["id"] == "3"][0]["highlight"]["serviceDescription"][0]
+        expected = (
+            "This service description has 500 characters. "
+            "It is made of 5 repetitions of a 100 character string.\n"
+            * 5
+        )
+        assert 500 == len(got)
+        assert expected == got
 
     def test_search_terms_are_marked_in_highlighted_service_description(self):
         search_results = self.client.get("test-index/services/search?q=storing").json["documents"]
-        marked_text = search_results[0]["highlight"]["serviceDescription"][0]
+        got = search_results[0]["highlight"]["serviceDescription"][0]
         assert (
-            marked_text
-            ==
             "Accessing, <mark class='search-result-highlighted-text'>storing</mark> and retaining email."
+            ==
+            got
         )
 
     def test_highlighted_service_description_can_be_longer_than_500_characters_if_marked(self):
         search_results = self.client.get("/test-index/services/search?q=repetitions").json["documents"]
-        long_text = [doc for doc in search_results if doc["id"] == "3"][0]["highlight"]["serviceDescription"][0]
-        assert (
-            long_text
-            ==
+        got = [doc for doc in search_results if doc["id"] == "3"][0]["highlight"]["serviceDescription"][0]
+        expected = (
             "This service description has 500 characters. "
             "It is made of 5 "
             "<mark class='search-result-highlighted-text'>repetitions</mark> "
             "of a 100 character string.\n"
             * 5
         )
-        assert len(long_text) > 500
+        assert len(expected) == len(got)
+        assert expected == got
 
     def test_html_in_highlighted_service_description_is_always_escaped(self):
         search_results = self.client.get("test-index/services/search").json["documents"]
-        escaped_text = [doc for doc in search_results if doc["id"] == "2"][0]["highlight"]["serviceDescription"][0]
+        got = [doc for doc in search_results if doc["id"] == "2"][0]["highlight"]["serviceDescription"][0]
         assert (
-            escaped_text
-            ==
             "The &lt;em&gt;quick&lt;&#x2F;em&gt; brown fox "
             "jumped over the &lt;em&gt;lazy&lt;&#x2F;em&gt; dog."
+            ==
+            got
         )
 
         search_results = self.client.get("test-index/services/search?q=fox").json["documents"]
-        escaped_text = search_results[0]["highlight"]["serviceDescription"][0]
+        got = search_results[0]["highlight"]["serviceDescription"][0]
         assert (
-            escaped_text
-            ==
             "The &lt;em&gt;quick&lt;&#x2F;em&gt; brown "
             "<mark class='search-result-highlighted-text'>fox</mark> "
             "jumped over the &lt;em&gt;lazy&lt;&#x2F;em&gt; dog."
+            ==
+            got
         )
