@@ -59,16 +59,18 @@ def highlight_clause(mapping):
     highlights = {
         "encoder": "html",
         "pre_tags": ["<mark class='search-result-highlighted-text'>"],
-        "post_tags": ["</mark>"]
-    }
-    highlights["fields"] = {}
+        "post_tags": ["</mark>"],
 
-    # Get all fields searched and allow non-matches to a max of the searchSummary limit
-    for field in mapping.fields_by_prefix.get(mapping.text_search_field_prefix, ()):
-        highlights["fields"]["_".join((mapping.text_search_field_prefix, field))] = {
-            "number_of_fragments": 0,
-            "no_match_size": 500
+        # we always want the whole field, the longest field is the description
+        # which is limited to 500 chars
+        "number_of_fragments": 0,
+        "no_match_size": 500,
+
+        # Get all fields searched
+        "fields": {
+            f"{mapping.text_search_field_prefix}_*": {},
         }
+    }
 
     return highlights
 

@@ -8,6 +8,8 @@ from app.main.services.query_builder import (
 from werkzeug.datastructures import MultiDict
 from tests.helpers import build_query_params
 
+import re
+
 
 def test_should_have_correct_root_element(services_mapping):
     assert "query" in construct_query(services_mapping, build_query_params())
@@ -224,7 +226,7 @@ def test_highlight_block_contains_correct_fields(services_mapping, example):
     query = construct_query(services_mapping, build_query_params(keywords="some keywords"))
 
     assert "highlight" in query
-    assert 'dmtext_' + example in query["highlight"]["fields"], example
+    assert any(re.match(field, "dmtext_" + example) for field in query["highlight"]["fields"]), example
 
 
 class TestFieldFilters(object):
