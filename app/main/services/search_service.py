@@ -138,14 +138,15 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         # highlighter finds no terms to mark. This hack basically makes sure that the always get the full
         # service description in this case. See https://github.com/elastic/elasticsearch/issues/41066.
         # Should be fixed in > v6.7.2 :fingers_crossed:.
+        escape_field = "serviceDescription" if doc_type == "services" else "summary"
         for document in results["documents"]:
             if "highlight" not in document:
                 break
-            if len(document["highlight"]["serviceDescription"][0]) < len(document["serviceDescription"]):
-                escaped_description = escape(document["serviceDescription"])
+            if len(document["highlight"][escape_field][0]) < len(document[escape_field]):
+                escaped_description = escape(document[escape_field])
                 # escape doesn't escape / but Elasticsearch does
                 escaped_description = escaped_description.translate({ord("/"): "&#x2F;"})
-                document["highlight"]["serviceDescription"] = [escaped_description]
+                document["highlight"][escape_field] = [escaped_description]
 
         def url_for_search(**kwargs):
             return url_for('.search', index_name=index_name, doc_type=doc_type, _external=True, **kwargs)
