@@ -18,7 +18,7 @@ class TestMetrics(BaseApplicationTest):
         metrics_response = self.client.get('/_metrics')
         results = load_prometheus_metrics(metrics_response.data)
         assert (
-            b'http_server_requests_total{code="200",host="localhost",method="GET",path="/"}'
+            b'http_server_requests_total{code="200",host="localhost",method="GET",path="/_metrics"}'
         ) in results
 
 
