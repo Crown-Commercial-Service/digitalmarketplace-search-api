@@ -1,5 +1,5 @@
-
 import json
+import mock
 
 from werkzeug.datastructures import MultiDict
 
@@ -43,6 +43,9 @@ class WSGIApplicationWithEnvironment(object):
 class BaseApplicationTest(object):
 
     def setup(self):
+        self.app_env_var_mock = mock.patch.dict('gds_metrics.os.environ', {'PROMETHEUS_METRICS_PATH': '/_metrics'})
+        self.app_env_var_mock.start()
+
         self.app = create_app('test')
         self.client = self.app.test_client()
         self.default_index_name = "test-index"
@@ -68,6 +71,8 @@ class BaseApplicationTest(object):
     def teardown(self):
         with self.app.app_context():
             elasticsearch_client.indices.delete('test-*')
+
+        self.app_env_var_mock.stop()
 
 
 class BaseApplicationTestWithIndex(BaseApplicationTest):

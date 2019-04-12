@@ -1,5 +1,4 @@
 from flask import Flask
-import base64
 import json
 from config import config as configs
 from flask_elasticsearch import FlaskElasticsearch
@@ -40,10 +39,14 @@ def create_app(config_name):
         verify_certs=True,
     )
 
+    from .metrics import metrics as metrics_blueprint, gds_metrics
     from .main import main as main_blueprint
     from .status import status as status_blueprint
 
+    application.register_blueprint(metrics_blueprint)
     application.register_blueprint(status_blueprint)
     application.register_blueprint(main_blueprint)
+
+    gds_metrics.init_app(application)
 
     return application
