@@ -32,7 +32,11 @@ def root():
     with logged_duration_for_external_request('es'):
         es_alias_json = es.cat.aliases(format='json')
 
-    aliases = {info['alias']: info['index'] for info in es_alias_json}
+    aliases = {
+        info['alias']: info['index']
+        for info in es_alias_json
+        if not info['index'].startswith('.')
+    }
     for alias_name, index_name in aliases.items():
         for type_name in types_by_index_name[index_name]:
             links.append({
