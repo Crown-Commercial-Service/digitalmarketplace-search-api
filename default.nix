@@ -27,7 +27,7 @@ in (with args; {
     ] ++ pkgs.stdenv.lib.optionals withLocalES [
       ((import ./es.nix) (with pkgs; {
         inherit stdenv makeWrapper writeScript;
-        elasticsearch = elasticsearch5;
+        elasticsearch = elasticsearch6-oss;
         homePath = (toString (./.)) + "/local_es_home";
       }))
     ];
