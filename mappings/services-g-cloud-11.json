@@ -49,10 +49,10 @@
     "services": {
       "_meta": {
         "_": "DO NOT UPDATE BY HAND",
-        "version": "16.0.0",
+        "version": "16.1.2",
         "generated_from_framework": "g-cloud-11",
         "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2019-06-11T10:46:35.816495",
+        "generated_time": "2019-07-30T10:55:37.561144",
         "dm_sort_clause": [
           "_score",
           {
@@ -528,7 +528,7 @@
           },
           {
             "append_conditionally": {
-              "field": "setupAndMigrationService",
+              "field": "planningService",
               "target_field": "serviceCategories",
               "any_of": [
                 true
