@@ -2,7 +2,7 @@
 # Run `make freeze-requirements` to update requirements.txt
 # with package version changes made in requirements-app.txt
 
-Flask==1.0.3
+Flask==1.0.3 # pyup: >=1.0.0,<1.1.0
 itsdangerous==0.24 # pyup: ignore
 
 git+https://github.com/alphagov/digitalmarketplace-utils.git@48.0.2#egg=digitalmarketplace-utils==48.0.2
@@ -14,9 +14,9 @@ Flask-Elasticsearch==0.2.5
 ## The following requirements were added by pip freeze:
 asn1crypto==0.24.0
 blinker==1.4
-boto3==1.9.151
-botocore==1.12.151
-certifi==2019.3.9
+boto3==1.9.201
+botocore==1.12.201
+certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
 Click==7.0
@@ -31,7 +31,7 @@ Flask-WTF==0.14.2
 fleep==1.0.1
 future==0.17.1
 gds-metrics==0.2.0
-govuk-country-register==0.3.0
+govuk-country-register==0.4.0
 idna==2.8
 Jinja2==2.10.1
 jmespath==0.9.4
@@ -45,12 +45,12 @@ pycparser==2.19
 PyJWT==1.7.1
 python-dateutil==2.8.0
 python-json-logger==0.1.11
-pytz==2019.1
+pytz==2019.2
 requests==2.22.0
-s3transfer==0.2.0
+s3transfer==0.2.1
 six==1.12.0
 unicodecsv==0.14.1
-urllib3==1.25.2
-Werkzeug==0.15.4
+urllib3==1.25.3
+Werkzeug==0.15.5
 workdays==1.4
 WTForms==2.2.1
