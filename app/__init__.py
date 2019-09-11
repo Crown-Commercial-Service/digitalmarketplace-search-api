@@ -49,4 +49,12 @@ def create_app(config_name):
 
     gds_metrics.init_app(application)
 
+    @application.after_request
+    def set_x_compression_safe(response):
+        # the search api is generally considered safe for compression of body content despite BREACH attacks
+        # because the response body never contains any values we would consider "secret".
+        # IF THIS EVER CHANGES, WE NEED TO REVIEW THIS
+        response.headers["X-Compression-Safe"] = "1"
+        return response
+
     return application
