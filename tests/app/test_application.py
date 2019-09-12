@@ -16,10 +16,10 @@ class TestApplication(BaseApplicationTest):
         assert 200 == response.status_code
         assert 'links' in json.loads(response.get_data())
 
-    def test_xcompressionsafe_header(self):
-        response = self.client.get('/')
-        assert 200 == response.status_code
-        assert response.headers["X-Compression-Safe"] == "1"
+    #def test_xcompressionsafe_header(self):
+        #response = self.client.get('/')
+        #assert 200 == response.status_code
+        #assert response.headers["X-Compression-Safe"] == "1"
 
     def test_404(self):
         response = self.client.get('/index/type/search')
