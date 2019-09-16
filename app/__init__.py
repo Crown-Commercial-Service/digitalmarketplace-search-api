@@ -2,6 +2,7 @@ from flask import Flask
 import json
 from config import config as configs
 from flask_elasticsearch import FlaskElasticsearch
+from flask_gzip import Gzip
 
 from dmutils.flask_init import init_app, api_error_handlers
 
@@ -48,5 +49,9 @@ def create_app(config_name):
     application.register_blueprint(main_blueprint)
 
     gds_metrics.init_app(application)
+
+    # because the search api doesn't return any values in its bodies we would consider "secrets", we should be
+    # able to safely gzip all response bodies without concerns about BREACH et al.
+    Gzip(application, minimum_size=1024)
 
     return application

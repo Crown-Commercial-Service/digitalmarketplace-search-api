@@ -1,13 +1,15 @@
 """
 Tests for the application infrastructure
 """
+import gzip
+
 import mock
 import pytest
 
 from flask import json
 from elasticsearch.exceptions import ConnectionError
 
-from tests.helpers import BaseApplicationTest
+from tests.helpers import BaseApplicationTest, BaseApplicationTestWithIndex
 
 
 class TestApplication(BaseApplicationTest):
@@ -47,3 +49,20 @@ class TestApplication(BaseApplicationTest):
 
         assert perform_request.call_count == 1 + _app_ctx_stack.top.elasticsearch.transport.max_retries
         assert perform_request.call_count == 1 + 3
+
+
+class TestGzip(BaseApplicationTestWithIndex):
+    def setup(self):
+        super().setup()
+        for c in "abcdefg":
+            # create a bunch of indexes with quite long names so we definitely have a response from the "/" route
+            # that is > the minimum gzipped size limit
+            self.create_index(index_name=f"test-{c*128}")
+
+    def test_gzip(self):
+        response = self.client.get('/', headers={"Accept-Encoding": "gzip"})
+
+        assert response.status_code == 200
+        assert response.headers.get("Content-Encoding") == "gzip"
+        # check the un-gzipped content can successfully be read as json
+        assert json.loads(gzip.decompress(response.data))
