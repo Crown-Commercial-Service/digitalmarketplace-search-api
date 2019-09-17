@@ -9,3 +9,4 @@ git+https://github.com/alphagov/digitalmarketplace-utils.git@48.0.2#egg=digitalm
 # Elasticsearch 5.0
 elasticsearch==6.3.1 # pyup: >=5.0.0,<6.0.0 # recommended by https://github.com/elastic/elasticsearch-py/blob/master/README
 Flask-Elasticsearch==0.2.5
+Flask-gzip==0.2 # pyup: <0.3
