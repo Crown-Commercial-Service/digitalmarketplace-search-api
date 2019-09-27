@@ -2,8 +2,8 @@ from flask import Flask
 import json
 from config import config as configs
 from flask_elasticsearch import FlaskElasticsearch
-from flask_gzip import Gzip
 
+from dmutils.flask import DMGzipMiddleware
 from dmutils.flask_init import init_app, api_error_handlers
 
 elasticsearch_client = FlaskElasticsearch()
@@ -52,6 +52,6 @@ def create_app(config_name):
 
     # because the search api doesn't return any values in its bodies we would consider "secrets", we should be
     # able to safely gzip all response bodies without concerns about BREACH et al.
-    Gzip(application, minimum_size=1024)
+    DMGzipMiddleware(application, compress_by_default=True)
 
     return application
