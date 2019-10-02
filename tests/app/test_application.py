@@ -54,10 +54,10 @@ class TestApplication(BaseApplicationTest):
 class TestGzip(BaseApplicationTestWithIndex):
     def setup(self):
         super().setup()
-        for c in "abcdefg":
+        for c in "abcdefghijklmnopqrstuvwxyz1234567890":
             # create a bunch of indexes with quite long names so we definitely have a response from the "/" route
             # that is > the minimum gzipped size limit
-            self.create_index(index_name=f"test-{c*128}")
+            self.create_index(index_name=f"test-{c*180}")
 
     def test_gzip(self):
         response = self.client.get('/', headers={"Accept-Encoding": "gzip"})
