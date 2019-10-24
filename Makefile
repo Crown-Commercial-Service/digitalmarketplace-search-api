@@ -6,7 +6,7 @@ run-all: requirements run-app
 
 .PHONY: run-app
 run-app: virtualenv
-	${VIRTUALENV_ROOT}/bin/python application.py runserver
+	${VIRTUALENV_ROOT}/bin/flask run
 
 .PHONY: virtualenv
 virtualenv:

@@ -42,9 +42,9 @@ script, which sets the required environment variables for local development:
 make run-app
 ```
 
-More generally, the command to start the server is:
+More generally, the command to start the development server is:
 ```
-python application.py runserver
+DM_ENVIRONMENT=development flask run
 ```
 
 ### Using the Search API locally
