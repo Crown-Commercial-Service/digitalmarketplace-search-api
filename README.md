@@ -62,10 +62,10 @@ environments, this defaults to `myToken`. An example request to your local
 search API would therefore be:
 
 ```
-curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
+curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5009/g-cloud/services/search?q=email
 ```
 
-When running the Search API locally it listens on port 5001 by default. This can
+When running the Search API locally it listens on port 5009 by default. This can
 be changed by setting the `DM_SEARCH_API_PORT` environment variable, e.g. to set
 the search api port number to 9001:
 

@@ -1,4 +1,4 @@
-DM_SEARCH_API_PORT=5001
+DM_SEARCH_API_PORT=5009
 
 FLASK_APP=application:application
 FLASK_ENV=development
