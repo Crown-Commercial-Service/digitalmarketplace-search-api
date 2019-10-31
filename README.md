@@ -57,13 +57,15 @@ brew services start elasticsearch
 elasticsearch
 ```
 
-The Search API runs on port 5001. Calls to the Search API require a valid bearer
-token. For development environments, this defaults to `myToken`. An example request to your local search API
-would therefore be:
+Calls to the Search API require a valid bearer token. For development
+environments, this defaults to `myToken`. An example request to your local
+search API would therefore be:
 
 ```
 curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
 ```
+
+When running the Search API locally it listens on port 5001 by default.
 
 ### Updating application dependencies
 
