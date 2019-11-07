@@ -42,9 +42,9 @@ script, which sets the required environment variables for local development:
 make run-app
 ```
 
-More generally, the command to start the server is:
+More generally, the command to start the development server is:
 ```
-python application.py runserver
+DM_ENVIRONMENT=development flask run
 ```
 
 ### Using the Search API locally
@@ -57,12 +57,20 @@ brew services start elasticsearch
 elasticsearch
 ```
 
-The Search API runs on port 5001. Calls to the Search API require a valid bearer
-token. For development environments, this defaults to `myToken`. An example request to your local search API
-would therefore be:
+Calls to the Search API require a valid bearer token. For development
+environments, this defaults to `myToken`. An example request to your local
+search API would therefore be:
 
 ```
-curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5001/g-cloud/services/search?q=email
+curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5009/g-cloud/services/search?q=email
+```
+
+When running the Search API locally it listens on port 5009 by default. This can
+be changed by setting the `DM_SEARCH_API_PORT` environment variable, e.g. to set
+the search api port number to 9001:
+
+```
+export DM_SEARCH_API_PORT=9001
 ```
 
 ### Updating application dependencies
