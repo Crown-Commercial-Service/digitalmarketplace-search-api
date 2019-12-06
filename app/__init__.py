@@ -1,8 +1,8 @@
 from flask import Flask
 import json
 from config import config as configs
+from elasticsearch import Elasticsearch
 from flask_elasticsearch import FlaskElasticsearch
-
 from dmutils.flask import DMGzipMiddleware
 from dmutils.flask_init import init_app, api_error_handlers
 
@@ -34,6 +34,9 @@ def create_app(config_name):
             cf_services, application.config['DM_ELASTICSEARCH_SERVICE_NAME'])
 
         application.config['ELASTICSEARCH_HOST'] = service['credentials']['uri']
+
+    # Test credentials/ connection or raise
+    Elasticsearch([application.config['ELASTICSEARCH_HOST']], verify_certs=True).info()
 
     elasticsearch_client.init_app(
         application,
