@@ -13,26 +13,20 @@ virtualenv:
 	[ -z $$VIRTUAL_ENV ] && [ ! -d venv ] && python3 -m venv venv || true
 
 .PHONY: requirements
-requirements: virtualenv test-requirements requirements.txt
+requirements: virtualenv requirements.txt
 	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt
 
 .PHONY: requirements-dev
-requirements-dev: virtualenv requirements-dev.txt
-	${VIRTUALENV_ROOT}/bin/pip install -r requirements-dev.txt
+requirements-dev: virtualenv requirements.txt requirements-dev.txt
+	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt -r requirements-dev.txt
 
 .PHONY: freeze-requirements
-freeze-requirements: virtualenv requirements-dev requirements-app.txt
-	${VIRTUALENV_ROOT}/bin/python -m dmutils.repoutils.freeze_requirements requirements-app.txt
+freeze-requirements: virtualenv requirements-dev requirements.in requirements-dev.in
+	${VIRTUALENV_ROOT}/bin/pip-compile requirements.in
+	${VIRTUALENV_ROOT}/bin/pip-compile requirements-dev.in
 
 .PHONY: test
-test: test-requirements test-flake8 test-unit
-
-.PHONY: test-requirements
-test-requirements:
-	@diff requirements-app.txt requirements.txt | grep '<' \
-	    && { echo "requirements.txt doesn't match requirements-app.txt."; \
-	         echo "Run 'make freeze-requirements' to update."; exit 1; } \
-	    || { echo "requirements.txt is up to date"; exit 0; }
+test: test-flake8 test-unit
 
 .PHONY: test-flake8
 test-flake8: virtualenv requirements-dev
