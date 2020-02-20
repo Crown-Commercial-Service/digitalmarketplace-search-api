@@ -1,7 +1,7 @@
 import mock
 import pytest
 from flask import json
-from werkzeug import MultiDict
+from werkzeug.datastructures import MultiDict
 
 from app import elasticsearch_client as es
 from app.main.services import search_service
