@@ -12,12 +12,16 @@ run-app: virtualenv
 virtualenv:
 	[ -z $$VIRTUAL_ENV ] && [ ! -d venv ] && python3 -m venv venv || true
 
+.PHONY: upgrade-pip
+upgrade-pip: virtualenv
+	${VIRTUALENV_ROOT}/bin/pip install --upgrade pip
+
 .PHONY: requirements
-requirements: virtualenv requirements.txt
+requirements: virtualenv upgrade-pip requirements.txt
 	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt
 
 .PHONY: requirements-dev
-requirements-dev: virtualenv requirements.txt requirements-dev.txt
+requirements-dev: virtualenv upgrade-pip requirements.txt requirements-dev.txt
 	${VIRTUALENV_ROOT}/bin/pip install -r requirements.txt -r requirements-dev.txt
 
 .PHONY: freeze-requirements
