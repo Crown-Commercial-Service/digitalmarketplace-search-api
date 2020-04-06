@@ -1,61 +1,50 @@
-# digitalmarketplace-search-api
+# Digital Marketplace Search API
 
-[![Requirements Status](https://requires.io/github/alphagov/digitalmarketplace-search-api/requirements.svg?branch=master)](https://requires.io/github/alphagov/digitalmarketplace-search-api/requirements/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/alphagov/digitalmarketplace-search-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/alphagov/digitalmarketplace-search-api?branch=master)
 ![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)
 
-API to handle interactions between the digitalmarketplace applications and search.
+API application for Digital Marketplace.
 
 - Python app, based on the [Flask framework](http://flask.pocoo.org/)
 
+This app handles interactions between the Digital Marketplace apps and our Elasticsearch instance.
+
 ## Quickstart
 
-Install [elasticsearch](http://www.elasticsearch.org/). This must be in the 5.x series; ideally 5.6 which is what we run on live systems.
+It's recommended to use the [DM Runner](https://github.com/alphagov/digitalmarketplace-runner)
+tool, which will install and run the app (and an Elasticsearch instance) as part of the full suite of apps.
+
+If you want to run the app as a stand-alone process, you'll need to set the `ELASTICSEARCH_HOST` env variable
+to your own local ES instance.
+
+You can then clone the repo and run:
+
+```
+make run-all
+```
+
+This command will install dependencies and start the app.
+
+By default, the app will be served at [http://127.0.0.1:5009](http://127.0.0.1:5009).
+
+### Local Elasticsearch setup
+Install version 6.x of [elasticsearch](http://www.elasticsearch.org/), ideally 6.7/6.8 which is what we run on live systems.
+
 ```
 brew update
-brew cask install java
-cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-git fetch --unshallow
-git checkout 3f9a5fc50e42f6bdd17f955419c299653a0f65b9 Formula/elasticsearch.rb # (version: 5.6.4)
-HOMEBREW_NO_AUTO_UPDATE=1 brew install elasticsearch
-git reset --hard master
+brew install elasticsearch@6.8
 ```
 
-### Install/Upgrade dependencies
-
-Install Python dependencies with pip
-
-```
-make requirements-dev
-```
-
-### Run the tests
-
-```
-make test
-```
-
-### Run the development server
-
-To run the Search API for local development you can use the convenient run
-script, which sets the required environment variables for local development:
-```
-make run-app
-```
-
-More generally, the command to start the development server is:
-```
-DM_ENVIRONMENT=development flask run
-```
-
-### Using the Search API locally
-
-Start elasticsearch if not already running via brew (in a new console window/tab):
+Start elasticsearch via brew:
 
 ```bash
 brew services start elasticsearch
-< OR >
-elasticsearch
 ```
+
+See the [Developer Manual](https://alphagov.github.io/digitalmarketplace-manual/developing-the-digital-marketplace/developer-setup.html)
+for more details around local developer setup.
+
+## Using the Search API
 
 Calls to the Search API require a valid bearer token. For development
 environments, this defaults to `myToken`. An example request to your local
@@ -65,26 +54,7 @@ search API would therefore be:
 curl -i -H "Authorization: Bearer myToken" 127.0.0.1:5009/g-cloud/services/search?q=email
 ```
 
-When running the Search API locally it listens on port 5009 by default. This can
-be changed by setting the `DM_SEARCH_API_PORT` environment variable, e.g. to set
-the search api port number to 9001:
-
-```
-export DM_SEARCH_API_PORT=9001
-```
-
-### Updating application dependencies
-
-`requirements.txt` file is generated from the `requirements-app.txt` in order to pin
-versions of all nested dependecies. If `requirements-app.txt` has been changed (or
-we want to update the unpinned nested dependencies) `requirements.txt` should be
-regenerated with
-
-```
-make freeze-requirements
-```
-
-`requirements.txt` should be committed alongside `requirements-app.txt` changes.
+POST requests will require a `Content-Type` header, set to `application/json`.
 
 ### Updating the index mapping
 
@@ -137,6 +107,45 @@ database reset or a change in the mapping. This is done with two scripts for eac
    ```
 
    This script also deletes the old index.
+
+## Testing
+
+Run the full test suite:
+
+```
+make test
+```
+
+To only run the Python tests:
+
+```
+make test-unit
+```
+
+To run the `flake8` linter:
+
+```
+make test-flake8
+```
+
+### Updating Python dependencies
+
+`requirements.txt` file is generated from the `requirements.in` in order to pin
+versions of all nested dependencies. If `requirements.in` has been changed (or
+we want to update the unpinned nested dependencies) `requirements.txt` should be
+regenerated with
+
+```
+make freeze-requirements
+```
+
+`requirements.txt` should be committed alongside `requirements.in` changes.
+
+## Contributing
+
+This repository is maintained by the Digital Marketplace team at the [Government Digital Service](https://github.com/alphagov).
+
+If you have a suggestion for improvement, please raise an issue on this repo.
 
 ## Licence
 
