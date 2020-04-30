@@ -19,7 +19,7 @@ mccabe==0.6.1             # via flake8
 mock==3.0.5               # via -r requirements-dev.in
 more-itertools==8.2.0     # via pytest
 packaging==20.1           # via pytest
-pip-tools==4.5.1          # via -r requirements-dev.in
+pip-tools==5.1.0          # via -r requirements-dev.in
 pluggy==0.13.1            # via pytest
 py==1.8.1                 # via pytest
 pycodestyle==2.5.0        # via flake8
@@ -33,3 +33,6 @@ six==1.14.0               # via -c requirements.txt, mock, packaging, pip-tools
 urllib3==1.25.8           # via -c requirements.txt, requests
 wcwidth==0.1.8            # via pytest
 zipp==3.0.0               # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# pip
