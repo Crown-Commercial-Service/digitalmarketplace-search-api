@@ -7,5 +7,5 @@ itsdangerous==1.1.0  # pyup: ignore
 git+https://github.com/alphagov/digitalmarketplace-utils.git@52.3.0#egg=digitalmarketplace-utils==52.3.0
 
 # Elasticsearch 5.0
-elasticsearch==6.3.1 # pyup: >=5.0.0,<6.0.0 # recommended by https://github.com/elastic/elasticsearch-py/blob/master/README
+elasticsearch==6.8.1 # pyup: >=5.0.0,<6.0.0 # recommended by https://github.com/elastic/elasticsearch-py/blob/master/README
 Flask-Elasticsearch==0.2.5
