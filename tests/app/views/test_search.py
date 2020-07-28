@@ -287,6 +287,14 @@ class TestHighlightedService(BaseApplicationTestWithIndex):
                 ),
                 lot="long-text",
             ))
+            put(make_service(
+                id="4",
+                serviceDescription=(
+                    "This service description has <em>2</em> sentences. "
+                    "There is HTML in <b>each</b> sentence."
+                ),
+                lot="two-sentences",
+            ))
 
             search_service.refresh("test-index")
 
@@ -354,6 +362,13 @@ class TestHighlightedService(BaseApplicationTestWithIndex):
             ==
             got
         )
+        got = [doc for doc in search_results if doc["id"] == "4"][0]["highlight"]["serviceDescription"][0]
+        assert (
+            "This service description has &lt;em&gt;2&lt;&#x2F;em&gt; sentences. "
+            "There is HTML in &lt;b&gt;each&lt;&#x2F;b&gt; sentence."
+            ==
+            got
+        )
 
         search_results = self.client.get("test-index/services/search?q=fox").json["documents"]
         got = search_results[0]["highlight"]["serviceDescription"][0]
@@ -361,6 +376,17 @@ class TestHighlightedService(BaseApplicationTestWithIndex):
             "The &lt;em&gt;quick&lt;&#x2F;em&gt; brown "
             "<mark class='search-result-highlighted-text'>fox</mark> "
             "jumped over the &lt;em&gt;lazy&lt;&#x2F;em&gt; dog."
+            ==
+            got
+        )
+
+        search_results = self.client.get("test-index/services/search?q=sentence").json["documents"]
+        got = [doc for doc in search_results if doc["id"] == "4"][0]["highlight"]["serviceDescription"][0]
+        assert (
+            "This service description has &lt;em&gt;2&lt;&#x2F;em&gt; "
+            "<mark class='search-result-highlighted-text'>sentences</mark>. "
+            "There is HTML in &lt;b&gt;each&lt;&#x2F;b&gt; "
+            "<mark class='search-result-highlighted-text'>sentence</mark>."
             ==
             got
         )
