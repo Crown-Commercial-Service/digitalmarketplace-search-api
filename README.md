@@ -28,7 +28,7 @@ This command will install dependencies and start the app.
 By default, the app will be served at [http://127.0.0.1:5009](http://127.0.0.1:5009).
 
 ### Local Elasticsearch setup
-Install version 6.x of [elasticsearch](http://www.elasticsearch.org/), ideally 6.7/6.8 which is what we run on live systems.
+Install version 6.x of [elasticsearch](http://www.elasticsearch.org/), ideally 6.8 which is what we run on live systems.
 
 ```
 brew update
