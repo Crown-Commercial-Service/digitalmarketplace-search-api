@@ -69,6 +69,7 @@ def convert_es_results(mapping, results, query_args):
             "query": query_args,
             "total": results["hits"]["total"],
             "took": results["took"],
+            "results_per_page": current_app.config["DM_SEARCH_PAGE_SIZE"]
         },
         "documents": documents,
     }
