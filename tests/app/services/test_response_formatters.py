@@ -1,3 +1,4 @@
+import mock
 from flask import json
 
 from app.main.services.response_formatters import \
@@ -17,18 +18,24 @@ with open("example_es_responses/search_results.json") as search_results:
     SEARCH_RESULTS_JSON = json.load(search_results)
 
 
-def test_should_build_query_block_in_response(services_mapping):
+@mock.patch('app.main.services.response_formatters.current_app')
+def test_should_build_query_block_in_response(current_app, services_mapping):
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON,
                              {"q": "keywords", "category": "some catergory"})
     assert res["meta"]["query"]["q"] == "keywords"
     assert res["meta"]["query"]["category"] == "some catergory"
 
 
-def test_should_build_search_response_from_es_response(services_mapping):
+@mock.patch('app.main.services.response_formatters.current_app')
+def test_should_build_search_response_from_es_response(current_app, services_mapping):
+    current_app.config = {'DM_SEARCH_PAGE_SIZE': 30}
+
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
+
     assert res["meta"]["query"]["q"] == "keywords"
     assert res["meta"]["total"] == 628
     assert res["meta"]["took"] == 69
+    assert res["meta"]["results_per_page"] == 30
     assert len(res["documents"]) == 10
 
     assert res["documents"][0]["id"] == "5390159512076288"
@@ -39,7 +46,8 @@ def test_should_build_search_response_from_es_response(services_mapping):
     assert res["documents"][0]["serviceCategories"] == ["Data management"]
 
 
-def test_should_build_highlights_es_response(services_mapping):
+@mock.patch('app.main.services.response_formatters.current_app')
+def test_should_build_highlights_es_response(current_app, services_mapping):
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
     assert res["documents"][0]["highlight"]["serviceName"] == ["Email Verification"]
     assert res["documents"][0]["highlight"]["serviceFeatures"] == [
@@ -51,7 +59,8 @@ def test_should_build_highlights_es_response(services_mapping):
     assert res["documents"][0]["highlight"]["serviceBenefits"] == ["Increase email deliverability"]
 
 
-def test_should_not_include_highlights_if_not_in_es_results(services_mapping):
+@mock.patch('app.main.services.response_formatters.current_app')
+def test_should_not_include_highlights_if_not_in_es_results(current_app, services_mapping):
     copy = SEARCH_RESULTS_JSON
     del copy["hits"]["hits"][0]["highlight"]
     res = convert_es_results(services_mapping, copy, {"category": "some catergory"})
