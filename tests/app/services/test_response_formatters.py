@@ -4,7 +4,6 @@ from flask import json
 from app.main.services.response_formatters import \
     convert_es_status, convert_es_results
 
-mock_config = {'DM_SEARCH_PAGE_SIZE': 30}
 
 with open("example_es_responses/stats.json") as services:
     STATS_JSON = json.load(services)
@@ -29,7 +28,7 @@ def test_should_build_query_block_in_response(current_app, services_mapping):
 
 @mock.patch('app.main.services.response_formatters.current_app')
 def test_should_build_search_response_from_es_response(current_app, services_mapping):
-    current_app.config.__getitem__.side_effect = mock_config.__getitem__
+    current_app.config = {'DM_SEARCH_PAGE_SIZE': 30}
 
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
 
