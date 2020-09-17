@@ -42,7 +42,6 @@ class Test(Config):
 class Development(Config):
     DEBUG = True
     DM_PLAIN_TEXT_LOGS = True
-    DM_SEARCH_PAGE_SIZE = 5
 
     DM_SEARCH_API_AUTH_TOKENS = 'myToken'
 
