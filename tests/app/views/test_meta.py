@@ -46,6 +46,7 @@ class TestMeta(BaseApplicationTestWithIndex):
             'briefs-digital-outcomes-and-specialists-2',
             'services-g-cloud-10',
             'services-g-cloud-11',
+            'services-g-cloud-12',
         ))
 
     def test_excludes_dot_indices_with_aliases(self):
