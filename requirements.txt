@@ -15,16 +15,15 @@ click==7.0                # via flask
 contextlib2==0.6.0.post1  # via digitalmarketplace-utils
 cryptography==2.3.1       # via digitalmarketplace-utils
 defusedxml==0.6.0         # via odfpy
-git+https://github.com/alphagov/digitalmarketplace-utils.git@52.3.0#egg=digitalmarketplace-utils==52.3.0  # via -r requirements.in
+git+https://github.com/alphagov/digitalmarketplace-utils.git@54.0.0#egg=digitalmarketplace-utils==54.0.0  # via -r requirements.in
 docopt==0.6.2             # via notifications-python-client
 docutils==0.15.2          # via botocore
 elasticsearch==6.8.1      # via -r requirements.in, flask-elasticsearch
 flask-elasticsearch==0.2.5  # via -r requirements.in
 flask-gzip==0.2           # via digitalmarketplace-utils
 flask-login==0.5.0        # via digitalmarketplace-utils
-flask-script==2.0.6       # via digitalmarketplace-utils
 flask-wtf==0.14.3         # via digitalmarketplace-utils
-flask==1.0.4              # via -r requirements.in, digitalmarketplace-utils, flask-elasticsearch, flask-gzip, flask-login, flask-script, flask-wtf, gds-metrics
+flask==1.0.4              # via -r requirements.in, digitalmarketplace-utils, flask-elasticsearch, flask-gzip, flask-login, flask-wtf, gds-metrics
 fleep==1.0.1              # via digitalmarketplace-utils
 future==0.18.2            # via notifications-python-client
 gds-metrics==0.2.0        # via digitalmarketplace-utils
