@@ -12,7 +12,6 @@ from dmutils.timing import logged_duration_for_external_request
 
 from app import elasticsearch_client as es
 
-
 _mapping_files = None  # dict(name: filespec)
 
 

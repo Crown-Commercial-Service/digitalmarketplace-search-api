@@ -130,7 +130,7 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         constructed_query = construct_query(mapping, query_args, aggregations, page_size)
         with logged_duration_for_external_request('es'):
             res = es.search(
-                index=index_name, body=constructed_query, **es_search_kwargs
+                index=index_name, body=constructed_query, track_total_hits=True, **es_search_kwargs
             )
 
         results = convert_es_results(mapping, res, query_args)
@@ -142,10 +142,13 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             "meta": results['meta'],
             "documents": results['documents'],
             "links": generate_pagination_links(
-                query_args, results['meta']['total'],
+                query_args, results['meta']['total']['value'],
                 page_size, url_for_search
             ),
         }
+
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response
+        response["meta"]["total"] = response["meta"]["total"]["value"]
 
         if aggregations:
             # Return aggregations in a slightly cleaner format.
