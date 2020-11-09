@@ -217,9 +217,8 @@ def _get_an_error_message(exception):
         root_cause = error['root_cause'][0]
         type = root_cause.get('type', '<unknown type>')
         reason = root_cause.get('reason', '<unknown reason>')
-        index = root_cause.get('index', '<no index>')
 
-        return '{}: {} ({})'.format(type, reason, index)
+        return f"{type}: {reason}"
 
     except (KeyError, IndexError):
         pass
