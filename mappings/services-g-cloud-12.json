@@ -45,830 +45,828 @@
     }
   },
   "mappings": {
-    "services": {
-      "_meta": {
-        "_": "DO NOT UPDATE BY HAND",
-        "version": "17.13.1",
-        "generated_from_framework": "g-cloud-12",
-        "generated_by": "/home/benjamin/code/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-        "generated_time": "2020-09-25T12:26:15.712295",
-        "dm_sort_clause": [
-          "_score",
-          {
-            "sortonly_serviceIdHash": "desc"
-          }
-        ],
-        "transformations": [
-          {
-            "hash_to": {
-              "field": "id",
-              "target_field": "serviceIdHash"
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Accounts payable",
-                "Accounts receivable",
-                "Asset management",
-                "Billing and invoicing",
-                "Budgeting",
-                "Contract management",
-                "Debt collection",
-                "Enterprise resource planning (ERP)",
-                "Expense management, expense reporting",
-                "Farming and farm management",
-                "Financial compliance",
-                "Financial management",
-                "Financial risk management",
-                "Land management",
-                "Payment gateway",
-                "Payroll",
-                "Portfolio analysis",
-                "Procurement",
-                "Purchasing",
-                "Revenue cycle management",
-                "Tax management",
-                "Other accounting and finance services"
-              ],
-              "append_value": [
-                "Accounting and finance"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Analytics",
-                "Business intelligence",
-                "Data mining, analysis tools and analytics",
-                "Data visualisation",
-                "Reporting and dashboards"
-              ],
-              "append_value": [
-                "Analytics and business intelligence"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Anti-spam and CAPTCHA",
-                "Audit tools",
-                "Authentication, identity and access management",
-                "Encryption",
-                "Log management",
-                "Remote access",
-                "Secure content and threat management",
-                "Security risk management"
-              ],
-              "append_value": [
-                "Application security"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Blogging",
-                "Booking, scheduling and diary management",
-                "Calendar",
-                "Case management",
-                "Content management system (CMS)",
-                "Content storage and sharing",
-                "Email and secure email",
-                "Enterprise social networking",
-                "File sending and file sharing",
-                "Idea management",
-                "Instant messaging (IM) and chat",
-                "Meeting management",
-                "Online forum or community",
-                "Online meetings",
-                "Presentations and slides (office productivity)",
-                "Project collaboration",
-                "Spreadsheets (office productivity)",
-                "Task management",
-                "Webinars",
-                "Word processing (office productivity)",
-                "Workflow"
-              ],
-              "append_value": [
-                "Collaborative working"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Accessibility checking",
-                "Blogging",
-                "Content management system (CMS)",
-                "Design",
-                "Diagram and wireframe",
-                "Digital publishing",
-                "Online forums",
-                "Photography and multimedia",
-                "Presentations and slides (office productivity)",
-                "Social networking",
-                "Word processing (office productivity)"
-              ],
-              "append_value": [
-                "Creative, design and publishing"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Call centre",
-                "Constituent engagement",
-                "Contact management",
-                "CRM system",
-                "Customer helpdesk (service desk)",
-                "Customer service and support",
-                "Feedback and reviews management",
-                "Forms and surveys",
-                "Live chat",
-                "Partner relationship management (PRM)",
-                "Virtual agents",
-                "Other CRM services"
-              ],
-              "append_value": [
-                "Customer relationship management (CRM)"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Backup, recovery and archival",
-                "Content management system (CMS)",
-                "Document management",
-                "Electronic data interchange (EDI)",
-                "Electronic signatures",
-                "File sending and sharing",
-                "File storage",
-                "Image management and picture archiving"
-              ],
-              "append_value": [
-                "Electronic document and records management (EDRM)"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Assisted living monitoring",
-                "Chiropractic",
-                "Clinical decision support",
-                "Clinical trial management",
-                "Dental",
-                "Electronic medical records",
-                "Healthcare analytics",
-                "Healthcare management",
-                "Home healthcare",
-                "Long-term care",
-                "Medical billing",
-                "Medical imaging",
-                "Medical lab",
-                "Medical practice",
-                "Medical scheduling and booking",
-                "Mental health",
-                "Optometry",
-                "Patient case management, care pathway management",
-                "Pharmacy",
-                "Pharmacy management",
-                "Physical therapy"
-              ],
-              "append_value": [
-                "Healthcare"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Applicant tracking",
-                "Benefits administration",
-                "Culture management",
-                "Employee scheduling",
-                "Employee self-service",
-                "Enterprise social networking",
-                "Examination (applicant testing)",
-                "Holiday planning and absence management",
-                "Payroll",
-                "Performance management",
-                "Recruitment",
-                "Salary",
-                "Talent (retention management)",
-                "Time and expense tracking",
-                "Training",
-                "Workforce analytics",
-                "Workforce management"
-              ],
-              "append_value": [
-                "Human resources and employee management"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "API connectors and interface engines",
-                "Application lifecycle management",
-                "Authentication, identity and access management",
-                "Backup, recovery and archival",
-                "Calendar",
-                "Call accounting",
-                "Call centre",
-                "Configuration and patch management",
-                "Desktop as a Service",
-                "Electronic data interchange (EDI)",
-                "Email and secure email",
-                "Fault management, monitoring and alerting",
-                "Fax",
-                "File sending and file sharing",
-                "File storage",
-                "Forms and surveys",
-                "Geographic information systems and mapping",
-                "Instant messaging (IM) and chat",
-                "Interactive voice response (IVR)",
-                "IT asset management",
-                "Licence management",
-                "Machine learning and artificial intelligence",
-                "Mobile device management",
-                "Natural language and speech processing",
-                "Network services (DNS)",
-                "Online meetings",
-                "Password management",
-                "Performance management",
-                "Post (mailing services)",
-                "Presentations and slides (office productivity)",
-                "Printing",
-                "Security",
-                "SMS",
-                "Spreadsheets (office productivity)",
-                "Systems monitoring",
-                "Telecoms expense management",
-                "Telephony (including VOIP and SIP connectivity)",
-                "Unified communications",
-                "Video conferencing",
-                "Virtual private network (VPN)",
-                "Word processing (office productivity)",
-                "Other information and communications technology (ICT) services"
-              ],
-              "append_value": [
-                "Information and communications technology (ICT)"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Electronic discovery (legal)",
-                "Law enforcement",
-                "Law practice management",
-                "Legal billing",
-                "Legal calendar",
-                "Legal case management",
-                "Legal document management",
-                "Trust accounting"
-              ],
-              "append_value": [
-                "Legal and enforcement"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Advertising",
-                "Affiliate marketing",
-                "Behavioural targeting",
-                "Brand management",
-                "Campaign management",
-                "Community management",
-                "Contextual marketing",
-                "Display advertising",
-                "Email marketing",
-                "Forms and surveys",
-                "Marketing analytics",
-                "Marketing automation",
-                "Marketing data",
-                "Mobile marketing",
-                "Online display advertising",
-                "Personalisation and behavioral targeting",
-                "Public relations",
-                "Search marketing",
-                "Social marketing",
-                "Social media marketing",
-                "Social media monitoring",
-                "Webinars",
-                "Other marketing services"
-              ],
-              "append_value": [
-                "Marketing"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Applications",
-                "Building information modelling (BIM)",
-                "Business management",
-                "Business performance management",
-                "Business process management (BPM)",
-                "Business process modelling (BPM)",
-                "Business transformation and organisational change management",
-                "Carbon, energy and sustainability management",
-                "Complex event processing",
-                "Contract management",
-                "Digital asset management",
-                "Digital signatures",
-                "Enterprise resource planning (ERP)",
-                "Facility management",
-                "Field service management",
-                "Governance, risk management and compliance (GRC)",
-                "Inventory management",
-                "Order management",
-                "Procurement",
-                "Product lifecycle management",
-                "Scheduling and appointments",
-                "Supply chain management",
-                "Visitor management",
-                "Workflow",
-                "Other operations management services"
-              ],
-              "append_value": [
-                "Operations management"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Agile project management and issue tracking",
-                "Professional services automation (PSA)",
-                "Project management",
-                "Project portfolio management (PPM)",
-                "Task management",
-                "Time and expense tracking"
-              ],
-              "append_value": [
-                "Project management and planning"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Configure, price and quote (CPQ)",
-                "eCommerce and shopping cart",
-                "Payment gateway",
-                "Recurring billing and subscription management",
-                "Sales and operations planning",
-                "Sales intelligence tracking",
-                "Sales performance management",
-                "Other sales services"
-              ],
-              "append_value": [
-                "Sales"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Academic",
-                "Alumni management",
-                "Asynchronous learning",
-                "Campus management",
-                "Classroom management",
-                "eLearning",
-                "Examination or applicant testing",
-                "Library automation",
-                "Library management",
-                "Online courses",
-                "Online grading",
-                "School accounting",
-                "School administration",
-                "Student management",
-                "Synchronous learning"
-              ],
-              "append_value": [
-                "Schools, education and libraries"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Accessibility",
-                "Agile project management and issue tracking",
-                "Bug tracking",
-                "Build tools",
-                "Code generation",
-                "Development tools",
-                "Form building",
-                "Integrated development environment (IDE)",
-                "Mobile development",
-                "Search",
-                "Source code management",
-                "Testing and optimisation",
-                "Usability",
-                "Version control",
-                "Website builder"
-              ],
-              "append_value": [
-                "Software development tools"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "serviceCategories",
-              "any_of": [
-                "Airport management",
-                "Aviation maintenance",
-                "Distribution",
-                "Fleet management",
-                "Fleet tracking",
-                "Freight management",
-                "Inventory management",
-                "Marine",
-                "Shipping",
-                "Transportation dispatch",
-                "Trucking solutions",
-                "Warehouse management",
-                "Other transport and logistics services"
-              ],
-              "append_value": [
-                "Transport and logistics"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "planningService",
-              "target_field": "serviceCategories",
-              "any_of": [
-                true
-              ],
-              "append_value": [
-                "Planning"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "setupAndMigrationService",
-              "target_field": "serviceCategories",
-              "any_of": [
-                true
-              ],
-              "append_value": [
-                "Setup and migration"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "QAAndTesting",
-              "target_field": "serviceCategories",
-              "any_of": [
-                true
-              ],
-              "append_value": [
-                "Quality assurance and performance testing"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "securityTesting",
-              "target_field": "serviceCategories",
-              "any_of": [
-                true
-              ],
-              "append_value": [
-                "Security services"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "training",
-              "target_field": "serviceCategories",
-              "any_of": [
-                true
-              ],
-              "append_value": [
-                "Training"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "ongoingSupport",
-              "target_field": "serviceCategories",
-              "any_of": [
-                true
-              ],
-              "append_value": [
-                "Ongoing support"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "emailOrTicketingSupport",
-              "target_field": "emailOrTicketingSupport",
-              "any_of": [
-                "yes_extra_cost"
-              ],
-              "append_value": [
-                "yes"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "webChatSupport",
-              "target_field": "webChatSupport",
-              "any_of": [
-                "yes_extra_cost"
-              ],
-              "append_value": [
-                "yes"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "onsiteSupport",
-              "target_field": "onsiteSupport",
-              "any_of": [
-                "yes_extra_cost"
-              ],
-              "append_value": [
-                "yes"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "dataStorageAndProcessingLocations",
-              "target_field": "dataStorageAndProcessingLocations",
-              "any_of": [
-                "uk"
-              ],
-              "append_value": [
-                "eea"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "dataStorageAndProcessingLocations",
-              "target_field": "dataStorageAndProcessingLocations",
-              "any_of": [
-                "uk",
-                "eea"
-              ],
-              "append_value": [
-                "privacy_shield"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "governmentSecurityClearances",
-              "target_field": "governmentSecurityClearances",
-              "any_of": [
-                "dv",
-                "sc"
-              ],
-              "append_value": [
-                "sc"
-              ]
-            }
-          },
-          {
-            "append_conditionally": {
-              "field": "governmentSecurityClearances",
-              "target_field": "governmentSecurityClearances",
-              "any_of": [
-                "dv",
-                "sc",
-                "bpss"
-              ],
-              "append_value": [
-                "bpss"
-              ]
-            }
-          }
-        ]
-      },
-      "dynamic": "strict",
-      "properties": {
-        "dmtext_id": {
-          "type": "keyword"
-        },
-        "sortonly_serviceIdHash": {
-          "type": "keyword"
-        },
-        "dmagg_lot": {
-          "type": "keyword"
-        },
-        "dmtext_lot": {
-          "type": "keyword"
-        },
-        "dmtext_lotName": {
-          "type": "text"
-        },
-        "dmtext_frameworkName": {
-          "type": "keyword"
-        },
-        "dmtext_serviceName": {
-          "type": "text"
-        },
-        "dmtext_serviceDescription": {
-          "term_vector": "with_positions_offsets",
-          "type": "text",
-          "analyzer": "stemming_analyzer"
-        },
-        "dmtext_serviceBenefits": {
-          "type": "text",
-          "analyzer": "stemming_analyzer"
-        },
-        "dmtext_serviceFeatures": {
-          "type": "text",
-          "analyzer": "stemming_analyzer"
-        },
-        "dmtext_supplierName": {
-          "type": "text"
-        },
-        "dmfilter_lot": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmagg_serviceCategories": {
-          "type": "keyword"
-        },
-        "dmtext_serviceCategories": {
-          "type": "text",
-          "analyzer": "stemming_analyzer"
-        },
-        "dmfilter_serviceCategories": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_cloudDeploymentModel": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_resellingType": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_emailOrTicketingSupport": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_phoneSupport": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_webChatSupport": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_onsiteSupport": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_browsersAccess": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_installation": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_mobile": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_APISoftware": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_metricsHow": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_metricsWhat": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_scalingType": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_usageNotifications": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_backup": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_backupDatacentre": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_publicSectorNetworksTypes": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_dataProtectionBetweenNetworks": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_dataProtectionWithinNetwork": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_dataStorageAndProcessingLocations": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_userAuthentication": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_managementAccessAuthentication": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_standardsISOIEC27001": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_standardsISO28000": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_standardsCSASTAR": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_standardsPCI": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_securityGovernanceStandards": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_datacentreSecurityStandards": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_staffSecurityClearanceChecks": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_governmentSecurityClearances": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_educationPricing": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
-        },
-        "dmfilter_freeVersionTrialOption": {
-          "type": "keyword",
-          "normalizer": "filter_normalizer"
+    "_meta": {
+      "_": "DO NOT UPDATE BY HAND",
+      "version": "17.13.1",
+      "generated_from_framework": "g-cloud-12",
+      "generated_by": "/home/benjamin/code/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+      "generated_time": "2020-09-25T12:26:15.712295",
+      "dm_sort_clause": [
+        "_score",
+        {
+          "sortonly_serviceIdHash": "desc"
         }
+      ],
+      "transformations": [
+        {
+          "hash_to": {
+            "field": "id",
+            "target_field": "serviceIdHash"
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Accounts payable",
+              "Accounts receivable",
+              "Asset management",
+              "Billing and invoicing",
+              "Budgeting",
+              "Contract management",
+              "Debt collection",
+              "Enterprise resource planning (ERP)",
+              "Expense management, expense reporting",
+              "Farming and farm management",
+              "Financial compliance",
+              "Financial management",
+              "Financial risk management",
+              "Land management",
+              "Payment gateway",
+              "Payroll",
+              "Portfolio analysis",
+              "Procurement",
+              "Purchasing",
+              "Revenue cycle management",
+              "Tax management",
+              "Other accounting and finance services"
+            ],
+            "append_value": [
+              "Accounting and finance"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Analytics",
+              "Business intelligence",
+              "Data mining, analysis tools and analytics",
+              "Data visualisation",
+              "Reporting and dashboards"
+            ],
+            "append_value": [
+              "Analytics and business intelligence"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Anti-spam and CAPTCHA",
+              "Audit tools",
+              "Authentication, identity and access management",
+              "Encryption",
+              "Log management",
+              "Remote access",
+              "Secure content and threat management",
+              "Security risk management"
+            ],
+            "append_value": [
+              "Application security"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Blogging",
+              "Booking, scheduling and diary management",
+              "Calendar",
+              "Case management",
+              "Content management system (CMS)",
+              "Content storage and sharing",
+              "Email and secure email",
+              "Enterprise social networking",
+              "File sending and file sharing",
+              "Idea management",
+              "Instant messaging (IM) and chat",
+              "Meeting management",
+              "Online forum or community",
+              "Online meetings",
+              "Presentations and slides (office productivity)",
+              "Project collaboration",
+              "Spreadsheets (office productivity)",
+              "Task management",
+              "Webinars",
+              "Word processing (office productivity)",
+              "Workflow"
+            ],
+            "append_value": [
+              "Collaborative working"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Accessibility checking",
+              "Blogging",
+              "Content management system (CMS)",
+              "Design",
+              "Diagram and wireframe",
+              "Digital publishing",
+              "Online forums",
+              "Photography and multimedia",
+              "Presentations and slides (office productivity)",
+              "Social networking",
+              "Word processing (office productivity)"
+            ],
+            "append_value": [
+              "Creative, design and publishing"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Call centre",
+              "Constituent engagement",
+              "Contact management",
+              "CRM system",
+              "Customer helpdesk (service desk)",
+              "Customer service and support",
+              "Feedback and reviews management",
+              "Forms and surveys",
+              "Live chat",
+              "Partner relationship management (PRM)",
+              "Virtual agents",
+              "Other CRM services"
+            ],
+            "append_value": [
+              "Customer relationship management (CRM)"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Backup, recovery and archival",
+              "Content management system (CMS)",
+              "Document management",
+              "Electronic data interchange (EDI)",
+              "Electronic signatures",
+              "File sending and sharing",
+              "File storage",
+              "Image management and picture archiving"
+            ],
+            "append_value": [
+              "Electronic document and records management (EDRM)"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Assisted living monitoring",
+              "Chiropractic",
+              "Clinical decision support",
+              "Clinical trial management",
+              "Dental",
+              "Electronic medical records",
+              "Healthcare analytics",
+              "Healthcare management",
+              "Home healthcare",
+              "Long-term care",
+              "Medical billing",
+              "Medical imaging",
+              "Medical lab",
+              "Medical practice",
+              "Medical scheduling and booking",
+              "Mental health",
+              "Optometry",
+              "Patient case management, care pathway management",
+              "Pharmacy",
+              "Pharmacy management",
+              "Physical therapy"
+            ],
+            "append_value": [
+              "Healthcare"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Applicant tracking",
+              "Benefits administration",
+              "Culture management",
+              "Employee scheduling",
+              "Employee self-service",
+              "Enterprise social networking",
+              "Examination (applicant testing)",
+              "Holiday planning and absence management",
+              "Payroll",
+              "Performance management",
+              "Recruitment",
+              "Salary",
+              "Talent (retention management)",
+              "Time and expense tracking",
+              "Training",
+              "Workforce analytics",
+              "Workforce management"
+            ],
+            "append_value": [
+              "Human resources and employee management"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "API connectors and interface engines",
+              "Application lifecycle management",
+              "Authentication, identity and access management",
+              "Backup, recovery and archival",
+              "Calendar",
+              "Call accounting",
+              "Call centre",
+              "Configuration and patch management",
+              "Desktop as a Service",
+              "Electronic data interchange (EDI)",
+              "Email and secure email",
+              "Fault management, monitoring and alerting",
+              "Fax",
+              "File sending and file sharing",
+              "File storage",
+              "Forms and surveys",
+              "Geographic information systems and mapping",
+              "Instant messaging (IM) and chat",
+              "Interactive voice response (IVR)",
+              "IT asset management",
+              "Licence management",
+              "Machine learning and artificial intelligence",
+              "Mobile device management",
+              "Natural language and speech processing",
+              "Network services (DNS)",
+              "Online meetings",
+              "Password management",
+              "Performance management",
+              "Post (mailing services)",
+              "Presentations and slides (office productivity)",
+              "Printing",
+              "Security",
+              "SMS",
+              "Spreadsheets (office productivity)",
+              "Systems monitoring",
+              "Telecoms expense management",
+              "Telephony (including VOIP and SIP connectivity)",
+              "Unified communications",
+              "Video conferencing",
+              "Virtual private network (VPN)",
+              "Word processing (office productivity)",
+              "Other information and communications technology (ICT) services"
+            ],
+            "append_value": [
+              "Information and communications technology (ICT)"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Electronic discovery (legal)",
+              "Law enforcement",
+              "Law practice management",
+              "Legal billing",
+              "Legal calendar",
+              "Legal case management",
+              "Legal document management",
+              "Trust accounting"
+            ],
+            "append_value": [
+              "Legal and enforcement"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Advertising",
+              "Affiliate marketing",
+              "Behavioural targeting",
+              "Brand management",
+              "Campaign management",
+              "Community management",
+              "Contextual marketing",
+              "Display advertising",
+              "Email marketing",
+              "Forms and surveys",
+              "Marketing analytics",
+              "Marketing automation",
+              "Marketing data",
+              "Mobile marketing",
+              "Online display advertising",
+              "Personalisation and behavioral targeting",
+              "Public relations",
+              "Search marketing",
+              "Social marketing",
+              "Social media marketing",
+              "Social media monitoring",
+              "Webinars",
+              "Other marketing services"
+            ],
+            "append_value": [
+              "Marketing"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Applications",
+              "Building information modelling (BIM)",
+              "Business management",
+              "Business performance management",
+              "Business process management (BPM)",
+              "Business process modelling (BPM)",
+              "Business transformation and organisational change management",
+              "Carbon, energy and sustainability management",
+              "Complex event processing",
+              "Contract management",
+              "Digital asset management",
+              "Digital signatures",
+              "Enterprise resource planning (ERP)",
+              "Facility management",
+              "Field service management",
+              "Governance, risk management and compliance (GRC)",
+              "Inventory management",
+              "Order management",
+              "Procurement",
+              "Product lifecycle management",
+              "Scheduling and appointments",
+              "Supply chain management",
+              "Visitor management",
+              "Workflow",
+              "Other operations management services"
+            ],
+            "append_value": [
+              "Operations management"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Agile project management and issue tracking",
+              "Professional services automation (PSA)",
+              "Project management",
+              "Project portfolio management (PPM)",
+              "Task management",
+              "Time and expense tracking"
+            ],
+            "append_value": [
+              "Project management and planning"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Configure, price and quote (CPQ)",
+              "eCommerce and shopping cart",
+              "Payment gateway",
+              "Recurring billing and subscription management",
+              "Sales and operations planning",
+              "Sales intelligence tracking",
+              "Sales performance management",
+              "Other sales services"
+            ],
+            "append_value": [
+              "Sales"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Academic",
+              "Alumni management",
+              "Asynchronous learning",
+              "Campus management",
+              "Classroom management",
+              "eLearning",
+              "Examination or applicant testing",
+              "Library automation",
+              "Library management",
+              "Online courses",
+              "Online grading",
+              "School accounting",
+              "School administration",
+              "Student management",
+              "Synchronous learning"
+            ],
+            "append_value": [
+              "Schools, education and libraries"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Accessibility",
+              "Agile project management and issue tracking",
+              "Bug tracking",
+              "Build tools",
+              "Code generation",
+              "Development tools",
+              "Form building",
+              "Integrated development environment (IDE)",
+              "Mobile development",
+              "Search",
+              "Source code management",
+              "Testing and optimisation",
+              "Usability",
+              "Version control",
+              "Website builder"
+            ],
+            "append_value": [
+              "Software development tools"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "serviceCategories",
+            "any_of": [
+              "Airport management",
+              "Aviation maintenance",
+              "Distribution",
+              "Fleet management",
+              "Fleet tracking",
+              "Freight management",
+              "Inventory management",
+              "Marine",
+              "Shipping",
+              "Transportation dispatch",
+              "Trucking solutions",
+              "Warehouse management",
+              "Other transport and logistics services"
+            ],
+            "append_value": [
+              "Transport and logistics"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "planningService",
+            "target_field": "serviceCategories",
+            "any_of": [
+              true
+            ],
+            "append_value": [
+              "Planning"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "setupAndMigrationService",
+            "target_field": "serviceCategories",
+            "any_of": [
+              true
+            ],
+            "append_value": [
+              "Setup and migration"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "QAAndTesting",
+            "target_field": "serviceCategories",
+            "any_of": [
+              true
+            ],
+            "append_value": [
+              "Quality assurance and performance testing"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "securityTesting",
+            "target_field": "serviceCategories",
+            "any_of": [
+              true
+            ],
+            "append_value": [
+              "Security services"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "training",
+            "target_field": "serviceCategories",
+            "any_of": [
+              true
+            ],
+            "append_value": [
+              "Training"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "ongoingSupport",
+            "target_field": "serviceCategories",
+            "any_of": [
+              true
+            ],
+            "append_value": [
+              "Ongoing support"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "emailOrTicketingSupport",
+            "target_field": "emailOrTicketingSupport",
+            "any_of": [
+              "yes_extra_cost"
+            ],
+            "append_value": [
+              "yes"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "webChatSupport",
+            "target_field": "webChatSupport",
+            "any_of": [
+              "yes_extra_cost"
+            ],
+            "append_value": [
+              "yes"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "onsiteSupport",
+            "target_field": "onsiteSupport",
+            "any_of": [
+              "yes_extra_cost"
+            ],
+            "append_value": [
+              "yes"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "dataStorageAndProcessingLocations",
+            "target_field": "dataStorageAndProcessingLocations",
+            "any_of": [
+              "uk"
+            ],
+            "append_value": [
+              "eea"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "dataStorageAndProcessingLocations",
+            "target_field": "dataStorageAndProcessingLocations",
+            "any_of": [
+              "uk",
+              "eea"
+            ],
+            "append_value": [
+              "privacy_shield"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "governmentSecurityClearances",
+            "target_field": "governmentSecurityClearances",
+            "any_of": [
+              "dv",
+              "sc"
+            ],
+            "append_value": [
+              "sc"
+            ]
+          }
+        },
+        {
+          "append_conditionally": {
+            "field": "governmentSecurityClearances",
+            "target_field": "governmentSecurityClearances",
+            "any_of": [
+              "dv",
+              "sc",
+              "bpss"
+            ],
+            "append_value": [
+              "bpss"
+            ]
+          }
+        }
+      ]
+    },
+    "dynamic": "strict",
+    "properties": {
+      "dmtext_id": {
+        "type": "keyword"
+      },
+      "sortonly_serviceIdHash": {
+        "type": "keyword"
+      },
+      "dmagg_lot": {
+        "type": "keyword"
+      },
+      "dmtext_lot": {
+        "type": "keyword"
+      },
+      "dmtext_lotName": {
+        "type": "text"
+      },
+      "dmtext_frameworkName": {
+        "type": "keyword"
+      },
+      "dmtext_serviceName": {
+        "type": "text"
+      },
+      "dmtext_serviceDescription": {
+        "term_vector": "with_positions_offsets",
+        "type": "text",
+        "analyzer": "stemming_analyzer"
+      },
+      "dmtext_serviceBenefits": {
+        "type": "text",
+        "analyzer": "stemming_analyzer"
+      },
+      "dmtext_serviceFeatures": {
+        "type": "text",
+        "analyzer": "stemming_analyzer"
+      },
+      "dmtext_supplierName": {
+        "type": "text"
+      },
+      "dmfilter_lot": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmagg_serviceCategories": {
+        "type": "keyword"
+      },
+      "dmtext_serviceCategories": {
+        "type": "text",
+        "analyzer": "stemming_analyzer"
+      },
+      "dmfilter_serviceCategories": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_cloudDeploymentModel": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_resellingType": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_emailOrTicketingSupport": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_phoneSupport": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_webChatSupport": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_onsiteSupport": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_browsersAccess": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_installation": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_mobile": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_APISoftware": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_metricsHow": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_metricsWhat": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_scalingType": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_usageNotifications": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_backup": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_backupDatacentre": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_publicSectorNetworksTypes": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_dataProtectionBetweenNetworks": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_dataProtectionWithinNetwork": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_dataStorageAndProcessingLocations": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_userAuthentication": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_managementAccessAuthentication": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_standardsISOIEC27001": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_standardsISO28000": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_standardsCSASTAR": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_standardsPCI": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_securityGovernanceStandards": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_datacentreSecurityStandards": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_staffSecurityClearanceChecks": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_governmentSecurityClearances": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_educationPricing": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
+      },
+      "dmfilter_freeVersionTrialOption": {
+        "type": "keyword",
+        "normalizer": "filter_normalizer"
       }
     }
   }
