@@ -36,7 +36,7 @@ class Mapping(object):
             (prefix, maybe_name_seq[0])
             for prefix, *maybe_name_seq in (
                 full_field_name.split("_", 1)
-                for full_field_name in sorted(self.definition['mappings'][self.mapping_type]['properties'].keys())
+                for full_field_name in sorted(self.definition['mappings']['properties'].keys())
             )
             if maybe_name_seq  # maybe_name_seq would be an empty seq if no underscores were found, discard them
         )
@@ -60,10 +60,10 @@ class Mapping(object):
         }
 
         self.transform_fields = tuple(
-            self.definition['mappings'][mapping_type].get('_meta', {}).get('transformations', {})
+            self.definition['mappings'].get('_meta', {}).get('transformations', {})
         )
 
-        self.sort_clause = self.definition['mappings'][mapping_type].get('_meta', {}).get('dm_sort_clause', ["_score"])
+        self.sort_clause = self.definition['mappings'].get('_meta', {}).get('dm_sort_clause', ["_score"])
 
 
 def get_mapping(index_name, document_type):
@@ -71,7 +71,7 @@ def get_mapping(index_name, document_type):
         # es.indices.get_mapping has a key for the index name, regardless of any alias we may be going via, so rather
         # than use index_name, we access the one and only value in the dictionary using next(iter).
         with logged_duration_for_external_request('es'):
-            mapping_data = next(iter(es.indices.get_mapping(index=index_name, doc_type=document_type).values()))
+            mapping_data = next(iter(es.indices.get_mapping(index=index_name).values()))
     except NotFoundError as e:
         if e.error == "type_missing_exception":
             raise MappingNotFound("Document type '{}' is not valid in index '{}' - no mapping found.".format(
