@@ -82,9 +82,14 @@ def get_mapping(index_name, document_type):
         raise MappingNotFound("Document type '{}' is not valid in index '{}' - no mapping found.".format(
             document_type, index_name))
 
-    # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going
-    # away, see <https://www.elastic.co/guide/en/elasticsearch/reference/5.6/removal-of-types.html>. For us,
-    # document_type === mapping_type, and there will be only one per index.
+    # In ES 7 mapping types are being removed, so document types are no longer relevant.
+    # However our API still uses them in URLs and is expecting a 400 to be raised in case
+    # the wrong document type is specified.
+    if mapping_data["mappings"]["_meta"]["doc_type"] != document_type:
+        raise MappingNotFound(
+            f"Document type '{document_type}' is not valid in index '{index_name}' - not returning mapping."
+        )
+
     return Mapping(mapping_data, mapping_type=document_type)
 
 
