@@ -49,6 +49,7 @@
       "_": "DO NOT UPDATE BY HAND",
       "version": "17.13.1",
       "generated_from_framework": "g-cloud-12",
+      "doc_type": "services",
       "generated_by": "/home/benjamin/code/digitalmarketplace-frameworks/scripts/generate-search-config.py",
       "generated_time": "2020-09-25T12:26:15.712295",
       "dm_sort_clause": [

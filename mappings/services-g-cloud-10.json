@@ -51,6 +51,7 @@
       "generated_from_framework": "g-cloud-10",
       "generated_by": "digitalmarketplace-frameworks/scripts/generate-search-config.py",
       "generated_time": "2019-03-06T09:18:21.596263",
+      "doc_type": "services",
       "dm_sort_clause": [
         "_score",
         {

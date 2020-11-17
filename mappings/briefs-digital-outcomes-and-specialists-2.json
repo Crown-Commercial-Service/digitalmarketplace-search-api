@@ -49,6 +49,7 @@
       "_": "DO NOT UPDATE BY HAND",
       "version": "11.0.0",
       "generated_from_framework": "digital-outcomes-and-specialists-2",
+      "doc_type": "briefs",
       "generated_by": "/Users/brendanbutler/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
       "generated_time": "2018-03-13T14:53:51.783965",
       "dm_sort_clause": [
