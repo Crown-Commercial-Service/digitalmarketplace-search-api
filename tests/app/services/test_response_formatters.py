@@ -73,7 +73,7 @@ def test_should_build_status_response_from_es_response():
         "primary_size": "73.7mb",
         "mapping_version": "17.13.1",
         "mapping_generated_from_framework": "g-cloud-12",
-        "max_result_window": 50000,
+        "max_result_window": "50000",
         "aliases": [],
     }
 
@@ -85,7 +85,7 @@ def test_should_build_status_response_from_briefs_es_response():
         "primary_size": "2mb",
         "mapping_version": "11.0.0",
         "mapping_generated_from_framework": "digital-outcomes-and-specialists-2",
-        "max_result_window": 10000,
+        "max_result_window": "10000",
         "aliases": [],
     }
 
