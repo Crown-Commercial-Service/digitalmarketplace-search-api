@@ -5,11 +5,11 @@ python:
   - "3.8"
   - "3.9"
 env:
-  - ES_VERSION=6.8.9
+  - ES_VERSION=7.9.3
 before_install:
-  - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
+  - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz
   - wget ${ES_DOWNLOAD_URL}
-  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
+  - tar -xzf elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz
   - ./elasticsearch-${ES_VERSION}/bin/elasticsearch > /dev/null &
 install:
   - make requirements-dev
