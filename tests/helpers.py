@@ -65,7 +65,7 @@ class BaseApplicationTest(object):
             "mapping": self.default_mapping_name,
         }), content_type="application/json")
         if expect_success:
-            assert response.status_code in (200, 201)
+            assert response.status_code in (200, 201), response.json["error"]
         return response
 
     def teardown(self):

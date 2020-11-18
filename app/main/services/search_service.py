@@ -63,7 +63,7 @@ def delete_index(index_name):
 def fetch_by_id(index_name, doc_type, document_id):
     try:
         with logged_duration_for_external_request('es'):
-            res = es.get(index=index_name, doc_type=doc_type, id=document_id)
+            res = es.get(index=index_name, id=document_id)
         return res, 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -72,7 +72,7 @@ def fetch_by_id(index_name, doc_type, document_id):
 def delete_by_id(index_name, doc_type, document_id):
     try:
         with logged_duration_for_external_request('es'):
-            res = es.delete(index=index_name, doc_type=doc_type, id=document_id)
+            res = es.delete(index=index_name, id=document_id)
         return res, 200
     except TransportError as e:
         return _get_an_error_message(e), e.status_code
@@ -84,7 +84,6 @@ def index(index_name, doc_type, document, document_id):
             es.index(
                 index=index_name,
                 id=document_id,
-                doc_type=doc_type,
                 body=document)
             return "acknowledged", 200
     except TransportError as e:
@@ -130,7 +129,9 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
         es_search_kwargs = {'search_type': 'dfs_query_then_fetch'} if search else {}
         constructed_query = construct_query(mapping, query_args, aggregations, page_size)
         with logged_duration_for_external_request('es'):
-            res = es.search(index=index_name, doc_type=doc_type, body=constructed_query, **es_search_kwargs)
+            res = es.search(
+                index=index_name, body=constructed_query, track_total_hits=True, **es_search_kwargs
+            )
 
         results = convert_es_results(mapping, res, query_args)
 
@@ -141,10 +142,13 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             "meta": results['meta'],
             "documents": results['documents'],
             "links": generate_pagination_links(
-                query_args, results['meta']['total'],
+                query_args, results['meta']['total']['value'],
                 page_size, url_for_search
             ),
         }
+
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response
+        response["meta"]["total"] = response["meta"]["total"]["value"]
 
         if aggregations:
             # Return aggregations in a slightly cleaner format.
@@ -176,7 +180,6 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
                 with logged_duration_for_external_request('es'):
                     result_count = es.count(
                         index=index_name,
-                        doc_type=doc_type,
                         body=body
                     )["count"]
             except TransportError as e:
@@ -214,9 +217,8 @@ def _get_an_error_message(exception):
         root_cause = error['root_cause'][0]
         type = root_cause.get('type', '<unknown type>')
         reason = root_cause.get('reason', '<unknown reason>')
-        index = root_cause.get('index', '<no index>')
 
-        return '{}: {} ({})'.format(type, reason, index)
+        return f"{type}: {reason}"
 
     except (KeyError, IndexError):
         pass

@@ -14,8 +14,17 @@ def root():
     with logged_duration_for_external_request('es'):
         es_indices = es.indices.get_mapping().items()
 
-    types_by_index_name = {
-        index_name: index_info['mappings'].keys()
+    def types_from_index(index: dict) -> list:
+        mappings = index["mappings"]
+        if "_meta" in mappings:
+            # this is a hack, we should really stop including document types
+            # in our urls but for now we squirrel the information away in _meta
+            return [mappings["_meta"]["doc_type"]]
+        else:
+            return mappings.keys()
+
+    types_by_index_name: dict[str, list] = {
+        index_name: types_from_index(index_info)
         for index_name, index_info in es_indices
         if not index_name.startswith('.')
     }

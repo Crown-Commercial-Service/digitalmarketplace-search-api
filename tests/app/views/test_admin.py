@@ -77,7 +77,7 @@ class TestSearchIndexes(BaseApplicationTest):
 
         expected_string = (
             'invalid_alias_name_exception: Invalid alias name [test-index], an index exists with the same name '
-            'as the alias (test-index)'
+            'as the alias'
         )
         assert response.json["error"] == expected_string
 
@@ -112,14 +112,14 @@ class TestSearchIndexes(BaseApplicationTest):
         self.client.delete('/test-index')
         response = self.client.delete('/test-index')
         assert response.status_code == 404
-        assert response.json["error"] == 'index_not_found_exception: no such index (test-index)'
+        assert response.json["error"] == 'index_not_found_exception: no such index [test-index]'
 
     def test_should_return_404_if_no_index(self):
         response = self.client.get('/index-does-not-exist')
         assert response.status_code == 404
         assert (
             response.json["error"] ==
-            "index_not_found_exception: no such index (index-does-not-exist)"
+            "index_not_found_exception: no such index [index-does-not-exist]"
         )
 
     def test_bad_mapping_name_gives_400(self):

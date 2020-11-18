@@ -12,7 +12,6 @@ from dmutils.timing import logged_duration_for_external_request
 
 from app import elasticsearch_client as es
 
-
 _mapping_files = None  # dict(name: filespec)
 
 
@@ -36,7 +35,7 @@ class Mapping(object):
             (prefix, maybe_name_seq[0])
             for prefix, *maybe_name_seq in (
                 full_field_name.split("_", 1)
-                for full_field_name in sorted(self.definition['mappings'][self.mapping_type]['properties'].keys())
+                for full_field_name in sorted(self.definition['mappings']['properties'].keys())
             )
             if maybe_name_seq  # maybe_name_seq would be an empty seq if no underscores were found, discard them
         )
@@ -60,10 +59,10 @@ class Mapping(object):
         }
 
         self.transform_fields = tuple(
-            self.definition['mappings'][mapping_type].get('_meta', {}).get('transformations', {})
+            self.definition['mappings'].get('_meta', {}).get('transformations', {})
         )
 
-        self.sort_clause = self.definition['mappings'][mapping_type].get('_meta', {}).get('dm_sort_clause', ["_score"])
+        self.sort_clause = self.definition['mappings'].get('_meta', {}).get('dm_sort_clause', ["_score"])
 
 
 def get_mapping(index_name, document_type):
@@ -71,7 +70,7 @@ def get_mapping(index_name, document_type):
         # es.indices.get_mapping has a key for the index name, regardless of any alias we may be going via, so rather
         # than use index_name, we access the one and only value in the dictionary using next(iter).
         with logged_duration_for_external_request('es'):
-            mapping_data = next(iter(es.indices.get_mapping(index=index_name, doc_type=document_type).values()))
+            mapping_data = next(iter(es.indices.get_mapping(index=index_name).values()))
     except NotFoundError as e:
         if e.error == "type_missing_exception":
             raise MappingNotFound("Document type '{}' is not valid in index '{}' - no mapping found.".format(
@@ -82,9 +81,14 @@ def get_mapping(index_name, document_type):
         raise MappingNotFound("Document type '{}' is not valid in index '{}' - no mapping found.".format(
             document_type, index_name))
 
-    # In ES <=5, there may be multiple mapping types per document type (kind-of) - this is confusing, but going
-    # away, see <https://www.elastic.co/guide/en/elasticsearch/reference/5.6/removal-of-types.html>. For us,
-    # document_type === mapping_type, and there will be only one per index.
+    # In ES 7 mapping types are being removed, so document types are no longer relevant.
+    # However our API still uses them in URLs and is expecting a 400 to be raised in case
+    # the wrong document type is specified.
+    if mapping_data["mappings"]["_meta"]["doc_type"] != document_type:
+        raise MappingNotFound(
+            f"Document type '{document_type}' is not valid in index '{index_name}' - not returning mapping."
+        )
+
     return Mapping(mapping_data, mapping_type=document_type)
 
 

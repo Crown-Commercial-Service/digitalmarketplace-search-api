@@ -17,7 +17,7 @@ class TestMeta(BaseApplicationTestWithIndex):
 
             elasticsearch_client.indices.create(
                 index=".dot-index",
-                body=json.dumps({"mappings": {"mapping": {}}})
+                body=json.dumps({"mappings": {}})
             )
             self.client.put('/dot-index-alias', data=json.dumps({
                 "type": "alias",
