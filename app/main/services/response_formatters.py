@@ -64,7 +64,8 @@ def convert_es_results(mapping, results, query_args):
     return {
         "meta": {
             "query": query_args,
-            "total": results["hits"]["total"],
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response
+            "total": results["hits"]["total"]["value"],
             "took": results["took"],
             "results_per_page": current_app.config["DM_SEARCH_PAGE_SIZE"]
         },

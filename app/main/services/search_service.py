@@ -142,13 +142,10 @@ def core_search_and_aggregate(index_name, doc_type, query_args, search=False, ag
             "meta": results['meta'],
             "documents": results['documents'],
             "links": generate_pagination_links(
-                query_args, results['meta']['total']['value'],
+                query_args, results['meta']['total'],
                 page_size, url_for_search
             ),
         }
-
-        # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response
-        response["meta"]["total"] = response["meta"]["total"]["value"]
 
         if aggregations:
             # Return aggregations in a slightly cleaner format.
