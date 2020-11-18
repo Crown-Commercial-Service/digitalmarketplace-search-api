@@ -1,67 +1,238 @@
 {
-    "briefs-digital-outcomes-and-specialists":{
-        "aliases":{
-            "galias":{}
-        },
-        "mappings":{
-            "briefs":{
-                "dynamic":"strict",
-                "_meta":{
-                    "generated_by":"/TestUser/scripts/generate-search-config.py",
-                    "transformations":[],
-                    "version": "11.0.0",
-                    "generated_from_framework": "digital-outcomes-and-specialists-2",
-                    "generated_time":"2018-08-11T14:42:51.645474",
-                    "_":"DO NOT UPDATE BY HAND"
-                },
-                "properties":{}
+  "briefs-digital-outcomes-and-specialists": {
+    "aliases": {},
+    "mappings": {
+      "dynamic": "strict",
+      "_meta": {
+        "generated_by": "/Users/brendanbutler/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+        "dm_sort_clause": [
+          "sortonly_statusOrder",
+          {
+            "sortonly_publishedAt": "desc"
+          },
+          "sortonly_idHash"
+        ],
+        "transformations": [
+          {
+            "hash_to": {
+              "field": "id",
+              "target_field": "idHash"
             }
-        },
-        "settings": {
-            "index": {
-              "max_result_window": 10000
-            },
-            "analysis": {
-              "analyzer": {
-                "stemming_analyzer": {
-                  "tokenizer": "standard",
-                  "filter": [
-                    "standard",
-                    "lowercase",
-                    "possessive_english_stemmer",
-                    "light_english_stemmer"
-                  ]
-                }
-              },
-              "filter": {
-                "light_english_stemmer": {
-                  "type": "stemmer",
-                  "name": "light_english"
-                },
-                "possessive_english_stemmer": {
-                  "type": "stemmer",
-                  "name": "possessive_english"
-                }
-              },
-              "char_filter": {
-                "nonalpha_removal": {
-                  "type": "pattern_replace",
-                  "pattern": "\\W+",
-                  "replacement": ""
-                }
-              },
-              "normalizer": {
-                "filter_normalizer": {
-                  "type": "custom",
-                  "char_filter": [
-                    "nonalpha_removal"
-                  ],
-                  "filter": [
-                    "lowercase"
-                  ]
-                }
-              }
+          },
+          {
+            "set_conditionally": {
+              "field": "status",
+              "target_field": "statusOpenClosed",
+              "set_value": "open",
+              "any_of": [
+                "live"
+              ]
+            }
+          },
+          {
+            "set_conditionally": {
+              "field": "status",
+              "target_field": "statusOpenClosed",
+              "set_value": "closed",
+              "any_of": [
+                "awarded",
+                "cancelled",
+                "closed",
+                "unsuccessful"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "status",
+              "target_field": "statusOrder",
+              "append_value": [
+                0
+              ],
+              "any_of": [
+                "live"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "status",
+              "target_field": "statusOrder",
+              "append_value": [
+                1
+              ],
+              "any_of": [
+                "closed",
+                "awarded",
+                "cancelled",
+                "unsuccessful"
+              ]
+            }
+          },
+          {
+            "append_conditionally": {
+              "field": "status",
+              "target_field": "statusOrder",
+              "append_value": [
+                2
+              ],
+              "any_of": [
+                "draft",
+                "withdrawn"
+              ]
             }
           }
+        ],
+        "doc_type": "briefs",
+        "version": "11.0.0",
+        "generated_from_framework": "digital-outcomes-and-specialists-2",
+        "generated_time": "2018-03-13T14:53:51.783965",
+        "_": "DO NOT UPDATE BY HAND"
+      },
+      "properties": {
+        "dmagg_lot": {
+          "type": "keyword"
+        },
+        "dmfilter_location": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_lot": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_specialistRole": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_status": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmfilter_statusOpenClosed": {
+          "type": "keyword",
+          "normalizer": "filter_normalizer"
+        },
+        "dmtext_applicationsClosedAt": {
+          "type": "keyword"
+        },
+        "dmtext_awardedBriefResponseId": {
+          "type": "keyword"
+        },
+        "dmtext_cancelledAt": {
+          "type": "keyword"
+        },
+        "dmtext_clarificationQuestionsClosedAt": {
+          "type": "keyword"
+        },
+        "dmtext_essentialRequirements": {
+          "type": "text",
+          "analyzer": "stemming_analyzer"
+        },
+        "dmtext_id": {
+          "type": "keyword"
+        },
+        "dmtext_location": {
+          "type": "text"
+        },
+        "dmtext_lot": {
+          "type": "keyword"
+        },
+        "dmtext_niceToHaveRequirements": {
+          "type": "text",
+          "analyzer": "stemming_analyzer"
+        },
+        "dmtext_organisation": {
+          "type": "text",
+          "analyzer": "stemming_analyzer"
+        },
+        "dmtext_publishedAt": {
+          "type": "keyword"
+        },
+        "dmtext_specialistRole": {
+          "type": "text"
+        },
+        "dmtext_status": {
+          "type": "keyword"
+        },
+        "dmtext_summary": {
+          "type": "text",
+          "term_vector": "with_positions_offsets",
+          "analyzer": "stemming_analyzer"
+        },
+        "dmtext_title": {
+          "type": "text",
+          "analyzer": "stemming_analyzer"
+        },
+        "dmtext_unsuccessfulAt": {
+          "type": "keyword"
+        },
+        "dmtext_withdrawnAt": {
+          "type": "keyword"
+        },
+        "sortonly_idHash": {
+          "type": "keyword"
+        },
+        "sortonly_publishedAt": {
+          "type": "date"
+        },
+        "sortonly_statusOrder": {
+          "type": "byte"
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "number_of_shards": "1",
+        "provided_name": "briefs-digital-outcomes-and-specialists",
+        "max_result_window": "10000",
+        "creation_date": "1605627975998",
+        "analysis": {
+          "filter": {
+            "light_english_stemmer": {
+              "name": "light_english",
+              "type": "stemmer"
+            },
+            "possessive_english_stemmer": {
+              "name": "possessive_english",
+              "type": "stemmer"
+            }
+          },
+          "char_filter": {
+            "nonalpha_removal": {
+              "pattern": "\\W+",
+              "type": "pattern_replace",
+              "replacement": ""
+            }
+          },
+          "normalizer": {
+            "filter_normalizer": {
+              "filter": [
+                "lowercase"
+              ],
+              "type": "custom",
+              "char_filter": [
+                "nonalpha_removal"
+              ]
+            }
+          },
+          "analyzer": {
+            "stemming_analyzer": {
+              "filter": [
+                "lowercase",
+                "possessive_english_stemmer",
+                "light_english_stemmer"
+              ],
+              "tokenizer": "standard"
+            }
+          }
+        },
+        "number_of_replicas": "1",
+        "uuid": "H6nF-lACQde4AQANx7rvMg",
+        "version": {
+          "created": "7090399"
+        }
+      }
     }
+  }
 }

@@ -1,540 +1,1203 @@
 {
+  "took": 15,
+  "timed_out": false,
   "_shards": {
-    "failed": 0,
-    "successful": 5,
-    "total": 5
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
   },
   "hits": {
+    "total": {
+      "value": 10,
+      "relation": "eq"
+    },
+    "max_score": 15.507492,
     "hits": [
       {
-        "_id": "5390159512076288",
-        "_index": "g-cloud",
-        "_score": 2.4522085,
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "144159043984122",
+        "_score": 15.507492,
         "_source": {
-          "dmtext_id": "5390159512076288",
-          "dmtext_lot": "SaaS",
-          "dmtext_frameworkName": "G-Cloud 6",
+          "dmfilter_educationPricing": true,
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "144159043984122",
+          "dmtext_lot": "cloud-support",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
           "dmtext_serviceBenefits": [
-            "Increase email deliverability",
-            "Reduce bogus registrations",
-            "Protect your reputation",
-            "Prevent fraud",
-            "Reduce bounce rates",
-            "Improve customer mailing"
+            "Fully scalable and flexible solutions to suit changing needs",
+            "Partnership approach enabling consistent delivery",
+            "Service continuity and reliability",
+            "Trusted advisory",
+            "Transparency and benefit led solution approach",
+            "Flexible commercial arrangments suited to needs",
+            "Knowledge and skills transfer",
+            "Maximising cloud capabilities"
           ],
+          "dmtext_serviceDescription": "Banana fig apple gooseberry banana banana banana date fig.",
           "dmtext_serviceFeatures": [
-            "Verify email addresses at the point of entry",
-            "Validate email address format",
-            "Live email account",
-            "Safe to email",
-            "Untraceable ping of the account"
+            "Independent advice and expertise",
+            "Cloud specialists",
+            "Cloud readiness assessment and mitigation",
+            "Cloud planning, design, migration and implementation services",
+            "Experts across HM Government and wider public sector",
+            "Customer first approach tailoring to your requirements & business need",
+            "Dedicated account & service management",
+            "Onsite (on premise) or offsite (hosted) delivery"
           ],
-          "dmtext_serviceName": "Email Verification",
-          "dmtext_serviceDescription": "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as they’re typed, or in bulk.\r\nOur cloud-based technology uses self-learning algorithms so that it constantly evolves to deliver the most accurate results without requiring you to make any updates.",
-          "dmtext_serviceCategories": [
-            "Data management"
-          ],
-          "dmtext_serviceCategoriesExact": [
-            "datamanagement"
-          ],
-          "dmtext_supplierName": "Supplier Name"
-        },
-        "_type": "services",
-        "highlight": {
-          "dmtext_serviceBenefits": [
-            "Increase email deliverability"
-          ],
-          "dmtext_serviceFeatures": [
-            "Verify email addresses at the point of entry",
-            "Validate email address format",
-            "Live email account",
-            "Safe to email"
-          ],
-          "dmtext_serviceName": [
-            "Email Verification"
-          ],
-          "dmtext_serviceDescription": [
-            "Increase email delivery rates and the ROI of your marketing campaigns by checking addresses as"
-          ]
-        }
-      },
-      {
-        "_id": "6446043935801344",
-        "_index": "g-cloud",
-        "_score": 2.4522085,
-        "_source": {
-          "dmtext_id": "6446043935801344",
-          "dmtext_lot": "SCS",
-          "dmtext_frameworkName": "G-Cloud 6",
-          "dmtext_serviceBenefits": [
-            "Creativity to achieve cut-through",
-            "Advanced Targeting and Segmentation",
-            "Integration with wider marketing mix",
-            "Measurement and Analysis"
-          ],
-          "dmtext_serviceFeatures": [
-            "Targeting and Data Segmentation",
-            "Email Design",
-            "Email Copywriting",
-            "Email Build",
-            "Split Testing",
-            "Tracking",
-            "Management of deployment platforms",
-            "Analysis and Reporting",
-            "eCRM Programme Development",
-            "Content Calendar Planning"
-          ],
-          "dmtext_serviceName": "Email Marketing",
-          "dmtext_serviceDescription": "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of services from email design and build, targeting and data segmentation through to distribution, testing, deployment and reporting.  Our experience includes working with renown brands on multilingual Pan-European and Global eCRM campaigns.",
-          "dmtext_serviceCategories": [
-            "Implementation",
-            "Ongoing support",
-            "Planning",
-            "Testing",
-            "Training"
-          ],
-          "dmtext_serviceCategoriesExact": [
-            "implementation",
-            "ongoingsupport",
-            "planning",
-            "testing",
-            "training"
-          ],
-          "dmtext_supplierName": "Supplier Name"
-        },
-        "_type": "services",
-        "highlight": {
-          "dmtext_serviceFeatures": [
-            "Email Design",
-            "Email Copywriting",
-            "Email Build"
-          ],
-          "dmtext_serviceName": [
-            "Email Marketing"
-          ],
-          "dmtext_serviceDescription": [
-            "twentysix run email marketing and loyalty programmes for many clients.  We offer the full range of",
-            " services from email design and build, targeting and data segmentation through to distribution"
-          ]
-        }
-      },
-      {
-        "_id": "4514646266478592",
-        "_index": "g-cloud",
-        "_score": 2.4175146,
-        "_source": {
-          "dmtext_id": "4514646266478592",
-          "dmtext_lot": "SCS",
-          "dmtext_frameworkName": "G-Cloud 6",
-          "dmtext_serviceBenefits": [
-            "User messaging options",
-            "Intergrated email support"
-          ],
-          "dmtext_serviceFeatures": [
-            "Integration of user's email",
-            "Notification emails"
-          ],
-          "dmtext_serviceName": "Manage Email",
-          "dmtext_serviceDescription": "Integration of email to enable documents to be emailed from the Store.",
-          "dmtext_serviceCategories": [
-            "Implementation",
-            "Ongoing support",
-            "Planning",
-            "Testing",
-            "Training"
-          ],
-          "dmtext_serviceCategoriesExact": [
-            "implementation",
-            "ongoingsupport",
-            "planning",
-            "testing",
-            "training"
-          ],
-          "dmtext_supplierName": "Supplier Name"
-        },
-        "_type": "services",
-        "highlight": {
-          "dmtext_serviceBenefits": [
-            "Intergrated email support"
-          ],
-          "dmtext_serviceFeatures": [
-            "Integration of user's email"
-          ],
-          "dmtext_serviceName": [
-            "Manage Email"
-          ],
-          "dmtext_serviceDescription": [
-            "Integration of email to enable documents to be emailed from the Store."
-          ]
-        }
-      },
-      {
-        "_id": "5766140261302272",
-        "_index": "g-cloud",
-        "_score": 2.4175146,
-        "_source": {
-          "dmtext_id": "5766140261302272",
-          "dmtext_lot": "SaaS",
-          "dmtext_frameworkName": "G-Cloud 6",
-          "dmtext_serviceBenefits": [
-            "Secure, managed service ",
-            "Fully resilient service ",
-            "UK based"
-          ],
-          "dmtext_serviceFeatures": [
-            "Exchange-based secure email service",
-            "Support for migration from other email available",
-            "Supports Official and Official Sensitive Data ",
-            "Remote and Mobile access"
-          ],
-          "dmtext_serviceName": "Secure Email",
-          "dmtext_serviceDescription": "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders",
-          "dmtext_serviceCategories": [
-            "Collaboration"
-          ],
-          "dmtext_serviceCategoriesExact": [
-            "collaboration"
-          ],
-          "dmtext_supplierName": "Supplier Name"
-        },
-        "_type": "services",
-        "highlight": {
-          "dmtext_serviceFeatures": [
-            "Exchange-based secure email service",
-            "Support for migration from other email available"
-          ],
-          "dmtext_serviceName": [
-            "Secure Email"
-          ],
-          "dmtext_serviceDescription": [
-            "The Vodafone Secure Mail service is a business-class email system based on Microsoft Exchange™. It",
-            " provides a secure and robust email service, and includes an inbox, calendar, contacts, tasks and folders"
-          ]
-        }
-      },
-      {
-        "_id": "4573911983325184",
-        "_index": "g-cloud",
-        "_score": 2.1946852,
-        "_source": {
-          "dmtext_id": "4573911983325184",
-          "dmtext_lot": "SCS",
-          "dmtext_frameworkName": "G-Cloud 6",
-          "dmtext_serviceBenefits": [
-            "Unlimited Storage as standard ",
-            "Achieve Legal and Compliance targets",
-            "Granular and flexible retention policies ",
-            "Reduce the total cost of ownership of email ",
-            "Fault tolerant and scalable platform ",
-            "Guaranteed 100% availability on all infrastructure (power, cooling and network) "
-          ],
-          "dmtext_serviceFeatures": [
-            "Import of legacy data ",
-            "Tamper proof archive for eDiscovery and legal compliance ",
-            "Unlimited archive storage ",
-            "Global search across all mail ",
-            "Recover and download multiple emails for legal or HR purposes ",
-            "Granular access to individual’s archive if required ",
-            "Full LDAP integration ",
-            "Archive of external and internal emails ",
-            "Complete policy flexibility "
-          ],
-          "dmtext_serviceName": "Secure Email Archiving",
-          "dmtext_serviceDescription": "All archived mail is encrypted. Set policy levels, what mail requires archiving and who has access to the archive. Mail is stored in multiple geographically diverse locations within the UK. Archive all mail to or from a domain, individual users or groups of users with retention periods from one year. ",
+          "dmtext_serviceName": "Plant-based cloud hosting",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "70b2b66822ef8ca509dc5ffcd44fcdc1273ec3104c7773c805027ac55e695f40",
           "dmtext_serviceCategories": [
             "Ongoing support"
           ],
-          "dmtext_serviceCategoriesExact": [
-            "ongoingsupport"
+          "dmagg_serviceCategories": [
+            "Ongoing support"
           ],
-          "dmtext_supplierName": "Supplier Name"
-        },
-        "_type": "services",
-        "highlight": {
-          "serviceBenefits": [
-            "Reduce the total cost of ownership of email "
-          ],
-          "serviceName": [
-            "Secure Email Archiving"
+          "dmfilter_serviceCategories": [
+            "Ongoing support"
           ]
-        }
-      },
-      {
-        "_id": "5034117041225728",
-        "_index": "g-cloud",
-        "_score": 2.1946852,
-        "_source": {
-          "dmtext_id": "5034117041225728",
-          "dmtext_lot": "SaaS",
-          "dmtext_frameworkName": "G-Cloud 6",
-          "dmtext_serviceBenefits": [
-            "Reduced IT infrastructure costs",
-            "Enhanced security",
-            "No upgrades or repairs",
-            "Easy mailbox control",
-            "Instant scalability",
-            "Workforce mobility"
-          ],
-          "dmtext_serviceFeatures": [
-            "Microsoft Exchange features",
-            "Instant deployment",
-            "Massive 50GB per mailbox",
-            "Mobile email ‘push’ technology",
-            "Shared calendars and contacts",
-            "Redundant networks",
-            "Award-winning Anti-Spam",
-            "Advance security options available "
-          ],
-          "dmtext_serviceName": "Microsoft Exchange Email Services",
-          "dmtext_serviceDescription": "As professionals you’re under pressure to cut costs, become more productive, whilst making yourself more available to clients and colleagues. So when the time comes to move to a Hosted Exchange platform, make sure you choose a platform that guarantees you peace of mind from a provider you can trust. ",
-          "dmtext_serviceCategories": [
-            "Collaboration"
-          ],
-          "dmtext_serviceCategoriesExact": [
-            "collaboration"
-          ],
-          "dmtext_supplierName": "Supplier Name"
         },
-        "_type": "services",
         "highlight": {
-          "dmtext_serviceFeatures": [
-            "Mobile email ‘push’ technology"
-          ],
           "dmtext_serviceName": [
-            "Microsoft Exchange Email Services"
+            "Plant-based cloud hosting"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "<em>Banana</em> fig apple gooseberry <em>banana</em> <em>banana</em> <em>banana</em> date fig."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Ongoing support"
+          ],
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs"
+          ],
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "144159043984122"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
           ]
         }
       },
       {
-        "_id": "5309011876380672",
-        "_index": "g-cloud",
-        "_score": 2.1946852,
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "612653875125036",
+        "_score": 15.507492,
         "_source": {
-          "dmtext_id": "5309011876380672",
-          "dmtext_lot": "SCS",
-          "dmtext_frameworkName": "G-Cloud 6",
+          "dmfilter_educationPricing": true,
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "612653875125036",
+          "dmtext_lot": "cloud-support",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
           "dmtext_serviceBenefits": [
-            "Ensures predictable outcomes, minimised risk, maximised productivity during technology change",
-            "Accelerated ability to use enhanced capabilities of Microsoft Exchange ",
-            "Greater scaling power and performance per user/server",
-            "Improved protection and reliability",
-            "Lower management cost",
-            "Improved unified messaging and collaboration",
-            "Improved operations and regulatory compliance",
-            "Enhanced mobility features",
-            "Accelerated timescales",
-            "Lower project risk, release of project cost savings"
+            "Fully scalable and flexible solutions to suit changing needs",
+            "Partnership approach enabling consistent delivery",
+            "Service continuity and reliability",
+            "Trusted advisory",
+            "Transparency and benefit led solution approach",
+            "Flexible commercial arrangments suited to needs",
+            "Knowledge and skills transfer",
+            "Maximising cloud capabilities"
           ],
+          "dmtext_serviceDescription": "Banana cherry date fig juniper banana banana juniper banana.",
           "dmtext_serviceFeatures": [
-            "Highly experienced professional consultants",
-            "Proven Assured Performance tool and dedicated 24hr migration factory ",
-            "Accelerated timescales, lower project risk and project cost savings",
-            "Work package:  Requirements gathering ",
-            "Work package:  Designing platform architecture ",
-            "Work package:  Construction ",
-            "Work package:  Migration and deployment "
+            "Independent advice and expertise",
+            "Cloud specialists",
+            "Cloud readiness assessment and mitigation",
+            "Cloud planning, design, migration and implementation services",
+            "Experts across HM Government and wider public sector",
+            "Customer first approach tailoring to your requirements & business need",
+            "Dedicated account & service management",
+            "Onsite (on premise) or offsite (hosted) delivery"
           ],
-          "dmtext_serviceName": "Email Migration and Modernisation",
-          "dmtext_serviceDescription": "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email processes, and supports migration from earlier versions of Exchange/Lotus Domino/Notes to the latest version of Microsoft Exchange. Experience of 10M+ mailboxes, in highly regulated markets. Partnerships with VMware, RSA and Microsoft ensure highly scalable, secure and flexible deployments.",
+          "dmtext_serviceName": "Patient Digital Services",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "b44f50280b199481a02aa060ee72853747ce88a95b8b3225d8e8c746e382ecd4",
           "dmtext_serviceCategories": [
-            "Implementation",
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ]
+        },
+        "highlight": {
+          "dmtext_serviceName": [
+            "Patient Digital Services"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "<em>Banana</em> cherry date fig juniper <em>banana</em> <em>banana</em> juniper <em>banana</em>."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
             "Planning"
           ],
-          "dmtext_serviceCategoriesExact": [
-            "implementation",
-            "planning"
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs"
           ],
-          "dmtext_supplierName": "Supplier Name"
-        },
-        "_type": "services",
-        "highlight": {
-          "dmtext_serviceName": [
-            "Email Migration and Modernisation"
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise"
           ],
-          "dmtext_serviceDescription": [
-            "Our migration service covers on-premise, third-party hosted or public cloud Exchange-based email"
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "612653875125036"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
           ]
         }
       },
       {
-        "_id": "5365560355323904",
-        "_index": "g-cloud",
-        "_score": 2.1946852,
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "907707888301645",
+        "_score": 14.971273,
         "_source": {
-          "dmtext_id": "5365560355323904",
-          "dmtext_lot": "SaaS",
-          "dmtext_frameworkName": "G-Cloud 6",
+          "dmfilter_educationPricing": true,
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "907707888301645",
+          "dmtext_lot": "cloud-support",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
           "dmtext_serviceBenefits": [
-            "Stop malicious or unwanted email from ever reaching your ",
-            "Prevents malicious URLs in emails from affecting end users",
-            "Interactive digests enable users to manage their own quarantine",
-            "Support requirements using our granular policy engine",
-            "Personal block and permit lists reflect user preferences",
-            "user or policy invoked secure communication",
-            "Early alert/notification of possible email communication problems",
-            "Send large files through Outlook, securly, upto 2GB",
-            "Centralise disclaimer and stationery management"
+            "Fully scalable and flexible solutions to suit changing needs",
+            "Partnership approach enabling consistent delivery",
+            "Service continuity and reliability",
+            "Trusted advisory",
+            "Transparency and benefit led solution approach",
+            "Flexible commercial arrangments suited to needs",
+            "Knowledge and skills transfer",
+            "Maximising cloud capabilities"
           ],
+          "dmtext_serviceDescription": "Gooseberry gooseberry banana date date gooseberry date banana banana.",
           "dmtext_serviceFeatures": [
-            "Always-on cloud-based security service",
-            "Real-time online track & trace",
-            "Stops 99% of spam and 100% malware in the cloud",
-            "Granular content examination engine for DLP policy application",
-            "AD synchronization enables group policy setting",
-            "Document metadata stripping",
-            " Secure message delivery via TLS and Pull Based encryption ",
-            "Secure Messaging for secure email sending ",
-            "Real-time monitoring with email & SMS alerting for  issues"
+            "Independent advice and expertise",
+            "Cloud specialists",
+            "Cloud readiness assessment and mitigation",
+            "Cloud planning, design, migration and implementation services",
+            "Experts across HM Government and wider public sector",
+            "Customer first approach tailoring to your requirements & business need",
+            "Dedicated account & service management",
+            "Onsite (on premise) or offsite (hosted) delivery"
           ],
-          "dmtext_serviceName": "Mimecast Email Security",
-          "dmtext_serviceDescription": "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on the market today. Mimecast’s massively scalable mail transfer agent with multiple layers of malware and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network.",
+          "dmtext_serviceName": "SQL Server Services",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "f816753c92a75c7fea5b80ede7f8ac1d15f12ab7937ac7e54bac19a189b7d02b",
           "dmtext_serviceCategories": [
-            "Data management",
-            "IT management",
-            "Legal",
-            "Security"
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
           ],
-          "dmtext_serviceCategoriesExact": [
-            "datamanagement",
-            "itmanagement",
-            "legal",
-            "security"
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
           ],
-          "dmtext_supplierName": "Supplier Name"
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ]
         },
-        "_type": "services",
         "highlight": {
-          "dmtext_serviceBenefits": [
-            "Stop malicious or unwanted email from ever reaching your ",
-            "Early alert/notification of possible email communication problems"
-          ],
-          "dmtext_serviceFeatures": [
-            "Secure Messaging for secure email sending ",
-            "Real-time monitoring with email & SMS alerting for  issues"
-          ],
           "dmtext_serviceName": [
-            "Mimecast Email Security"
+            "SQL Server Services"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
           ],
           "dmtext_serviceDescription": [
-            "Mimecast Email Security is a comprehensive cloud-based email security and compliance solution on",
-            " and spam protection acts as your email bridgehead, stopping known and emerging email borne threats before they reach your network."
+            "Gooseberry gooseberry <em>banana</em> date date gooseberry date <em>banana</em> <em>banana</em>."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning"
+          ],
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs"
+          ],
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "907707888301645"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
           ]
         }
       },
       {
-        "_id": "6082103036870656",
-        "_index": "g-cloud",
-        "_score": 2.1946852,
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "672174337805533",
+        "_score": 14.971273,
         "_source": {
-          "dmtext_id": "6082103036870656",
-          "dmtext_lot": "SaaS",
-          "dmtext_frameworkName": "G-Cloud 6",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmfilter_educationPricing": true,
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmtext_serviceName": "Technical Specification",
+          "dmtext_serviceDescription": "Date banana date apple banana banana apple juniper juniper.",
+          "dmfilter_resellingType": "not_reseller",
+          "dmfilter_phoneSupport": true,
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise",
+            "Cloud specialists",
+            "Cloud readiness assessment and mitigation",
+            "Cloud planning, design, migration and implementation services",
+            "Experts across HM Government and wider public sector",
+            "Customer first approach tailoring to your requirements & business need",
+            "Dedicated account & service management",
+            "Onsite (on premise) or offsite (hosted) delivery"
+          ],
           "dmtext_serviceBenefits": [
-            "Inbox success",
-            "IP pool flexibility",
-            "Advanced tagging and segmenting"
+            "Fully scalable and flexible solutions to suit changing needs",
+            "Partnership approach enabling consistent delivery",
+            "Service continuity and reliability",
+            "Trusted advisory",
+            "Transparency and benefit led solution approach",
+            "Flexible commercial arrangments suited to needs",
+            "Knowledge and skills transfer",
+            "Maximising cloud capabilities"
+          ],
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmfilter_webChatSupport": "yes",
+          "dmtext_id": "672174337805533",
+          "dmtext_supplierName": "Supplier Name",
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "sortonly_serviceIdHash": "16cc64515fcf702c63f25fb21b07e7ddd0e68ddfca981ad5e8acfe4fed311629",
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ]
+        },
+        "highlight": {
+          "dmtext_serviceName": [
+            "Technical Specification"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "Date <em>banana</em> date apple <em>banana</em> <em>banana</em> apple juniper juniper."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning"
+          ],
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs"
           ],
           "dmtext_serviceFeatures": [
-            "API integration",
-            "Postback service",
-            "Deliverability support and ISP/Mailbox provider remediation",
-            "Advanced reporting"
+            "Independent advice and expertise"
           ],
-          "dmtext_serviceName": "Dyn Email Delivery",
-          "dmtext_serviceDescription": "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk/marketing campaign email. Along with sending email generated by an application, Dyn’s email solution is integrated with the leading marketing automation and email template/management solutions.",
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "672174337805533"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
+          ]
+        }
+      },
+      {
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "258577813136805",
+        "_score": 14.00289,
+        "_source": {
+          "dmfilter_backup": true,
+          "dmfilter_backupDatacentre": [
+            "multiple_with_dr"
+          ],
+          "dmfilter_dataProtectionBetweenNetworks": [
+            "private_or_psn",
+            "tls",
+            "ipsec_or_vpn",
+            "bonded_fibre",
+            "other"
+          ],
+          "dmfilter_dataProtectionWithinNetwork": [
+            "tls",
+            "other"
+          ],
+          "dmfilter_dataStorageAndProcessingLocations": [
+            "uk",
+            "eea",
+            "privacy_shield"
+          ],
+          "dmfilter_datacentreSecurityStandards": "recognised_standard",
+          "dmfilter_educationPricing": false,
+          "dmfilter_emailOrTicketingSupport": "yes",
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_freeVersionTrialOption": true,
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "258577813136805",
+          "dmtext_lot": "cloud-hosting",
+          "dmagg_lot": "cloud-hosting",
+          "dmfilter_lot": "cloud-hosting",
+          "dmtext_lotName": "Cloud hosting",
+          "dmfilter_managementAccessAuthentication": [
+            "two_factor",
+            "public_key",
+            "username_or_password"
+          ],
+          "dmfilter_metricsHow": [
+            "api",
+            "on_request"
+          ],
+          "dmfilter_metricsWhat": [
+            "disk"
+          ],
+          "dmfilter_onsiteSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "reseller_extra_support",
+          "dmfilter_scalingType": [
+            "automatic",
+            "user_intervention"
+          ],
+          "dmfilter_securityGovernanceStandards": [
+            "csa_ccm",
+            "iso_iec_27001",
+            "other"
+          ],
+          "dmtext_serviceBenefits": [
+            "30-day free trial option",
+            "Flexible payment options reduce CAPEX spend",
+            "Easy to adopt: test, develop and run proof of concepts",
+            "Green; UK facilities which offer market leading efficiency",
+            "Reduce local compliance overhead with pre-accredited solutions",
+            "For all public sectors including local government, health, blue light",
+            "Security of your sensitive data with data encryption at rest",
+            "Backup, Archiving, replacement for shared storage",
+            "Access to storage anywhere, any time to device via HTTP(S)",
+            "Reduce local storage requirements and overheads"
+          ],
           "dmtext_serviceCategories": [
-            "Business intelligence and analytics",
-            "Customer relationship management (CRM)",
-            "IT management",
-            "Marketing",
+            "Archiving, backup and disaster recovery",
+            "Compute and application hosting",
+            "Infrastructure and platform security",
+            "Load balancing",
+            "Object storage",
+            "Other storage services",
+            "Platform as a service (PaaS)",
+            "Protective monitoring"
+          ],
+          "dmagg_serviceCategories": [
+            "Archiving, backup and disaster recovery",
+            "Compute and application hosting",
+            "Infrastructure and platform security",
+            "Load balancing",
+            "Object storage",
+            "Other storage services",
+            "Platform as a service (PaaS)",
+            "Protective monitoring"
+          ],
+          "dmfilter_serviceCategories": [
+            "Archiving, backup and disaster recovery",
+            "Compute and application hosting",
+            "Infrastructure and platform security",
+            "Load balancing",
+            "Object storage",
+            "Other storage services",
+            "Platform as a service (PaaS)",
+            "Protective monitoring"
+          ],
+          "dmtext_serviceDescription": "Gooseberry banana juniper cherry juniper date fig fig banana.",
+          "dmtext_serviceFeatures": [
+            "Supports various developer languages, RESTful and Amazon S3 API",
+            "Encryption of data at rest using 256-bit AES encryption",
+            "Cloud object storage natively enables application deduplication & redundancy",
+            "Integrates with existing, native and virtualised, enterprise applications",
+            "Connect Cloud Storage via PSN , PNN and RLI",
+            "HybridConnect: Your dedicated circuits (CPA encrypted tunnels, Leased Lines, MPLS)",
+            "Secure: Suitable for OFFICIAL & OFFICIAL-SENSITIVE data",
+            "Cloud Storage powered by EMC for performance and availability",
+            "Offloads objects (files, media, images) from compute resources",
+            "Pay for what you use, scale indefinitely and on-demand"
+          ],
+          "dmtext_serviceName": "Multi-Cloud Storage Elevated OFFICIAL",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmfilter_standardsCSASTAR": true,
+          "dmfilter_standardsISO28000": false,
+          "dmfilter_standardsISOIEC27001": true,
+          "dmfilter_standardsPCI": false,
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_usageNotifications": false,
+          "dmfilter_userAuthentication": [
+            "two_factor",
+            "government_network",
+            "other"
+          ],
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "7db9bdd1b71dfd6d5e91c06e7cbc5a9b96d16311bcf72265c7e33d5efe4242d3"
+        },
+        "highlight": {
+          "dmtext_serviceName": [
+            "Multi-Cloud Storage Elevated OFFICIAL"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "Gooseberry <em>banana</em> juniper cherry juniper date fig fig <em>banana</em>."
+          ],
+          "dmtext_lotName": [
+            "Cloud hosting"
+          ],
+          "dmtext_serviceCategories": [
+            "Archiving, backup and disaster recovery"
+          ],
+          "dmtext_serviceBenefits": [
+            "30-day free trial option"
+          ],
+          "dmtext_serviceFeatures": [
+            "Supports various developer languages, RESTful and Amazon S3 API"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "258577813136805"
+          ],
+          "dmtext_lot": [
+            "cloud-hosting"
+          ]
+        }
+      },
+      {
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "344376249788482",
+        "_score": 14.00289,
+        "_source": {
+          "dmfilter_educationPricing": true,
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "344376249788482",
+          "dmtext_lot": "cloud-support",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs",
+            "Partnership approach enabling consistent delivery",
+            "Service continuity and reliability",
+            "Trusted advisory",
+            "Transparency and benefit led solution approach",
+            "Flexible commercial arrangments suited to needs",
+            "Knowledge and skills transfer",
+            "Maximising cloud capabilities"
+          ],
+          "dmtext_serviceDescription": "Cherry banana banana gooseberry juniper fig gooseberry gooseberry date.",
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise",
+            "Cloud specialists",
+            "Cloud readiness assessment and mitigation",
+            "Cloud planning, design, migration and implementation services",
+            "Experts across HM Government and wider public sector",
+            "Customer first approach tailoring to your requirements & business need",
+            "Dedicated account & service management",
+            "Onsite (on premise) or offsite (hosted) delivery"
+          ],
+          "dmtext_serviceName": "Technology Roadmap Service",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "74da2f8e0d1095fd36f4e291df1dabc919d9ba90e447ebe5d873c0a5ac791d32",
+          "dmtext_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ]
+        },
+        "highlight": {
+          "dmtext_serviceName": [
+            "Technology Roadmap Service"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "Cherry <em>banana</em> <em>banana</em> gooseberry juniper fig gooseberry gooseberry date."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning"
+          ],
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs"
+          ],
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "344376249788482"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
+          ]
+        }
+      },
+      {
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "220997347953140",
+        "_score": 14.00289,
+        "_source": {
+          "dmfilter_educationPricing": true,
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "220997347953140",
+          "dmtext_lot": "cloud-support",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs",
+            "Partnership approach enabling consistent delivery",
+            "Service continuity and reliability",
+            "Trusted advisory",
+            "Transparency and benefit led solution approach",
+            "Flexible commercial arrangments suited to needs",
+            "Knowledge and skills transfer",
+            "Maximising cloud capabilities"
+          ],
+          "dmtext_serviceDescription": "Apple juniper fig fig fig banana banana fig gooseberry.",
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise",
+            "Cloud specialists",
+            "Cloud readiness assessment and mitigation",
+            "Cloud planning, design, migration and implementation services",
+            "Experts across HM Government and wider public sector",
+            "Customer first approach tailoring to your requirements & business need",
+            "Dedicated account & service management",
+            "Onsite (on premise) or offsite (hosted) delivery"
+          ],
+          "dmtext_serviceName": "Plant-based cloud hosting",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_to_bs7858_2012",
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "3e12cebc5678826ed8ef587473b7bb8d516d1ed9eb58aecfc4e69fcbd16a7b9d",
+          "dmtext_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ]
+        },
+        "highlight": {
+          "dmtext_serviceName": [
+            "Plant-based cloud hosting"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "Apple juniper fig fig fig <em>banana</em> <em>banana</em> fig gooseberry."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning"
+          ],
+          "dmtext_serviceBenefits": [
+            "Fully scalable and flexible solutions to suit changing needs"
+          ],
+          "dmtext_serviceFeatures": [
+            "Independent advice and expertise"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "220997347953140"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
+          ]
+        }
+      },
+      {
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "487944106008312",
+        "_score": 11.727239,
+        "_source": {
+          "dmfilter_APISoftware": false,
+          "dmfilter_browsersAccess": true,
+          "dmfilter_cloudDeploymentModel": [
+            "public",
+            "private",
+            "community",
+            "hybrid"
+          ],
+          "dmfilter_dataProtectionBetweenNetworks": [
+            "legacy_ssl"
+          ],
+          "dmfilter_dataProtectionWithinNetwork": [
+            "ssl"
+          ],
+          "dmfilter_dataStorageAndProcessingLocations": [
+            "privacy_shield"
+          ],
+          "dmfilter_datacentreSecurityStandards": "supplier_defined",
+          "dmfilter_educationPricing": false,
+          "dmfilter_emailOrTicketingSupport": "yes",
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_freeVersionTrialOption": true,
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "487944106008312",
+          "dmfilter_installation": false,
+          "dmtext_lot": "cloud-software",
+          "dmagg_lot": "cloud-software",
+          "dmfilter_lot": "cloud-software",
+          "dmtext_lotName": "Cloud software",
+          "dmfilter_managementAccessAuthentication": [
+            "two_factor",
+            "public_key",
+            "username_or_password"
+          ],
+          "dmfilter_metricsHow": [
+            "real_time",
+            "regular_reports",
+            "on_request"
+          ],
+          "dmfilter_mobile": true,
+          "dmfilter_onsiteSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
+          "dmtext_serviceBenefits": [
+            "Manage day-to-day tasks",
+            "Manage Partners and Customers",
+            "Track the vehicels with real-time location",
+            "Manage statuatory documents: store work-orders, tax-receipts, licensing-permit etc.",
+            "Easy to understand reports and cognitive dashboards",
+            "Reduce Human Errors: accessible and real-time updated system",
+            "Create Quick Orders: Instantly create editable work-orders"
+          ],
+          "dmtext_serviceCategories": [
+            "Field service management",
+            "Fleet management",
+            "Fleet tracking",
+            "Freight management",
+            "Order management",
+            "Other transport and logistics services",
+            "Shipping",
+            "Transportation dispatch",
+            "Trucking solutions",
             "Operations management",
-            "Security"
+            "Transport and logistics"
           ],
-          "dmtext_serviceCategoriesExact": [
-            "businessintelligenceandanalytics",
-            "customerrelationshipmanagement(crm)",
-            "itmanagement",
-            "marketing",
-            "operationsmanagement",
-            "security"
+          "dmagg_serviceCategories": [
+            "Field service management",
+            "Fleet management",
+            "Fleet tracking",
+            "Freight management",
+            "Order management",
+            "Other transport and logistics services",
+            "Shipping",
+            "Transportation dispatch",
+            "Trucking solutions",
+            "Operations management",
+            "Transport and logistics"
           ],
-          "dmtext_supplierName": "Supplier Name"
+          "dmfilter_serviceCategories": [
+            "Field service management",
+            "Fleet management",
+            "Fleet tracking",
+            "Freight management",
+            "Order management",
+            "Other transport and logistics services",
+            "Shipping",
+            "Transportation dispatch",
+            "Trucking solutions",
+            "Operations management",
+            "Transport and logistics"
+          ],
+          "dmtext_serviceDescription": "Juniper fig juniper banana date juniper date juniper apple.",
+          "dmtext_serviceFeatures": [
+            "Fleet Lifecycle Management: record buses, trucks, drivers and associated assets",
+            "Vehicle Tracking - GPRS/Geofencing methods, real time location of carrier",
+            "Diagnostics provided: Usage of vehicle telematics; information about status",
+            "Real-time data from sensors and IOT mechanism to detect threat",
+            "Remote Asset Management: Based on RFIDs, Barcodes and IOT sensors",
+            "Driver Behaviour Measurement: safety compliance, punctuality and driving style",
+            "periodic sms/emails about the scheduled maintenance of vehicles",
+            "Analytics with Dashboards and Reports"
+          ],
+          "dmtext_serviceName": "Transport  Management System (TMS)",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_not_bs7858_2012",
+          "dmfilter_standardsCSASTAR": false,
+          "dmfilter_standardsISO28000": false,
+          "dmfilter_standardsISOIEC27001": false,
+          "dmfilter_standardsPCI": false,
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_userAuthentication": [
+            "two_factor",
+            "username_or_password"
+          ],
+          "dmfilter_webChatSupport": "yes",
+          "sortonly_serviceIdHash": "269edfe8e8576acf1043a14f950db51f9b5f13cf7c0740ae9d62dd0c9f01827b"
         },
-        "_type": "services",
         "highlight": {
           "dmtext_serviceName": [
-            "Dyn Email Delivery"
+            "Transport  Management System (TMS)"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
           ],
           "dmtext_serviceDescription": [
-            "Dyn Email Delivery is a cloud-based email delivery engine, designed for both transactional and bulk",
-            "/marketing campaign email. Along with sending email generated by an application, Dyn’s email",
-            " solution is integrated with the leading marketing automation and email template/management solutions."
+            "Juniper fig juniper <em>banana</em> date juniper date juniper apple."
+          ],
+          "dmtext_lotName": [
+            "Cloud software"
+          ],
+          "dmtext_serviceCategories": [
+            "Field service management"
+          ],
+          "dmtext_serviceBenefits": [
+            "Manage day-to-day tasks"
+          ],
+          "dmtext_serviceFeatures": [
+            "Fleet Lifecycle Management: record buses, trucks, drivers and associated assets"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "487944106008312"
+          ],
+          "dmtext_lot": [
+            "cloud-software"
           ]
         }
       },
       {
-        "_id": "6433200507191296",
-        "_index": "g-cloud",
-        "_score": 2.1946852,
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "349870765352452",
+        "_score": 11.727239,
         "_source": {
-          "dmtext_id": "6433200507191296",
-          "dmtext_lot": "SaaS",
-          "dmtext_frameworkName": "G-Cloud 6",
+          "dmfilter_educationPricing": false,
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmtext_id": "349870765352452",
+          "dmtext_lot": "cloud-support",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "dmfilter_phoneSupport": true,
+          "dmfilter_resellingType": "not_reseller",
           "dmtext_serviceBenefits": [
-            "Bottomless user mailboxes",
-            "Personal archive access from Outlook, MAC, tablet and mobile devices",
-            "ediscovery and case management easily accomplished",
-            "archive retention and message purge tools",
-            "Near real-time search",
-            "Familiar Personal folder structures presented in Mimecast Personal Portal",
-            "Smart Tagged Message folders and search for collaboration",
-            "View recent and saved archive searches in Outlook",
-            "Export email to Outlook from a Personal archive",
-            "ediscovery exports in ZIP, PST or EDRM XML"
+            "Hardware – Software Connectivity",
+            "Experienced teams to plan and connect sensor networks",
+            "Expertise designing and developing solutions to maximise the potential",
+            "Network capability and device level tests",
+            "IoT solutions aligned to business drivers, maximizing efficiency",
+            "End-to-end Design, Engineering, & delivery of IOT products",
+            "Compatibility, multiple configuration & protocol versions",
+            "End-to-end services of realisation, design and maximisation of IOT",
+            "Assured Product Integrity and credibility"
           ],
+          "dmtext_serviceDescription": "Gooseberry banana date gooseberry apple fig cherry cherry date.",
           "dmtext_serviceFeatures": [
-            "Highly secure, resilient, bottomless email storage",
-            "All stored data is encrypted",
-            "Data stored in defined, appropriate jurisdictions",
-            "Unrivalled integration with Microsoft Outlook",
-            "Mobile search app available for all major mobile devices",
-            "Near real-time organization-wide search",
-            "Granular litigation hold functionality",
-            "100% service availability SLA",
-            "Sub 7 second archive search SLA",
-            "No additional on-premises hardware required"
+            "Ensuring smooth functioning of complex hardware-software network and data-transfer",
+            "IoT implementation across multiple subsystems, devices, Interfaces and application",
+            "Compatibility, multiple configuration & protocol versions",
+            "Tools/Technology - RFID, EPC, NFC, Bluetooth, Z -Wave, Wi-Fi",
+            "Exploratory, Functionality, Performance, Security Testing – Privacy and control",
+            "API testing including automated API validations",
+            "Easy integration with various IOT protocols",
+            "Device-to-device, device-to-cloud connectivity, interoperability validation",
+            "Automation frameworks supporting IoT testing",
+            "End-to-end testing approach"
           ],
-          "dmtext_serviceName": "Mimecast Email Archiving",
-          "dmtext_serviceDescription": "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users a bottomless mailbox, while superior mailbox management capability helps reduce the load on Exchange. Compliance officers benefit from near real time searches.",
+          "dmtext_serviceName": "Plant-based cloud hosting",
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_not_bs7858_2012",
+          "dmtext_supplierName": "Supplier Name",
+          "dmfilter_webChatSupport": "no",
+          "sortonly_serviceIdHash": "059b9dfd5f70992a54952afe52bb007bbeef0516de77d61b5201a1b69e7c4bd4",
           "dmtext_serviceCategories": [
-            "Data management"
+            "Planning",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Ongoing support"
           ],
-          "dmtext_serviceCategoriesExact": [
-            "datamanagement"
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Ongoing support"
           ],
-          "dmtext_supplierName": "Supplier Name"
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Ongoing support"
+          ]
         },
-        "_type": "services",
         "highlight": {
-          "dmtext_serviceBenefits": [
-            "Export email to Outlook from a Personal archive"
-          ],
-          "dmtext_serviceFeatures": [
-            "Highly secure, resilient, bottomless email storage"
-          ],
           "dmtext_serviceName": [
-            "Mimecast Email Archiving"
+            "Plant-based cloud hosting"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
           ],
           "dmtext_serviceDescription": [
-            "Mimecast Email Archive is a secure, scalable, cloud-based archive that can significantly reduce the",
-            " complexity of your email infrastructure. Unrivalled integration with Microsoft Outlook gives users"
+            "Gooseberry <em>banana</em> date gooseberry apple fig cherry cherry date."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning"
+          ],
+          "dmtext_serviceBenefits": [
+            "Hardware – Software Connectivity"
+          ],
+          "dmtext_serviceFeatures": [
+            "Ensuring smooth functioning of complex hardware-software network and data-transfer"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "349870765352452"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
+          ]
+        }
+      },
+      {
+        "_index": "g-cloud-12",
+        "_type": "_doc",
+        "_id": "769048963036846",
+        "_score": 11.727239,
+        "_source": {
+          "dmfilter_governmentSecurityClearances": [
+            "dv",
+            "sc",
+            "bpss"
+          ],
+          "dmfilter_educationPricing": true,
+          "dmfilter_staffSecurityClearanceChecks": "staff_screening_not_bs7858_2012",
+          "dmtext_serviceName": "Plant-based cloud hosting",
+          "dmtext_serviceDescription": "Banana date cherry cherry date date juniper gooseberry date.",
+          "dmfilter_resellingType": "not_reseller",
+          "dmfilter_phoneSupport": true,
+          "dmtext_serviceFeatures": [
+            "Performing data audit to initiate implementation of robust MDM strategy",
+            "Master data sources identification",
+            "Data quality rules defined as part of MDM strategy",
+            "Recommending and testing data governance model",
+            "Data stewardship",
+            "Designing and developing master data model and infrastructure",
+            "ETL for merging all source data using best-suited tools",
+            "Generating and testing master data",
+            "Enabling ongoing MDM maintenance to maintain consistent and reliable data",
+            "Enterprise-centric MDM, or supply-centric MDM or customer-centric MDM"
+          ],
+          "dmtext_serviceBenefits": [
+            "Streamlined data for sharing across teams and departments",
+            "Optimized processing power to enable favourable results quickly",
+            "Robust MDM program for managing risks and privacy",
+            "Optimize processes, strengthen compliance",
+            "Decrease time-to-market, improve operational efficiency",
+            "Increase profitability with MDM solution",
+            "Strengthen data security support",
+            "360-degree view of an entity like customer, student etc.",
+            "Caters to downstream systems and reporting needs",
+            "MDM solution for informed decision making"
+          ],
+          "dmfilter_emailOrTicketingSupport": [
+            "yes_extra_cost",
+            "yes"
+          ],
+          "dmfilter_webChatSupport": "no",
+          "dmtext_id": "769048963036846",
+          "dmtext_supplierName": "Supplier Name",
+          "dmtext_frameworkName": "G-Cloud 12",
+          "dmagg_lot": "cloud-support",
+          "dmfilter_lot": "cloud-support",
+          "dmtext_lot": "cloud-support",
+          "dmtext_lotName": "Cloud support",
+          "sortonly_serviceIdHash": "12e3096997e2a9198eccce6decde81cf428371cc7e4f1e314ad037200a173ca5",
+          "dmagg_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmfilter_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning",
+            "Setup and migration",
+            "Quality assurance and performance testing",
+            "Security services",
+            "Training",
+            "Ongoing support"
+          ]
+        },
+        "highlight": {
+          "dmtext_serviceName": [
+            "Plant-based cloud hosting"
+          ],
+          "dmtext_supplierName": [
+            "Supplier Name"
+          ],
+          "dmtext_serviceDescription": [
+            "<em>Banana</em> date cherry cherry date date juniper gooseberry date."
+          ],
+          "dmtext_lotName": [
+            "Cloud support"
+          ],
+          "dmtext_serviceCategories": [
+            "Planning"
+          ],
+          "dmtext_serviceBenefits": [
+            "Streamlined data for sharing across teams and departments"
+          ],
+          "dmtext_serviceFeatures": [
+            "Performing data audit to initiate implementation of robust MDM strategy"
+          ],
+          "dmtext_frameworkName": [
+            "G-Cloud 12"
+          ],
+          "dmtext_id": [
+            "769048963036846"
+          ],
+          "dmtext_lot": [
+            "cloud-support"
           ]
         }
       }
-    ],
-    "max_score": 2.4522085,
-    "total": 628
-  },
-  "timed_out": false,
-  "took": 69
+    ]
+  }
 }
