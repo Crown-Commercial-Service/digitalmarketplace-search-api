@@ -47,11 +47,11 @@
   "mappings": {
     "_meta": {
       "_": "DO NOT UPDATE BY HAND",
-      "version": "11.0.0",
-      "generated_from_framework": "digital-outcomes-and-specialists-2",
+      "version": "18.0.0",
+      "generated_from_framework": "digital-outcomes-and-specialists-4",
       "doc_type": "briefs",
-      "generated_by": "/Users/brendanbutler/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-      "generated_time": "2018-03-13T14:53:51.783965",
+      "generated_by": "/Users/laurencedebruxelles/Code/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+      "generated_time": "2020-11-19T09:04:32.493419",
       "dm_sort_clause": [
         "sortonly_statusOrder",
         {
