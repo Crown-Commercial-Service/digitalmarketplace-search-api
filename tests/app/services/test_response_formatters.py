@@ -33,30 +33,29 @@ def test_should_build_search_response_from_es_response(current_app, services_map
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
 
     assert res["meta"]["query"]["q"] == "keywords"
-    assert res["meta"]["total"] == 628
-    assert res["meta"]["took"] == 69
+    assert res["meta"]["total"] == 10
+    assert res["meta"]["took"] == 15
     assert res["meta"]["results_per_page"] == 30
     assert len(res["documents"]) == 10
 
-    assert res["documents"][0]["id"] == "5390159512076288"
-    assert res["documents"][0]["lot"] == "SaaS"
-    assert res["documents"][0]["frameworkName"] == "G-Cloud 6"
+    assert res["documents"][0]["id"] == "144159043984122"
+    assert res["documents"][0]["lot"] == "cloud-support"
+    assert res["documents"][0]["frameworkName"] == "G-Cloud 12"
     assert res["documents"][0]["supplierName"] == "Supplier Name"
-    assert res["documents"][0]["serviceName"] == "Email Verification"
-    assert res["documents"][0]["serviceCategories"] == ["Data management"]
+    assert res["documents"][0]["serviceName"] == "Plant-based cloud hosting"
+    assert res["documents"][0]["serviceCategories"] == ["Ongoing support"]
 
 
 @mock.patch('app.main.services.response_formatters.current_app')
 def test_should_build_highlights_es_response(current_app, services_mapping):
     res = convert_es_results(services_mapping, SEARCH_RESULTS_JSON, {"q": "keywords"})
-    assert res["documents"][0]["highlight"]["serviceName"] == ["Email Verification"]
+    assert res["documents"][0]["highlight"]["serviceName"] == ["Plant-based cloud hosting"]
     assert res["documents"][0]["highlight"]["serviceFeatures"] == [
-        "Verify email addresses at the point of entry",
-        "Validate email address format",
-        "Live email account",
-        "Safe to email"
+        "Independent advice and expertise",
     ]
-    assert res["documents"][0]["highlight"]["serviceBenefits"] == ["Increase email deliverability"]
+    assert res["documents"][0]["highlight"]["serviceBenefits"] == [
+        "Fully scalable and flexible solutions to suit changing needs"
+    ]
 
 
 @mock.patch('app.main.services.response_formatters.current_app')
@@ -68,38 +67,38 @@ def test_should_not_include_highlights_if_not_in_es_results(current_app, service
 
 
 def test_should_build_status_response_from_es_response():
-    res = convert_es_status("g-cloud-9", STATS_JSON, SERVICES_INDEX_INFO_JSON)
+    res = convert_es_status("g-cloud-12", STATS_JSON, SERVICES_INDEX_INFO_JSON)
     assert res == {
-        "num_docs": 19676,
-        "primary_size": "52mb",
-        "mapping_version": "9.0.0",
-        "mapping_generated_from_framework": "g-cloud-9",
-        "max_result_window": 20000,
-        "aliases": ["galias"],
+        "num_docs": 36311,
+        "primary_size": "73.7mb",
+        "mapping_version": "17.13.1",
+        "mapping_generated_from_framework": "g-cloud-12",
+        "max_result_window": "50000",
+        "aliases": [],
     }
 
 
 def test_should_build_status_response_from_briefs_es_response():
     res = convert_es_status("briefs-digital-outcomes-and-specialists", STATS_JSON, BRIEFS_INDEX_INFO_JSON)
     assert res == {
-        "num_docs": 1653,
-        "primary_size": "52mb",
+        "num_docs": 1192,
+        "primary_size": "2mb",
         "mapping_version": "11.0.0",
         "mapping_generated_from_framework": "digital-outcomes-and-specialists-2",
-        "max_result_window": 10000,
-        "aliases": ["galias"],
+        "max_result_window": "10000",
+        "aliases": [],
     }
 
 
 def test_should_build_status_response_from_es_response_with_empty_index():
     stats_json_with_no_docs = dict(STATS_JSON)
-    del stats_json_with_no_docs["indices"]["g-cloud-9"]["primaries"]["docs"]
-    res = convert_es_status("g-cloud-9", stats_json_with_no_docs)
+    del stats_json_with_no_docs["indices"]["g-cloud-12"]["primaries"]["docs"]
+    res = convert_es_status("g-cloud-12", stats_json_with_no_docs)
     assert res == {
         "aliases": [],
         "mapping_version": None,
         "mapping_generated_from_framework": None,
         "max_result_window": None,
         "num_docs": None,
-        "primary_size": "52mb",
+        "primary_size": "73.7mb",
     }

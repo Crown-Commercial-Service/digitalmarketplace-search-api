@@ -19,10 +19,7 @@ def _convert_es_index_status(index_name, status_response, info_response):
         return index_status
 
     index_settings = info_response.get(index_name, {}).get('settings', {})
-    # Mapping will be either 'briefs' or 'services'
-    service_index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("services", {})
-    brief_index_mapping = info_response.get(index_name, {}).get('mappings', {}).get("briefs", {})
-    index_mapping = service_index_mapping or brief_index_mapping
+    index_mapping = info_response.get(index_name, {}).get("mappings", {})
     index_aliases = info_response.get(index_name, {}).get('aliases', {})
 
     return {
@@ -67,7 +64,8 @@ def convert_es_results(mapping, results, query_args):
     return {
         "meta": {
             "query": query_args,
-            "total": results["hits"]["total"],
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response
+            "total": results["hits"]["total"]["value"],
             "took": results["took"],
             "results_per_page": current_app.config["DM_SEARCH_PAGE_SIZE"]
         },

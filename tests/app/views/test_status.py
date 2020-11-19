@@ -13,6 +13,22 @@ class TestStatus(BaseApplicationTest):
 
             assert response.status_code == 200
 
+    def test_status_returns_json(self):
+        with self.app.app_context():
+            response = self.client.get('/_status')
+
+            assert response.json
+
+    def test_status_includes_meta_information(self):
+        with self.app.app_context():
+            response = self.client.get('/_status')
+
+            for index, details in response.json["es_status"].items():
+                if not index.startswith("."):
+                    assert details["mapping_generated_from_framework"]
+                    assert details["mapping_version"]
+                    assert details["max_result_window"]
+
     def test_should_return_200_from_elb_status_check(self):
         status_response = self.client.get('/_status?ignore-dependencies')
         assert status_response.status_code == 200
