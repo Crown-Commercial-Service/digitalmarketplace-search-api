@@ -47,11 +47,11 @@
   "mappings": {
     "_meta": {
       "_": "DO NOT UPDATE BY HAND",
-      "version": "17.13.1",
+      "version": "18.0.0",
       "generated_from_framework": "g-cloud-12",
       "doc_type": "services",
-      "generated_by": "/home/benjamin/code/digitalmarketplace-frameworks/scripts/generate-search-config.py",
-      "generated_time": "2020-09-25T12:26:15.712295",
+      "generated_by": "/Users/laurencedebruxelles/Code/digitalmarketplace/digitalmarketplace-frameworks/scripts/generate-search-config.py",
+      "generated_time": "2020-11-19T08:50:53.956076",
       "dm_sort_clause": [
         "_score",
         {
