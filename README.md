@@ -1,6 +1,5 @@
 # Digital Marketplace Search API
 
-[![Coverage Status](https://coveralls.io/repos/alphagov/digitalmarketplace-search-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/alphagov/digitalmarketplace-search-api?branch=master)
 ![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)
 
 API application for Digital Marketplace.
