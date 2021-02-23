@@ -30,7 +30,7 @@ cryptography==3.3.2
     # via digitalmarketplace-utils
 defusedxml==0.6.0
     # via odfpy
-git+https://github.com/alphagov/digitalmarketplace-utils.git@56.1.2#egg=digitalmarketplace-utils==56.1.2
+digitalmarketplace-utils==56.1.2
     # via -r requirements.in
 docopt==0.6.2
     # via notifications-python-client
