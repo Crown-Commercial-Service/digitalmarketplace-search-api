@@ -9,34 +9,39 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Setup python (${{ matrix.python-version }})
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Setup python (${{ matrix.python-version }})
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Setup Python cache
-        uses: actions/cache@v2
-        with:
-          path: venv
-          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+    - name: Setup Python cache
+      uses: actions/cache@v2
+      id: python-cache
+      with:
+        path: venv
+        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: venv-${{ runner.os }}-${{ matrix.python-version }}-
+    # See https://github.com/elastic/elastic-github-actions/tree/master/elasticsearch
+    - name: Configure sysctl limits
+      run: |
+        sudo swapoff -a
+        sudo sysctl -w vm.swappiness=1
+        sudo sysctl -w fs.file-max=262144
+        sudo sysctl -w vm.max_map_count=262144
 
-      # See https://github.com/elastic/elastic-github-actions/tree/master/elasticsearch
-      - name: Configure sysctl limits
-        run: |
-          sudo swapoff -a
-          sudo sysctl -w vm.swappiness=1
-          sudo sysctl -w fs.file-max=262144
-          sudo sysctl -w vm.max_map_count=262144
+    - name: Run Elasticsearch
+      uses: elastic/elastic-github-actions/elasticsearch@531c232fb9ea0217d7f517f10d1970d76b0e847e
+      with:
+        stack-version: 7.9.3
 
-      - name: Run Elasticsearch
-        uses: elastic/elastic-github-actions/elasticsearch@531c232fb9ea0217d7f517f10d1970d76b0e847e
-        with:
-          stack-version: 7.9.3
+    - name: Install developer tools
+      run: make bootstrap
 
-      - name: Install packages and run tests
-        run: |
-          make requirements-dev
-          make test
+    - name: Install python dependencies
+      run: invoke requirements-dev
+      if: steps.python-cache.outputs.cache-hit != 'true'
+
+    - name: Run python tests
+      run: invoke test
