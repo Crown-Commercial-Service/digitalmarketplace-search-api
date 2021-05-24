@@ -2,7 +2,7 @@
 # with package version changes made in requirements.in
 
 Flask==1.0.4        # pyup: >=1.0.0,<1.1.0
-itsdangerous==1.1.0  # pyup: ignore
+itsdangerous==2.0.1  # pyup: ignore
 
 digitalmarketplace-utils
 
