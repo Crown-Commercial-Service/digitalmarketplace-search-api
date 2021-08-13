@@ -3,7 +3,11 @@ Tests for the application infrastructure
 """
 import gzip
 
+import mock
+import pytest
+
 from flask import json
+from elasticsearch.exceptions import ConnectionError
 
 from tests.helpers import BaseApplicationTest, BaseApplicationTestWithIndex
 
@@ -34,6 +38,17 @@ class TestApplication(BaseApplicationTest):
     def test_ttl_is_not_set(self):
         response = self.client.get('/')
         assert response.cache_control.max_age is None
+
+    @mock.patch('elasticsearch.transport.Urllib3HttpConnection.perform_request', side_effect=ConnectionError(500))
+    def test_elastic_search_client_performs_retries_on_connection_error(self, perform_request):
+        with pytest.raises(ConnectionError):
+            self.client.get('/')
+
+        # FlaskElasticsearch attaches the es client to the context in flask_elasticsearch.py
+        from flask import _app_ctx_stack
+
+        assert perform_request.call_count == 1 + _app_ctx_stack.top.elasticsearch.transport.max_retries
+        assert perform_request.call_count == 1 + 3
 
 
 class TestGzip(BaseApplicationTestWithIndex):
