@@ -7,5 +7,5 @@ itsdangerous
 digitalmarketplace-utils
 
 # Elasticsearch 5.0
-elasticsearch==7.13.4 # pyup: >=5.0.0,<6.0.0 # recommended by https://github.com/elastic/elasticsearch-py/blob/master/README
+elasticsearch==7.14.1 # pyup: >=5.0.0,<6.0.0 # recommended by https://github.com/elastic/elasticsearch-py/blob/master/README
 Flask-Elasticsearch==0.2.5
