@@ -40,16 +40,6 @@ elasticsearch==7.13.4
     # via
     #   -r requirements.in
     #   flask-elasticsearch
-flask==1.1.4
-    # via
-    #   -r requirements.in
-    #   digitalmarketplace-utils
-    #   flask-elasticsearch
-    #   flask-gzip
-    #   flask-login
-    #   flask-session
-    #   flask-wtf
-    #   gds-metrics
 flask-elasticsearch==0.2.5
     # via -r requirements.in
 flask-gzip==0.2
@@ -60,6 +50,16 @@ flask-session==0.3.2
     # via digitalmarketplace-utils
 flask-wtf==0.14.3
     # via digitalmarketplace-utils
+flask==1.1.4
+    # via
+    #   -r requirements.in
+    #   digitalmarketplace-utils
+    #   flask-elasticsearch
+    #   flask-gzip
+    #   flask-login
+    #   flask-session
+    #   flask-wtf
+    #   gds-metrics
 fleep==1.0.1
     # via digitalmarketplace-utils
 future==0.18.2
