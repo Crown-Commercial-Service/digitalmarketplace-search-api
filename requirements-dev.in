@@ -1,7 +1,5 @@
 -c requirements.txt
 
-pip-tools>5.0.0
-
 flake8
 mock<4.0.0
 pytest
