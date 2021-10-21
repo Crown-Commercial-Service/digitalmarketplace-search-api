@@ -10,7 +10,7 @@ This app handles interactions between the Digital Marketplace apps and our Elast
 
 ## Quickstart
 
-It's recommended to use the [DM Runner](https://github.com/alphagov/digitalmarketplace-runner)
+It's recommended to use the [DM Runner](https://github.com/Crown-Commercial-Service/digitalmarketplace-runner)
 tool, which will install and run the app (and an Elasticsearch instance) as part of the full suite of apps.
 
 If you want to run the app as a stand-alone process, you'll need to set the `ELASTICSEARCH_HOST` env variable
@@ -40,7 +40,7 @@ Start elasticsearch via brew:
 brew services start elasticsearch
 ```
 
-See the [Developer Manual](https://alphagov.github.io/digitalmarketplace-manual/developing-the-digital-marketplace/developer-setup.html)
+See the [Developer Manual](https://crown-commercial-service.github.io/digitalmarketplace-manual/developing-the-digital-marketplace/developer-setup.html)
 for more details around local developer setup.
 
 ## Using the Search API
@@ -71,8 +71,8 @@ To use the new mapping you will need to create a new index, it will not be
 picked up automatically. You can either do this manually by following the steps
 [below](#indexing-data), or by using the jobs on Jenkins.
 
-[frameworks repository]: https://github.com/alphagov/digitalmarketplace-frameworks/
-[`generate-search-config.py`]: https://github.com/alphagov/digitalmarketplace-frameworks/blob/master/scripts/generate-search-config.py
+[frameworks repository]: https://github.com/Crown-Commercial-Service/digitalmarketplace-frameworks
+[`generate-search-config.py`]: https://github.com/Crown-Commercial-Service/digitalmarketplace-frameworks/blob/main/scripts/generate-search-config.py
 
 ### Indexing data
 
@@ -82,7 +82,7 @@ overwrite whichever index the alias currently points to.
 New indices are only created and aliased if the entire data set needs to be reindexed, e.g. following a
 database reset or a change in the mapping. This is done with two scripts for each framework:
 
-1. [index-to-search-service.py](https://github.com/alphagov/digitalmarketplace-scripts/blob/master/scripts/index-to-search-service.py)
+1. [index-to-search-service.py](https://github.com/Crown-Commercial-Service/digitalmarketplace-scripts/blob/main/scripts/index-to-search-service.py)
 
    Create a new index, using the `index-name-YYYY-MM-DD` pattern for the new index name.
 
@@ -96,7 +96,7 @@ database reset or a change in the mapping. This is done with two scripts for eac
                                         --frameworks=digital-outcomes-and-specialists
                                         --create-with-mapping=briefs-digital-outcomes-and-specialists-2
    ```
-2. [update-index-alias.py](https://github.com/alphagov/digitalmarketplace-scripts/blob/master/scripts/update-index-alias.py)
+2. [update-index-alias.py](https://github.com/Crown-Commercial-Service/digitalmarketplace-scripts/blob/main/scripts/update-index-alias.py)
 
    Update the alias to point to the new index (that has the date suffix):
 
@@ -142,7 +142,7 @@ make freeze-requirements
 
 ## Contributing
 
-This repository is maintained by the Digital Marketplace team at the [Government Digital Service](https://github.com/alphagov).
+This repository is maintained by the Digital Marketplace team at the [Crown Commercial Service](https://github.com/Crown-Commercial-Service).
 
 If you have a suggestion for improvement, please raise an issue on this repo.
 
