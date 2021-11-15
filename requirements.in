@@ -1,7 +1,7 @@
 # Run `make freeze-requirements` to update requirements.txt
 # with package version changes made in requirements.in
 
-Flask>=1.1,<2
+Flask>=1.1,<3
 itsdangerous
 
 digitalmarketplace-utils
