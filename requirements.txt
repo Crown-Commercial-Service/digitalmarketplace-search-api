@@ -30,7 +30,7 @@ cryptography==3.3.2
     # via digitalmarketplace-utils
 defusedxml==0.6.0
     # via odfpy
-digitalmarketplace-utils==60.6.0
+digitalmarketplace-utils==60.7.0
     # via -r requirements.in
 docopt==0.6.2
     # via notifications-python-client
@@ -79,7 +79,7 @@ jmespath==0.9.4
     # via
     #   boto3
     #   botocore
-mailchimp3==3.0.15
+mailchimp3==3.0.17
     # via digitalmarketplace-utils
 markupsafe==1.1.1
     # via jinja2
