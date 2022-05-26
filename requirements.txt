@@ -30,7 +30,7 @@ cryptography==3.3.2
     # via digitalmarketplace-utils
 defusedxml==0.6.0
     # via odfpy
-digitalmarketplace-utils==60.8.0
+digitalmarketplace-utils==60.8.1
     # via -r requirements.in
 docopt==0.6.2
     # via notifications-python-client
@@ -60,8 +60,6 @@ flask-wtf==0.14.3
     # via digitalmarketplace-utils
 fleep==1.0.1
     # via digitalmarketplace-utils
-future==0.18.2
-    # via notifications-python-client
 gds-metrics==0.2.0
     # via digitalmarketplace-utils
 govuk-country-register==0.5.0
@@ -83,9 +81,7 @@ mailchimp3==3.0.17
     # via digitalmarketplace-utils
 markupsafe==1.1.1
     # via jinja2
-monotonic==1.5
-    # via notifications-python-client
-notifications-python-client==5.5.1
+notifications-python-client==6.3.0
     # via digitalmarketplace-utils
 odfpy==1.4.1
     # via digitalmarketplace-utils
