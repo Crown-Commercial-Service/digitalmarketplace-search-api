@@ -46,6 +46,11 @@ class Development(Config):
     DM_SEARCH_API_AUTH_TOKENS = 'myToken'
 
 
+class NativeAWS(Config):
+    DEBUG = False
+    DM_APP_NAME = 'search-api'
+    DM_HTTP_PROTO = 'https'
+
 class Live(Config):
     DEBUG = False
 
@@ -54,6 +59,7 @@ class Live(Config):
 
 config = {
     'development': Development,
+    'native-aws': NativeAWS,
     'preview': Live,
     'staging': Live,
     'production': Live,

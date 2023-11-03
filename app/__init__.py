@@ -43,10 +43,12 @@ def create_app(config_name):
     from .metrics import metrics as metrics_blueprint, gds_metrics
     from .main import main as main_blueprint
     from .status import status as status_blueprint
+    from .healthcheck import healthcheck as healthcheck_blueprint
 
     application.register_blueprint(metrics_blueprint)
     application.register_blueprint(status_blueprint)
     application.register_blueprint(main_blueprint)
+    application.register_blueprint(healthcheck_blueprint, url_prefix='/healthcheck')
 
     gds_metrics.init_app(application)
 
