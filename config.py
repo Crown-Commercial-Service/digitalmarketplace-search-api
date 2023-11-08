@@ -51,6 +51,7 @@ class NativeAWS(Config):
     DM_APP_NAME = 'search-api'
     DM_HTTP_PROTO = 'https'
 
+
 class Live(Config):
     DEBUG = False
 
