@@ -46,15 +46,17 @@ class Development(Config):
     DM_SEARCH_API_AUTH_TOKENS = 'myToken'
 
 
-class NativeAWS(Config):
+class SharedLive(Config):
+    """Base config for deployed environments shared between GPaaS and AWS"""
     DEBUG = False
+
+
+class NativeAWS(SharedLive):
     DM_APP_NAME = 'search-api'
     DM_HTTP_PROTO = 'https'
 
 
-class Live(Config):
-    DEBUG = False
-
+class Live(SharedLive):
     DM_LOG_PATH = '/var/log/digitalmarketplace/application.log'
 
 
