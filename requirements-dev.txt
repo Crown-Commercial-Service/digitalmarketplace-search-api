@@ -30,7 +30,7 @@ pyparsing==2.4.6
     # via packaging
 pytest==5.3.5
     # via -r requirements-dev.in
-python-dotenv==0.11.0
+python-dotenv==1.2.2
     # via -r requirements-dev.in
 six==1.14.0
     # via
